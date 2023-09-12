@@ -6,10 +6,11 @@ const User = require("../models/User");
 const toLowerNoSpace = require("../helpers/toLowerNoSpace");
 const { ROLES } = require("../config/roles");
 const sortOrder = require("../helpers/sortOrder");
-const {isAfter, isBefore} = require('date-fns');
+const {isAfter, isBefore, differenceInHours, differenceInCalendarDays} = require('date-fns');
 const { SORT_OBJECT } = require("../config/sortOptions");
 const objKeysIncludes = require("../helpers/objKeysIncludes");
 const objPropExtractor = require("../helpers/objPropExtractor");
+const removeElemObjIdArray = require("../helpers/removeElemObjIdArray");
 
 const createNewVolunteer = asyncHandler(async(req,res)=>{
 
@@ -226,6 +227,81 @@ const updateSignedUpShifts = asyncHandler(async(req,res)=>{
 
     res.json({updatedEvent, updatedUser})
 })
+
+const cancelSignedUpShifts = asyncHandler(async(req,res)=> {
+
+
+    const {userId, eventId, shiftId} = req.body
+
+    const existingUser = await User.findById(userId).select('-password').exec()
+    const existingEvent = await Event.findById(eventId).exec()
+    const existingShift = existingEvent.shifts.find(shift => (shift._id.toString() === shiftId ))
+
+    
+
+    if(!existingUser){
+
+        return res.status(400).json({message: "User DNE for cancel PATCH update"})
+    }
+    if(!existingEvent){
+        return res.status(400).json({message: "Event DNE for cancel PATCH update"})
+    }
+
+    if(!existingShift){
+        return res.status(400).json({message: "SHIFT in event DNE for cancel PATCH update"})
+
+    }
+
+    if(!existingUser.signedUpShifts.includes(existingShift._id)){
+        
+        return res.status(400).json({message: "Cannot canel event - you haven't signed up for this"})
+
+    }
+
+    const nowDate = new Date(Date.now())
+
+    const shiftStartDate = existingShift.shiftStart
+
+    if(!isBefore(nowDate, shiftStartDate)){
+
+        return res.status(400).json({message:"cancel option disabled - already past event" })
+
+        
+    }
+
+
+    const differenceHours = Math.abs(differenceInHours(shiftStartDate, nowDate))
+    console.log(differenceHours);
+
+
+    if(differenceHours <= 1){
+
+       return res.status(400).json({message: "Canel option disbled cuz less than 1 hour till event"})
+    }
+
+
+    const newSignedUpVolunteers = removeElemObjIdArray(existingShift.signedUpVolunteers, userId)
+    existingShift.signedUpVolunteers = newSignedUpVolunteers
+    existingShift.shiftPositions += 1
+
+    await existingEvent.save()
+
+    const newSignedUpShifts = removeElemObjIdArray(existingUser.signedUpShifts, shiftId)
+    existingUser.signedUpShifts = newSignedUpShifts 
+
+    await existingUser.save()
+
+
+    console.log(nowDate, shiftStartDate);
+
+    res.json({nowDate, shiftStartDate, 
+        eventName: existingEvent.eventName, 
+        username: existingUser.username, 
+        shiftDuration: existingShift.shiftDuration,
+    differenceInHours: differenceHours,
+    
+})
+})
 //search volun  - ltr: exclude ADMIN
 const searchVolunteers = asyncHandler(async(req,res)=>{
 
@@ -397,6 +473,7 @@ const sortedCountObjArr = sortOrder(proppedCountObjArr, "count", false)
     })
 })
 
+//update volunteereedShifts + calculate volunteered hours
 const updateVolunteeredShifts = asyncHandler(async(req,res)=>{
 
     
@@ -414,8 +491,10 @@ const updateVolunteeredShifts = asyncHandler(async(req,res)=>{
                 )
     ))
 
-    const allVolunteers = await User.find().select(['-password']).exec()
+    const allVolunteers = await User.find().select({_id: 1, volunteeredShifts: 1, signedUpShifts: 1}).select({password: 0}).exec()
 
+    // const toRemove = allVolunteers.findIndex()
+    // allVolunteers.splice(toRemove, 1)
 
     for(let i = 0; i< allVolunteers.length; i++){
 
@@ -435,6 +514,7 @@ const updateVolunteeredShifts = asyncHandler(async(req,res)=>{
 
                 if(currentVolun.volunteeredShifts.includes(includedShiftId)){
 
+                    //or break?
                     continue
                 }
 
@@ -450,14 +530,16 @@ const updateVolunteeredShifts = asyncHandler(async(req,res)=>{
                     if(isBefore(shiftInfo.shiftEnd, nowDate)){
 
                         console.log('successfully volunteered in shift - add to volunteeredEvent');
+                        
                         currentVolun.volunteeredShifts.push(includedShiftId)
 
                         await currentVolun.save()
                     }
-                    // else{
+                    else{
         
-                    //     console.log('only signed up, NOT yet completed ', shiftInfo.shiftEnd, nowDate);
-                    // }
+                        // console.log('only signed up, NOT yet completed ', shiftInfo.shiftEnd, nowDate);
+                        currentVolun.volunteeredShifts.splice(currentVolun.volunteeredShifts.indexOf(includedShiftId),1)
+                    }
 
                 }
                
@@ -467,12 +549,17 @@ const updateVolunteeredShifts = asyncHandler(async(req,res)=>{
 
     const extractedPropVolunteers = allVolunteers.map(volun => (objPropExtractor([ 'volunteeredShifts', '_id'], volun.toObject())))
 
+    // const mongooseExtractedVolunteers = await User.find().select({_id: 1, volunteeredShifts: 1, __v: 1}).select({password: 0}).exec()
+
     // extractedPropVolunteers.map(e => console.log(e._id))
-    res.json({allEventsWithShifts, extractedPropVolunteers})
+    // allVolunteers.map(e => console.table(Object.entries(e.toObject())))
+
+    
+    res.json({allEventsWithShifts, extractedPropVolunteers, allVolunteers})
 })
 
 
-const sortVolunteersByShiftsCount = asyncHandler(async(req,res)=> {
+const sortVolunteersByShiftsHours = asyncHandler(async(req,res)=> {
 
     
 })
@@ -482,13 +569,14 @@ module.exports = {
     updateVolunteer,
 
     updateSignedUpShifts,
+    cancelSignedUpShifts,
 
     searchVolunteers,
 
     sortVolunteersAlphabetically,
     sortVolunteersByEventsCount,
 
-    sortVolunteersByShiftsCount,
+    // sortVolunteersByShiftsCount,
     // refreshSignedUpEvents,
 
     updateVolunteeredShifts

@@ -306,6 +306,17 @@ EventSchema.pre('save',function(next){
 
 EventSchema.pre('save', function(next){
 
+    if(!this.isNew
+        &&
+        !this.isModified('shifts')
+        ){
+
+        
+        console.log('main doc is NOT new NOR shifts isNOT modified, therefore 7) pre-SAVE not called');
+        return next()
+        
+    }
+
     const bufferShiftsArr = this.shifts.slice()
     const sortedShiftsDurations = bufferShiftsArr.sort((a,b)=> {
 

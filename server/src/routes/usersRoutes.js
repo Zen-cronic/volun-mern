@@ -27,9 +27,9 @@ router.route('/sort/az')
     .get(usersControllers.sortVolunteersAlphabetically)
     
 
-router.route('/sort/shiftscount')
+// router.route('/sort/shiftscount')
     
-    .get(usersControllers.sortVolunteersByShiftsCount)
+//     .get(usersControllers.sortVolunteersByShiftsCount)
     
 
 // router.route('/refresh')
@@ -37,4 +37,7 @@ router.route('/sort/shiftscount')
 
 router.route('/volunteered')
     .patch(usersControllers.updateVolunteeredShifts)
+
+router.route('/cancel')
+    .patch(usersControllers.cancelSignedUpShifts)
 module.exports =router;

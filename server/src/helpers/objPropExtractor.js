@@ -1,4 +1,4 @@
-const Volun = require("../models/Volun");
+//instance of Object over Volun
 
 const objPropExtractor = (keys, obj) => {
 
@@ -6,12 +6,11 @@ const objPropExtractor = (keys, obj) => {
         throw new Error('msut be a Plain obj to extract from')
     }
 
-    console.log( obj instanceof Volun);
+    // console.log( obj instanceof Volun);
 
     if(!Array.isArray(keys)){
         console.log('is a single elemnt provided, turn into []');
         keys = [keys]
-        // keys = Array.of([keys])
     }
 
     
@@ -34,4 +33,4 @@ const objPropExtractor = (keys, obj) => {
 }
 
 
-module.exports =     objPropExtractor;
+module.exports = objPropExtractor;
