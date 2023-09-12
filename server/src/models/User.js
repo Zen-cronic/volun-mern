@@ -37,13 +37,33 @@ const userSchema = new mongoose.Schema({
 
     
 
+    // volunteeredShifts: [{
+
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'events'
+    // }],
     volunteeredShifts: [{
+        
+        shiftId: {
+ 
+         type: mongoose.Schema.Types.ObjectId,
+         ref: 'events'
+     },
+ 
+         shiftDuration: {
+             type:Number
+         },
 
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'events'
-    }],
+         _id: false
+        }
 
-    // totalVolunteeredHours: 
+        
+ ],
+
+    totalVolunteeredHours: {
+        type: Number,
+        default: 0
+    }
 
 },
 {

@@ -19,6 +19,10 @@ router.route('/')
 
     //delete ltr
 
+router.route('/cancel')
+    .patch(usersControllers.cancelSignedUpShifts)
+
+    
 router.route('/search')
     .post(usersControllers.searchVolunteers)
 
@@ -26,6 +30,8 @@ router.route('/sort/az')
     
     .get(usersControllers.sortVolunteersAlphabetically)
     
+router.route('/sort/hours')
+    .get(usersControllers.sortVolunteersByHours)
 
 // router.route('/sort/shiftscount')
     
@@ -38,6 +44,4 @@ router.route('/sort/az')
 router.route('/volunteered')
     .patch(usersControllers.updateVolunteeredShifts)
 
-router.route('/cancel')
-    .patch(usersControllers.cancelSignedUpShifts)
 module.exports =router;
