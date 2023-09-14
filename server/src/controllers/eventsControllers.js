@@ -150,132 +150,133 @@ const getAllEventsDates = asyncHandler(async(req,res)=> {
 
 
 //combine filter
-const filterEvents = asyncHandler(async(req, res)=> {
+// const filterEvents = asyncHandler(async(req, res)=> {
 
-    let filterArrObj = {}
+//     let filterArrObj = {}
 
-    let filteredIds = []
-    let filteredIdsWTags = {}
+//     let filteredIds = []
+//     let filteredIdsWTags = {}
 
-    // let filteredSortedIdsWTags = filteredTagsSort(filteredIdsWTags)
+//     // let filteredSortedIdsWTags = filteredTagsSort(filteredIdsWTags)
 
-    //this map is async
-    const result = await Promise.all(Object.entries(req.body).map((async([key, val]) => {
+//     //this map is async
+//     const result = await Promise.all(Object.entries(req.body).map((async([key, val]) => {
 
        
 
-        console.log([key, val]);
+//         console.log([key, val]);
 
-        let propArr 
+//         let propArr 
 
-        switch (key) {
-            case FILTER_OPTIONS.VENUE:
+//         switch (key) {
+//             case FILTER_OPTIONS.VENUE:
 
-                propArr = await filterEventsByVenue(val)
-                break;
+//                 propArr = await filterEventsByVenue(val)
+//                 break;
 
-            case FILTER_OPTIONS.DATE:
+//             case FILTER_OPTIONS.DATE:
 
-                propArr = await filterEventsByDate(val)
+//                 propArr = await filterEventsByDate(val)
 
-                break;
+//                 break;
 
-            case FILTER_OPTIONS.IS_OPEN:
+//             case FILTER_OPTIONS.IS_OPEN:
 
-                propArr = await filterEventsOpen(val)
+//                 propArr = await filterEventsOpen(val)
 
-                break;
+//                 break;
             
-            default:
-                break;
-        }
+//             default:
+//                 break;
+//         }
 
-        filterArrObj[key] = propArr
-    }))
-    )
+//         filterArrObj[key] = propArr
+//     }))
+//     )
     
 
-    if(Object.keys(filterArrObj).length > 1){
+//     if(Object.keys(filterArrObj).length > 1){
 
-        // filteredIds = filterTwoDArrSort(Object.values(filterArrObj))
+//         // filteredIds = filterTwoDArrSort(Object.values(filterArrObj))
 
-        filteredIds = filterArrSortLoose(Object.values(filterArrObj))
+//         filteredIds = filterArrSortLoose(Object.values(filterArrObj))
 
-             //throws arg not arr Error from filterArrSort helper
-        // finalFilterArr = filterArrSort(filterArrObj)
+//              //throws arg not arr Error from filterArrSort helper
+//         // finalFilterArr = filterArrSort(filterArrObj)
 
-    //    filterArr = filterArrSort(filterArr)
+//     //    filterArr = filterArrSort(filterArr)
 
-    }
-    else{
+//     }
+//     else{
 
-        filteredIds = Object.values(filterArrObj)
+//         filteredIds = Object.values(filterArrObj)
 
-    }
+//     }
 
  
-    const tagsArr = Object.keys(filterArrObj)
-    const idsArr = Object.values(filterArrObj)
+//     const tagsArr = Object.keys(filterArrObj)
+//     const idsArr = Object.values(filterArrObj)
 
-    console.log(idsArr);
-    for(let i = 0; i<filteredIds.length; i++){
+//     console.log(idsArr);
+//     for(let i = 0; i<filteredIds.length; i++){
 
        
-        for(let j=0; j<idsArr.length; j++){
+//         for(let j=0; j<idsArr.length; j++){
 
-            const currentId = filteredIds[i]
-            console.log(currentId);
+//             const currentId = filteredIds[i]
+//             console.log(currentId);
 
-            const isPropAlrExists = objKeysIncludes(filteredIdsWTags, currentId)
-            const isInIdsArr =  idsArr[j]?.includes(currentId)
-            if(
-                // !Object.keys(filteredIdsWTags)?.includes(currentId) 
-                 !isPropAlrExists 
-                && isInIdsArr
-               ){
+//             const isPropAlrExists = objKeysIncludes(filteredIdsWTags, currentId)
+//             const isInIdsArr =  idsArr[j]?.includes(currentId)
+//             if(
+//                 // !Object.keys(filteredIdsWTags)?.includes(currentId) 
+//                  !isPropAlrExists 
+//                 && isInIdsArr
+//                ){
 
-                // filteredIdsWTags[filteredIds[i]] = Object.values(filterArrObj)[j]
+//                 // filteredIdsWTags[filteredIds[i]] = Object.values(filterArrObj)[j]
 
-                //prop for tags obj - key id : val tags
-                filteredIdsWTags[currentId] =[ tagsArr[j]]
-            }
+//                 //prop for tags obj - key id : val tags
+//                 filteredIdsWTags[currentId] =[ tagsArr[j]]
+//             }
 
-            //is id alr exist and is included in tag
-            else if(
-                // Object.keys(filteredIdsWTags)?.includes(currentId) 
-                 isPropAlrExists
-                 && isInIdsArr
-                // && Array.isArray( filteredIdsWTags[currentId])
+//             //is id alr exist and is included in tag
+//             else if(
+//                 // Object.keys(filteredIdsWTags)?.includes(currentId) 
+//                  isPropAlrExists
+//                  && isInIdsArr
+//                 // && Array.isArray( filteredIdsWTags[currentId])
 
-            ){
+//             ){
 
-        //curruenId prop should be used as an expression
-        filteredIdsWTags =  {...filteredIdsWTags, [currentId] : [...filteredIdsWTags[currentId],tagsArr[j]] }
+//         //curruenId prop should be used as an expression
+//                  filteredIdsWTags =  {...filteredIdsWTags, [currentId] : [...filteredIdsWTags[currentId],tagsArr[j]] }
 
 
-        //the remainnig tags appear correctly
-        // console.log('another elem to be added to prop val arr', tagsArr[j]);
+//         //the remainnig tags appear correctly
+//         // console.log('another elem to be added to prop val arr', tagsArr[j]);
             
-            }
+//             }
 
    
 
          
-        }
+//         }
 
-    }
+//     }
 
-    const filteredSortedIdsWTags = filteredTagsSort(filteredIdsWTags)
+//     const filteredSortedIdsWTags = filteredTagsSort(filteredIdsWTags)
 
-    console.log("Final filter: ", filteredIds);
+//     console.log("Final filter: ", filteredIds);
 
-     res.json({
-        filterArrObj, 
-        filteredIds,
-        filteredIdsWTags, 
-        filteredSortedIdsWTags
-       })
-})
+//      res.json({
+//         filterArrObj, 
+//         filteredIds,
+//         filteredIdsWTags, 
+//         filteredSortedIdsWTags
+//        })
+// })
+
 
 
 //sort events alphabetically
@@ -469,7 +470,7 @@ module.exports = {
 
     // filterEventsByDate,
     // filterEventsByVenue, 
-    filterEvents,
+    // filterEvents,
 
     // sortEventsAlphabetically,
     // sortEventsBySoonest,

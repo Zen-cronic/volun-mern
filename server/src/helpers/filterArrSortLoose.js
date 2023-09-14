@@ -7,14 +7,32 @@ const filterArrSortLoose = (twoDArr)=> {
         throw new Error('Arr to be filtered but MUST be a 2d arr, even for loose filter')
     }
 
-    //turn 2d arr into 1d 
-    let oneDArr = []
-    twoDArr.map(arr =>  {
+    if(!twoDArr.every(arr => Array.isArray(arr))){
+        throw new Error('each elem must be an arr - an arr of arr')
+    }
 
-            // [...oneDArr, ...arr]
+          //turn 2d arr into 1d 
+    // let oneDArr = []
+    // twoDArr.map(arr =>  {
+
+    //         // [...oneDArr, ...arr]
             
-         oneDArr = oneDArr.concat(arr)
-    })
+    //      oneDArr = oneDArr.concat(arr)
+    // })
+
+
+
+    //wrg - flatMap(arr => [arr])
+    let oneDArr = twoDArr.flatMap(arr => arr)
+
+    // let oneDArr = twoDArr.flatMap(arr =>{
+
+    //     if(!arr.length){
+    //         console.log("empty arr");
+    //     }
+
+    //     return arr
+    // })
 
    console.log('all ids (oneDArr) from loose filter: ', oneDArr);
 

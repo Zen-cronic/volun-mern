@@ -12,13 +12,13 @@ const filterEventsByDate = async(date)=>{
     // console.log('Input str -> Date: ', new Date(date + "T05:00"))
     // console.log('utc input date: ',new Date(date))
 
-    const matchingEvents = await Event.find().lean()
+    const matchingEvents = await Event.find().lean().exec()
         .then((events) => (
 
             events.filter(event => {
 
               
-                const convertedDateWithTime =  new Date(date + hourMinFormat(date))
+                const convertedDateWithTime =  new Date(date + hourMinFormat())
 
                 const currentlocalDateStr= convertLocalDateString(convertedDateWithTime)
                 // const localDateStr= convertLocalDateString(new Date(date + convertedTime))

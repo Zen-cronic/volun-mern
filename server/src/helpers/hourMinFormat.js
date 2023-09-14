@@ -3,7 +3,7 @@
 
 const { TIME_ZONE } = require("../config/timeZones");
 
-const hourMinFormat = (date) => {
+const hourMinFormat = () => {
   
    
     const bufferDate = new Date(TIME_ZONE.TORONTO.utcOffsetMs)
