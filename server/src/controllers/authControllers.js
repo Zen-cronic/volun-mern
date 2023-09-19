@@ -61,7 +61,7 @@ const login = asyncHandler(async(req, res) => {
         process.env.REFRESH_TOKEN,
 
         {
-            expiresIn: '30s'
+            expiresIn: '60s'
         }
     
     )
@@ -74,7 +74,7 @@ const login = asyncHandler(async(req, res) => {
             httpOnly: true,
             sameSite: "None",
             secure: true,
-            maxAge: 30 * 10000
+            maxAge: 60 * 1000
         })
 
     //for authorization

@@ -59,7 +59,7 @@ const getAllEvents = asyncHandler(async(req,res)=>{
     }
 
     //an arry of volunteers obj || {volunteers}
-    res.json(events)
+    res.json({events})
 
     
 

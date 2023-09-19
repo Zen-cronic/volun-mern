@@ -143,6 +143,8 @@ const EventSchema = new mongoose.Schema({
         type:String,
         required: true,
     },
+
+    
     
     eventDates: {
 
@@ -196,6 +198,8 @@ const EventSchema = new mongoose.Schema({
     //     }
     // }]
     
+    eventVenue: {type:String,
+        required: true}
 },
 {
 

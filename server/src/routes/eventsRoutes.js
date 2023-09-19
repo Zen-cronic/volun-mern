@@ -6,6 +6,7 @@ const { FILTER_OPTIONS } = require('../config/filterOptions');
 const { filterEventsByVenue, filterEventsOpen, filterEventsByDate, filteredTagsSort } = require('../helpers/filterEventsHelper');
 const filterArrSortLoose = require('../helpers/filterArrSortLoose');
 const objKeysIncludes = require('../helpers/objKeysIncludes');
+const elemObjIncludes  = require('../helpers/elemObjIncludes');
 
 const router = express.Router()
 
@@ -38,6 +39,7 @@ router.route("/filter")
     //venue filter
     .post(
 
+        //venue filter
         asyncHandler(async(req,res,next)=> {
 
 
@@ -53,6 +55,7 @@ router.route("/filter")
         next()
     }),
     
+    //date filter
         asyncHandler(async(req,res, next)=>{
 
         if(!objKeysIncludes(req.body,FILTER_OPTIONS.DATE ) ){
@@ -65,6 +68,7 @@ router.route("/filter")
         next()
     }),
 
+    //isOpen filter
         asyncHandler(async(req,res, next)=>{
 
         if(!objKeysIncludes(req.body, FILTER_OPTIONS.IS_OPEN) ){
@@ -78,6 +82,7 @@ router.route("/filter")
         next()
     }),
 
+    //sorted filter
          asyncHandler(async(req,res)=>{
 
       
@@ -87,9 +92,10 @@ router.route("/filter")
         const filteredIsOpen = res.locals.filteredIsOpen 
 
         let filteredResultsByKey = {}
-        let idsWithTags = {}
+        // let idsWithTags = {}
+        let idsWithTags= []
 
-        Object.keys(req.body).map((async(filterKey) => {
+        Object.keys(req.body).map(((filterKey) => {
 
             switch (filterKey) {
                 case FILTER_OPTIONS.DATE:
@@ -121,39 +127,71 @@ router.route("/filter")
 
         const filteredAllIds = filterArrSortLoose(Object.values(filteredResultsByKey))
         
-        filteredAllIds.forEach(id => {
+        filteredAllIds.forEach( (id) => {
 
-            Object.entries(filteredResultsByKey).forEach(([filterKey, result]) => {
+           Object.entries(filteredResultsByKey).forEach(([filterKey, result]) => {
 
                 if(result.includes(id) ) {
 
                     
                     // const isPropAlrExists = objKeysIncludes(idsWithTags, filterKey)
-                    const isPropAlrExists = objKeysIncludes(idsWithTags, id)
+                    // const isPropAlrExists = objKeysIncludes(idsWithTags, id)
 
+                    const isEventIdAlrExists = elemObjIncludes(idsWithTags, id)
                  
-                    if(isPropAlrExists){
+                    // if(isPropAlrExists){
 
                         
-                        idsWithTags = {...idsWithTags, [id]: [...idsWithTags[id], filterKey]}
-                    }
+                    //     idsWithTags = {...idsWithTags, [id]: [...idsWithTags[id], filterKey]}
+                    // }
 
+                    // else{
+
+                    //     idsWithTags = {...idsWithTags,  [id]: [filterKey]}
+
+                      
+                    //     // idsWithTags[id] =[filterKey]
+                    // }
+
+                    if(isEventIdAlrExists){
+
+
+                        const bufferArr = idsWithTags.map(event => {
+
+                            if(event.eventId === id){
+
+                                event = {...event, filterTags: [...event.filterTags, filterKey]}
+                               //return event DNR(return) every event
+                            }
+
+                            return event
+                        })
+
+                        idsWithTags = bufferArr
+                    }
                     else{
 
-                        idsWithTags = {...idsWithTags, [id]: [filterKey]}
-                        // idsWithTags[id] =[filterKey]
+                          //for better normalization in front
+                        //   idsWithTags = [...idsWithTags, {  eventId: id,  
+                        //     filterTags: [filterKey]}]
+
+                        idsWithTags.push({eventId: id, filterTags: [filterKey]})
                     }
                 }
             })
+           
         })
 
-        const sortedIdsWithTags = filteredTagsSort(idsWithTags)
+        // const sortedIdsWithTags = filteredTagsSort(idsWithTags)
 
+
+        // console.log("arr idsWithTags: ", idsWithTags);
 
         res.status(200).json({filteredResultsByKey, 
             filteredAllIds,
              idsWithTags,
-            sortedIdsWithTags})
+            // sortedIdsWithTags
+        } )
 
     })
 

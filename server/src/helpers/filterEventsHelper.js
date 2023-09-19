@@ -111,7 +111,8 @@ const filteredTagsSort = (obj)=> {
         throw new Error('Must be an obj for sorting filtered tags')
     }
 
-   const sortedEntries = Object.entries(obj).sort((a,b) => {
+
+   const sortedEntries = [...Object.entries(obj)].sort((a,b) => {
 
         //[1] = value, [0] = key
         if (a[1].length < b[1].length ) {
