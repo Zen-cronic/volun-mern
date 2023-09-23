@@ -11,6 +11,7 @@ import EventPage from './features/event/EventPage'
 import EditEventForm from './features/event/EditEventForm'
 import NewEventForm from './features/event/NewEventForm'
 import EventFilter from './features/event/EventFilter'
+import FilteredEventList from './features/event/FilteredEventList'
 
 const App = () => {
   return (
@@ -38,7 +39,7 @@ const App = () => {
 
                   <Route path='new' element={<NewEventForm/>}/>
 
-                  <Route path='filter' element={<EventFilter/>}/>
+                  <Route path='filter' element={<FilteredEventList/>}/>
 
 
 

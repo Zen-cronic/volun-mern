@@ -56,11 +56,11 @@ const filterEventsByVenue = async(venue)=> {
 
     // const {venue}= venue
 
-    if(!Object.values(VENUES).includes(venue)){
+    // if(!Object.values(VENUES).includes(venue)){
 
-        // return res.status(400).json({message: "Venue DNE"})
-        throw new Error('venue not found')
-    }
+    //     // return res.status(400).json({message: "Venue DNE"})
+    //     throw new Error('venue not found')
+    // }
     const eventsByVenuesIds = await Event.find({eventVenue: {$eq:venue }})
         .then(events => (
             events.map(event => (
@@ -77,10 +77,15 @@ const filterEventsByVenue = async(venue)=> {
 const filterEventsOpen = async(isOpen) => {
 
 
-    if(!isOpen){
-        throw new Error('isOPen must be true')
+    // if(!isOpen){
+    //     throw new Error('isOPen must be true')
 
+    // }
+
+    if(!isOpen){
+        return Promise.resolve([])
     }
+
   //{ age: { $gt: 50 } }
   const events = await Event.find({openPositions: {$gt: 0}}).lean()
   .then(events => (

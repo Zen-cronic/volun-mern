@@ -1,6 +1,7 @@
 import React from 'react'
 import { useGetEventsQuery } from './eventsApiSlice'
 import EventExcerpt from './EventExcerpt'
+import { Link } from 'react-router-dom'
 
 const EventList = () => {
 
@@ -28,7 +29,15 @@ const EventList = () => {
             <EventExcerpt key={eventId} eventId={eventId}/>
         ))
     }
-  return content
+
+  return (
+    <>
+         <div>
+          <Link to={'/events/new'}>Add new event</Link>
+        </div>
+        {content}
+    </>
+  )
 }
 
 export default EventList

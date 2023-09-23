@@ -1,7 +1,8 @@
 import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 import { apiSlice } from "../../app/api/apiSlice";
+import { setFilteredEvents } from "./eventsSlice";
 
-const eventsAdapter = createEntityAdapter()
+export const eventsAdapter = createEntityAdapter()
 
 const eventsInitialState = eventsAdapter.getInitialState()
 
@@ -40,7 +41,7 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
         }),
 
 
-       postFilteredEvents: builder.mutation({
+       postFilteredEvents: builder.query({
 
         query: (filterOptions) => ({
 
@@ -48,6 +49,58 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
             method: 'POST',
             body: {...filterOptions}
         }),
+
+    //omit transformREsponse for eventsFilter state
+        // transformResponse: (responseData) => {
+
+        //     const {idsWithTags} = responseData
+        //     // console.log('idsWithTags from responseData: ', idsWithTags);
+
+        //     // if(idsWithTags?.length){
+        //     //     const normailzedFilteredEvents = idsWithTags.map(event=> {
+
+        //     //         event.id = event.eventId 
+        //     //         return normailzedFilteredEvents
+        //     //     })
+
+        //     // }
+
+        //     const normailzedFilteredEvents = idsWithTags.map(event=> {
+        //         event.id = event.eventId 
+        //         return event
+        //     })
+
+        //     return eventsAdapter.setAll(eventsInitialState, normailzedFilteredEvents)
+        // },
+
+        async onQueryStarted(arg, {dispatch, getState, queryFulfilled}){
+
+            try {
+
+                const {data} = await queryFulfilled
+                const {idsWithTags} = data
+
+
+                console.log('data from onQUeryStarted /filter: ', data);
+
+                // console.log("array of entities from {data}: ", Object.values(data.entities));
+
+                const {filteredEvents} = getState().events
+                console.log('fitleredEvents in state from onQUeryStarted: ', filteredEvents);
+                console.log('idsWIthTags from onQUeryStarted from filter: ', idsWithTags); //DNE after serialization in transformResponse
+                dispatch(setFilteredEvents({idsWithTags}))
+
+            } catch (error) {
+                console.log('filterEvents error: ',error);
+            }
+        },
+        // providesTags: (result, err, arg) => (
+        
+        // //result no longer has ids & entities if transformResponse is NOT used
+        //     // [result.ids.map(id => ({type:'Event', id}))]
+        //     [result.map(id => ({type:'Event', id}))]
+        // )
+
 
 
        })
@@ -73,6 +126,7 @@ export const {
 export const {
 
     useGetEventsQuery,
-    usePostFilteredEventsMutation, 
+    usePostFilteredEventsQuery, 
+    useLazyPostFilteredEventsQuery,
 
 } = eventsApiSlice

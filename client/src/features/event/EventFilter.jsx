@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {usePostFilteredEventsMutation } from './eventsApiSlice';
+import { useLazyPostFilteredEventsQuery } from './eventsApiSlice';
 import { useNavigate } from 'react-router';
 
 const EventFilter = () => {
@@ -8,18 +8,21 @@ const EventFilter = () => {
     const [isOpen, setIsOpenFilter] = useState(false);
     const [venue, setVenueFilter] = useState('');
 
-    const [filterEvents, {isLoading, isSuccess: isFilterSuccess}] = usePostFilteredEventsMutation()
+    // const {filterEvents, isLoading, isSuccess: isFilterSuccess, isError: isFilterError, error: filterError} = usePostFilteredEventsQuery
 
+    const [filterEvents, {isLoading, isSuccess: isFilterSuccess, data: filteredEventsData }] = useLazyPostFilteredEventsQuery(
+     )
     const navigate = useNavigate()
     useEffect(() => {
 
         if(isFilterSuccess){
 
-            setIsOpenFilter(prev => !prev)
-            setVenueFilter('')
+            // setIsOpenFilter(prev => !prev)
+            // setVenueFilter('')
 
             //filter route
-            navigate('/events/filtered')
+            console.log('currentFilters: ', isOpen, venue);
+            navigate('/events/filter')
 
         }
 
@@ -56,7 +59,20 @@ const EventFilter = () => {
     const handleFilterSubmit = async (e) => {
 
         try {
+            // const filterKeys = [isOpen, venue].filter(filterKey => filterKey !== null)
+            // const filterKeys = [isOpen, venue]
+            // const filterKeysObj = {}
+            // filterKeys.forEach(key => {
+
+            //     if((key !== '') ||( key !== false)){
+
+            //         filterKeysObj[key] = key
+            //     }
+            // } )
+
+            // console.log('filterKeys obj: ', filterKeysObj);
             const {data} = await filterEvents({venue, isOpen})
+            // const {data} = await filterEvents({...filterKeysObj})
             
             console.log("Filtered events data: ", data);
         } catch (error) {
