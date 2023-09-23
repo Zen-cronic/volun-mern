@@ -26,7 +26,8 @@ const SORT_OBJECT = {
     SOONEST: {
 
         sortOption: 'soonest',
-        sortIndex:  'eventDate'
+        // sortIndex:  'eventDate'
+        sortIndex:  'eventDates'
         
     },
 
@@ -34,6 +35,11 @@ const SORT_OBJECT = {
         sortOption: 'open',
         sortIndex: 'openPositions'
         
+    },
+
+    LATEST: {
+        sortOption: 'latest',
+        sortIndex: 'createdAt'
     }
 }
 

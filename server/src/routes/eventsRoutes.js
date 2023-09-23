@@ -204,6 +204,10 @@ router.route('/dates')
 
 //combine sort
 router.route('/sort')
-    .get(eventsControllers.sortEvents)
+    .post(eventsControllers.sortEvents)
+
+//sort eventsDate
+router.route('/sorteventdates')
+    .post(eventsControllers.sortEventsDates)
 
 module.exports =router;

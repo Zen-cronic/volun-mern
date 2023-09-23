@@ -25,6 +25,7 @@ const sortOrder = (sortArr, sortIndex, orderBool) => {
     
     let sortedArr
     
+    //ascending
     orderBool
     ?
     sortedArr = sortArr.sort((a,b) => {
@@ -39,7 +40,7 @@ const sortOrder = (sortArr, sortIndex, orderBool) => {
     })
 
     :
-
+    
     sortedArr = sortArr.sort((a,b) => {
 
         if (a[sortIndex]< b[sortIndex]) {

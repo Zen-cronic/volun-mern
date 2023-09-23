@@ -13,6 +13,7 @@ const { SORT_OPTIONS } = require("../config/sortOptions");
 const { sortEventsHelper } = require("../helpers/sortEventsHelper");
 const objKeysIncludes = require("../helpers/objKeysIncludes");
 const filterNonDuplicate = require("../helpers/filterNonDuplicate");
+const { closestTo, isAfter,  isEqual, compareAsc } = require("date-fns");
 
 
 
@@ -400,6 +401,134 @@ const sortEvents = asyncHandler(async(req,res)=> {
     res.json({sortedEvents})
 })
 
+
+const sortEventsDates = asyncHandler(async(req,res)=> {
+
+            //canNOt tell what sort options will be passed - but here can tell
+    // const [[sortOption, orderBool]] = Object.entries(req.body)
+
+    // const {soonest} = req.body
+
+    const allEvents = await Event.find().lean().exec()
+
+
+    // const sortedEventsDates = allEvents.map(event => {
+    // const sortedEventsDates = allEvents.flatMap(event => {
+
+    //     const closestToCurrentDate = closestTo(currentDate, event.eventDates)
+    //     if( isAfter(closestToCurrentDate, currentDate)){
+    //     // if( isBefore(closestToCurrentDate, currentDate)){
+
+    //         return [{eventDate: closestToCurrentDate, eventId: event._id, eventName: event.eventName}]
+    //     }
+
+
+
+    //     // return []
+
+    //     else{
+
+    //         invalidArr.push(closestToCurrentDate)
+
+    //             //only works if only 1 invalid date
+    //         // const anotherClosest = closestTo(currentDate, [...event.eventDates.splice(event.eventDates.indexOf(closestToCurrentDate), 1)])
+
+    //             //DNW - need to remove invalid date(s) from params
+    //         // const anotherClosest = closestTo(currentDate, [...event.eventDates])
+
+    //         const anotherClosest = closestTo(currentDate, event.eventDates.filter(date => invalidArr.includes(date)? false: true))
+    //         if( isAfter(anotherClosest, currentDate)){
+    //             // if( isBefore(closestToCurrentDate, currentDate)){
+        
+    //                 return [{eventDate: closestToCurrentDate, eventId: event._id, eventName: event.eventName}]
+    //             }
+
+    //         else 
+    //             return []
+    //     }
+
+    // })
+
+        //w recursion
+    
+    const sortEventDatesFx = (event, datesArr, invalidArr =[]) => {
+
+        const currentDate =new Date(Date.now())
+    
+        // const cmpDatesArray = datesArr.filter(date => invalidArr.includes(date)? false : true)
+        const cmpDatesArray = datesArr.filter(date => (
+
+            invalidArr.some(invalidDate => isEqual(invalidDate, date))
+            ?
+            false
+            :
+            true
+        ))
+        
+        console.log('cmpDatesArray: ', cmpDatesArray);
+        const closestToCurrentDate = closestTo(currentDate, cmpDatesArray)
+
+        console.log("clossestToCurrentDate: ", closestToCurrentDate);
+
+        //ether condi alone works
+        if(
+            closestToCurrentDate ===  undefined 
+            ||
+            !cmpDatesArray?.length 
+            ){
+
+            return []
+        }
+        
+        if(isAfter(closestToCurrentDate, currentDate)){
+
+                    console.log(closestToCurrentDate, " is after ", currentDate);
+                //  return [{eventDate: closestToCurrentDate, eventName: event?.eventName, eventId: event?._id
+                // //  return [{eventDate: closestToCurrentDate
+
+                //     // eventId: event._id, eventName: event.eventName
+                // }]
+
+            return [{eventDate: closestToCurrentDate, eventName: event?.eventName,eventId: event?._id}]
+
+        }
+
+        
+        // return undefined
+
+        console.log('reched HERE');
+
+
+        invalidArr.push(closestToCurrentDate)
+        return sortEventDatesFx(event, datesArr, invalidArr)
+
+        // console.log('reched to here');
+        // return []
+        
+    }
+
+    const sortedEventsDates = allEvents.flatMap(event => {
+
+        const result = sortEventDatesFx(event, event.eventDates)
+
+        console.log("result: ", result);
+
+        return result
+    } )
+
+    const ascendingEvents = [...sortedEventsDates].sort((a,b) => compareAsc(a?.eventDate, b?.eventDate))
+
+        //when sortedEventsDates return [] empty
+    // const emptySortedEvents = [].sort((a,b) => compareAsc(a.eventDate, b.eventDate))
+    res.json({sortedEventsDates, 
+        // sortedEvents, 
+        // emptySortedEvents
+        ascendingEvents
+    })
+
+
+
+})
 const addShiftToEvent = asyncHandler(async(req,res)=> {
 
     const {eventId, shiftStart, shiftEnd, shiftPositions}= req.body
@@ -481,4 +610,6 @@ module.exports = {
     addShiftToEvent,
 
     getSignedUpVolunteers,
+
+    sortEventsDates
 };
