@@ -202,12 +202,12 @@ router.route('/dates')
     .get(eventsControllers.getAllEventsDates)
     
 
-//combine sort
+//combine sort - combined w sortEventsDates below
 router.route('/sort')
     .post(eventsControllers.sortEvents)
 
-//sort eventsDate
-router.route('/sorteventdates')
-    .post(eventsControllers.sortEventsDates)
+// //sort eventsDate
+// router.route('/sorteventdates')
+//     .post(eventsControllers.sortEventsDates)
 
 module.exports =router;
