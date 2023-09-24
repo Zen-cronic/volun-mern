@@ -26,7 +26,7 @@ app.use('/auth', require('./routes/authRoutes'))
 app.use('/refresh', require('./routes/refreshRoute'))
 app.use('/logout', require('./routes/logoutRoute'))
 
-// app.use(verifyJWT)
+app.use(verifyJWT)
 app.use('/users', require('./routes/usersRoutes'))
 app.use('/events', require('./routes/eventsRoutes'))
 

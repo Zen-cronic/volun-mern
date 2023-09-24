@@ -31,7 +31,7 @@ const EventSort = () => {
             const preferCacheValue = true
             // const {data} = await sortEvents({[sortOption]: true}, preferCacheValue)
             const {data} = await sortEvents(sortOption, preferCacheValue)
-            navigate('/events/sort')
+            navigate('/dash/events/sort')
 
             console.log("Sorted events data: ", data);
         } catch (error) {

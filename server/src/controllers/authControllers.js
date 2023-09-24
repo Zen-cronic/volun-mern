@@ -26,7 +26,8 @@ const login = asyncHandler(async(req, res) => {
     }
 
 
-    const isValidPwd = await bcrypt.compare(password, existingUser.password)
+    // const isValidPwd = await bcrypt.compare(password, existingUser.password)
+    const isValidPwd = existingUser.matchPassword(password)
 
     if(!isValidPwd){
         return res.status(400).json({message: "Wrong password"})

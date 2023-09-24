@@ -8,7 +8,7 @@ const router = express.Router()
 
 router.route('/')
    .get(
-    // verifyRole(ROLES.ADMIN),
+    verifyRole(ROLES.ADMIN),
      usersControllers.getAllVolunteers)
     .post(usersControllers.createNewVolunteer)
   

@@ -13,6 +13,10 @@ import NewEventForm from './features/event/NewEventForm'
 import FilteredEventList from './features/event/filter/FilteredEventList'
 import SortedEventsList from './features/event/sort/SortedEventsList'
 import SearchedEventsList from './features/event/search/SearchedEventsList'
+import VolunteerHeader from './features/volun/VolunteerHeader'
+import VolunteersList from './features/volun/VolunteersList'
+import DashLayout from './components/DashLayout'
+import Welcome from './features/auth/Welcome'
 
 const App = () => {
   return (
@@ -25,7 +29,10 @@ const App = () => {
 
           <Route element={<Prefetch/>}>
 
-              <Route path='/events' element={<EventHeader/>}>
+            <Route path='/dash' element={<DashLayout/>}>
+
+              <Route index={true} element={<Welcome/>}/>
+              <Route path='events' element={<EventHeader/>}>
 
                   <Route index={true} element={<EventList/>}/>
                   {/* <Route path=':eventId' element={<EventPage/>}>
@@ -52,11 +59,20 @@ const App = () => {
 
               </Route>
 
-              <Route path='/volunteers'>
+                  {/* prefetchVOluns here */}
+                  {/* RequireAuth for admin only */}
+              <Route path='volunteers' element={<VolunteerHeader/>}>
+                  <Route index={true} element={<VolunteersList/>}/>
+                  {/* <Route path='":volunId'>
 
-                
+                  </Route> */}
+
+                  
+
+
               </Route>
 
+            </Route>
           </Route>
 
 

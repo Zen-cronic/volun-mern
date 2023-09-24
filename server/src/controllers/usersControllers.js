@@ -14,7 +14,7 @@ const removeElemObjIdArray = require("../helpers/removeElemObjIdArray");
 
 const createNewVolunteer = asyncHandler(async(req,res)=>{
 
-    const {username, userId, password} = req.body
+    const {username, userId, password, role} = req.body
 
     if(requiredInputChecker(req.body)){
         return res.status(400).json({message: "All fields required"})
@@ -32,7 +32,7 @@ const createNewVolunteer = asyncHandler(async(req,res)=>{
 
     const hashedPwd = await bcrypt.hash(password, 10)
 
-    const newVolunteer = new User({username, userId, password: hashedPwd})
+    const newVolunteer = new User({username, userId, password: hashedPwd, role})
 
     await newVolunteer.save()
 
@@ -53,7 +53,8 @@ const getAllVolunteers = asyncHandler(async(req,res)=>{
     }
 
     //an arry of volunteers obj || {volunteers}
-    res.json(volunteers)
+    //self-convention: {volunteers} so that front: responseDate.volunteers thru transformResponse
+    res.json({volunteers})
 
     
 })
@@ -688,7 +689,7 @@ module.exports = {
     searchVolunteers,
 
     sortVolunteersAlphabetically,
-    sortVolunteersByEventsCount,
+    // sortVolunteersByEventsCount,
 
     sortVolunteersByHours,
     // refreshSignedUpEvents,

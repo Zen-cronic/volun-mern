@@ -21,7 +21,7 @@ const Login =() => {
 
             setUserId('')
             setPassword('')
-            navigate('/events')
+            navigate('/dash')
         }
 
     }, [navigate, isSuccess]);

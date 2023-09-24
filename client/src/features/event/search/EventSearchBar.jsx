@@ -27,7 +27,7 @@ const EventSearchBar = () => {
       const preferCacheValue = true
       const {data} = await searchEvent(searchQuery,preferCacheValue)
 
-      navigate('/events/search?q=' + encodedSearchQuery)
+      navigate('/dash/events/search?q=' + encodedSearchQuery)
 
 
       console.log("Searched events data: ", data);

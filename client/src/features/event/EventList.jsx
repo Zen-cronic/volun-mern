@@ -33,7 +33,7 @@ const EventList = () => {
   return (
     <>
          <div>
-          <Link to={'/events/new'}>Add new event</Link>
+          <Link to={'/dash/events/new'}>Add new event</Link>
         </div>
         {content}
     </>

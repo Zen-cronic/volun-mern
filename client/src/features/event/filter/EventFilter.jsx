@@ -64,7 +64,7 @@ const EventFilter = () => {
             // console.log('filterKeys obj: ', filterKeysObj);
             const {data} = await filterEvents({venue, isOpen}, preferCacheValue)
             // const {data} = await filterEvents({...filterKeysObj})
-            navigate('/events/filter')
+            navigate('/dash/events/filter')
 
             console.log("Filtered events data: ", data);
         } catch (error) {

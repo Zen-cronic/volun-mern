@@ -14,7 +14,7 @@ const EventPage = () => {
   const handleEditEvent = () => {
 
     // fulll url needed
-    navigate(`/events/${eventId}/edit`)
+    navigate(`/dash/events/${eventId}/edit`)
     // navigate(`/edit`)
   }
   let content 

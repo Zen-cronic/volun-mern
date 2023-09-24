@@ -28,7 +28,7 @@ const EventExcerpt = ({ eventId }) => {
                 <h2>{event.eventName}</h2>
                 <p className="excerpt">{event.eventDescription}</p>
                 <p>Event VEnue: {event.eventVenue}</p>
-                <Link to={`/events/${event.id}`}>View Event</Link>
+                <Link to={`/dash/events/${event.id}`}>View Event</Link>
                   
               
               
