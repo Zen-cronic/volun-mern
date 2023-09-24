@@ -10,8 +10,9 @@ import EventList from './features/event/EventList'
 import EventPage from './features/event/EventPage'
 import EditEventForm from './features/event/EditEventForm'
 import NewEventForm from './features/event/NewEventForm'
-import EventFilter from './features/event/EventFilter'
-import FilteredEventList from './features/event/FilteredEventList'
+import FilteredEventList from './features/event/filter/FilteredEventList'
+import SortedEventsList from './features/event/sort/SortedEventsList'
+import SearchedEventsList from './features/event/search/SearchedEventsList'
 
 const App = () => {
   return (
@@ -41,8 +42,19 @@ const App = () => {
 
                   <Route path='filter' element={<FilteredEventList/>}/>
 
+                  <Route path='sort' element={<SortedEventsList/>}/>
+
+                  <Route path='search' element={<SearchedEventsList/>}/>
+
+                
 
 
+
+              </Route>
+
+              <Route path='/volunteers'>
+
+                
               </Route>
 
           </Route>

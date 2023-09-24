@@ -8,7 +8,8 @@ export const eventsSlice = createSlice({
     // initialState: { filteredEvents: []},
     initialState: eventsAdapter.getInitialState({
         filteredEvents: [],
-        sortedEvents: []
+        sortedEvents: [],
+        searchedEvents: []
     }),
 
     // reducers: {
@@ -39,14 +40,30 @@ export const eventsSlice = createSlice({
             console.log('idsWithTags in setFiltereEvents reducer', idsWithTags);
 
             state.filteredEvents = idsWithTags
-        }
+        },
+
+        setSortedEvents: (state, action) => {
+
+            const {sortedEvents} = action.payload
+
+            state.sortedEvents = sortedEvents
+        },
+        setSearchedEvents: (state, action) => {
+
+            const {matchingEvents} = action.payload
+
+            state.searchedEvents = matchingEvents
+        },
+
     }
 
 })
 
-export const {setFilteredEvents} = eventsSlice.actions
+export const {setFilteredEvents, setSortedEvents, setSearchedEvents} = eventsSlice.actions
 
 //not memoized
 export const selectFilteredEvents = (state) => state.events.filteredEvents
+export const selectSortedEvents = (state) => state.events.sortedEvents
+export const selectSearchedEvents = (state) => state.events.searchedEvents
 
 export default eventsSlice.reducer

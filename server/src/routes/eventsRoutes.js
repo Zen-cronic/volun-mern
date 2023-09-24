@@ -36,7 +36,6 @@ router.route('/search')
     
 router.route("/filter")
 
-    //venue filter
     .post(
 
         //venue filter

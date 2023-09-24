@@ -1,6 +1,6 @@
 import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 import { apiSlice } from "../../app/api/apiSlice";
-import { setFilteredEvents } from "./eventsSlice";
+import { setFilteredEvents, setSearchedEvents, setSortedEvents } from "./eventsSlice";
 
 export const eventsAdapter = createEntityAdapter()
 
@@ -103,8 +103,68 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
 
 
 
-       })
-    })
+       }),
+
+
+       postSortedEvents: builder.query({
+
+        query: (sortOption) => ({
+
+            url:'/events/sort',
+            method: 'POST',
+            // body: {...sortOption}
+            //make it parsable by back
+            body: {[sortOption]: true}
+        }),
+
+        async onQueryStarted(arg, {dispatch, queryFulfilled}){
+
+            try {
+                const {data}= await queryFulfilled
+
+                const {sortedEvents } = data
+                console.log("data from postSortedEvents queryFulilled: ", data);
+
+                dispatch(setSortedEvents({sortedEvents}))
+            } catch (error) {
+                console.log("Sort events Error: ",error);
+            }
+        }
+        
+    }),
+
+    //chk 
+    // https://stackoverflow.com/questions/68158110/redux-toolkit-rtk-query-sending-query-parameters
+       postSearchedEvents: builder.query({
+
+        query: (searchQuery) => ({
+
+            // url:'/events/search?q=',
+            url:`/events/search?q=${searchQuery}`,
+            method: 'POST',
+            
+            
+        }),
+
+        async onQueryStarted(arg, {dispatch, queryFulfilled}){
+
+            try {
+                const {data}= await queryFulfilled
+
+                const {matchingEvents} = data
+                console.log("data from postSEARCHEDevents queryFulilled: ", data);
+
+                dispatch(setSearchedEvents({matchingEvents}))
+            } catch (error) {
+                console.log("Sort events Error: ",error);
+            }
+        }
+        
+    }),
+
+    }),
+
+   
 })
 
 
@@ -126,7 +186,8 @@ export const {
 export const {
 
     useGetEventsQuery,
-    usePostFilteredEventsQuery, 
     useLazyPostFilteredEventsQuery,
+    useLazyPostSortedEventsQuery,
+    useLazyPostSearchedEventsQuery
 
 } = eventsApiSlice

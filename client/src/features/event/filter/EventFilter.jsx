@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useLazyPostFilteredEventsQuery } from './eventsApiSlice';
+import { useLazyPostFilteredEventsQuery } from '../eventsApiSlice';
 import { useNavigate } from 'react-router';
 
 const EventFilter = () => {
@@ -10,23 +10,22 @@ const EventFilter = () => {
 
     // const {filterEvents, isLoading, isSuccess: isFilterSuccess, isError: isFilterError, error: filterError} = usePostFilteredEventsQuery
 
-    const [filterEvents, {isLoading, isSuccess: isFilterSuccess, data: filteredEventsData }] = useLazyPostFilteredEventsQuery(
-     )
+    const [filterEvents, {isLoading, isSuccess: isFilterSuccess, data: filteredEventsData }] = useLazyPostFilteredEventsQuery()
     const navigate = useNavigate()
-    useEffect(() => {
+    // useEffect(() => {
 
-        if(isFilterSuccess){
+    //     if(isFilterSuccess){
 
-            // setIsOpenFilter(prev => !prev)
-            // setVenueFilter('')
+    //         // setIsOpenFilter(prev => !prev)
+    //         // setVenueFilter('')
 
-            //filter route
-            console.log('currentFilters: ', isOpen, venue);
-            navigate('/events/filter')
+    //         //filter route
+    //         console.log('currentFilters: ', isOpen, venue);
+    //         // navigate('/events/filter')
 
-        }
+    //     }
 
-    }, [isFilterSuccess, navigate]);
+    // }, [isFilterSuccess, navigate]);
 
     const onVenueFilterChange = (e) => setVenueFilter( e.target.value)
     const onIsOpenFilterChange = (e) => setIsOpenFilter(prev => !prev)
@@ -56,24 +55,17 @@ const EventFilter = () => {
       
     )
 
-    const handleFilterSubmit = async (e) => {
+    const handleFilterSubmit = async () => {
 
         try {
-            // const filterKeys = [isOpen, venue].filter(filterKey => filterKey !== null)
-            // const filterKeys = [isOpen, venue]
-            // const filterKeysObj = {}
-            // filterKeys.forEach(key => {
+   
 
-            //     if((key !== '') ||( key !== false)){
-
-            //         filterKeysObj[key] = key
-            //     }
-            // } )
-
+            const preferCacheValue = true
             // console.log('filterKeys obj: ', filterKeysObj);
-            const {data} = await filterEvents({venue, isOpen})
+            const {data} = await filterEvents({venue, isOpen}, preferCacheValue)
             // const {data} = await filterEvents({...filterKeysObj})
-            
+            navigate('/events/filter')
+
             console.log("Filtered events data: ", data);
         } catch (error) {
             console.log("Filter error: ", error);

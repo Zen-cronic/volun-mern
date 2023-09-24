@@ -15,6 +15,9 @@ const objKeysIncludes = require("../helpers/objKeysIncludes");
 const filterNonDuplicate = require("../helpers/filterNonDuplicate");
 const { closestTo, isAfter,  isEqual, compareAsc } = require("date-fns");
 
+const serializer = require('express-serialize');
+const serialize = require("express-serialize/lib/express-serialize");
+
 
 
 const createNewEvent = asyncHandler(async(req,res)=>{
@@ -117,9 +120,14 @@ const searchEvents = asyncHandler(async(req,res)=>{
     // console.log(typeof q);
     const matchingEvents = allEvents.filter(event => 
 
-        includesSearchTerm(event.eventName, q)
+        includesSearchTerm(event.eventName, q) 
+        ||
+        includesSearchTerm(event.eventDescription, q)
 
     )
+    //only "eventId" needed to look for each event in front
+       .map(event=>( {eventId: event._id, eventName: event.eventName, eventDescription: event.eventDescription}))
+        
     res.json({searchTerm: q, matchingEvents})
 
 
@@ -381,6 +389,10 @@ const sortEvents = [
     }
     const sortedEvents = await sortEventsHelper(sortOption, orderBool)
 
+    //serizlisation
+            .then(events => (events.map(event =>( {eventId: event._id, eventName: event.eventName}))))
+
+    // sortedEvents = sortedEvents.map(event =>( {eventId: event._id, eventName: event.eventName}))
     res.json({sortedEvents})
 }),
 
@@ -457,14 +469,14 @@ const sortEvents = [
         return result
         } )
 
-        const ascendingEvents = [...sortedEventsDates].sort((a,b) => compareAsc(a?.eventDate, b?.eventDate))
+        const sortedEvents = [...sortedEventsDates].sort((a,b) => compareAsc(a?.eventDate, b?.eventDate))
 
         //when sortedEventsDates return [] empty
         // const emptySortedEvents = [].sort((a,b) => compareAsc(a.eventDate, b.eventDate))
         res.json({sortedEventsDates, 
         // sortedEvents, 
         // emptySortedEvents
-        ascendingEvents
+        sortedEvents
         })
 
 
@@ -601,6 +613,7 @@ const sortEventsDates = asyncHandler(async(req,res)=> {
 
 
 })
+
 const addShiftToEvent = asyncHandler(async(req,res)=> {
 
     const {eventId, shiftStart, shiftEnd, shiftPositions}= req.body

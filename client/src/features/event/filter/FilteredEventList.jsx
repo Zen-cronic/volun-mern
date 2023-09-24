@@ -1,8 +1,8 @@
 import React from 'react'
 // import { useLazyPostFilteredEventsQuery } from './eventsApiSlice'
-import EventExcerpt from './EventExcerpt'
+import EventExcerpt from '../EventExcerpt'
 import { useSelector } from 'react-redux'
-import { selectFilteredEvents } from './eventsSlice'
+import { selectFilteredEvents } from '../eventsSlice'
 
 //rmove async!
 const FilteredEventList = () => {
