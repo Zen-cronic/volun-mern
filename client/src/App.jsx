@@ -17,6 +17,7 @@ import VolunteerHeader from './features/volun/VolunteerHeader'
 import VolunteersList from './features/volun/VolunteersList'
 import DashLayout from './components/DashLayout'
 import Welcome from './features/auth/Welcome'
+import RequireAuth from './features/auth/RequireAuth'
 
 const App = () => {
   return (
@@ -61,18 +62,21 @@ const App = () => {
 
                   {/* prefetchVOluns here */}
                   {/* RequireAuth for admin only */}
-              <Route path='volunteers' element={<VolunteerHeader/>}>
+              <Route element={<RequireAuth allowedRole={"ADMIN"}/>}>
+                <Route path='volunteers' element={<VolunteerHeader/>}>
                   <Route index={true} element={<VolunteersList/>}/>
                   {/* <Route path='":volunId'>
 
                   </Route> */}
 
-                  
+                  </Route>  
 
 
               </Route>
 
             </Route>
+
+            
           </Route>
 
 

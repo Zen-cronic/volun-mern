@@ -40,6 +40,9 @@ const Login =() => {
 
        console.log("setCredentials data: ", data);
 
+       //store role in authHook
+
+
       } catch (error) {
         console.error("Login error: ", error)
       }

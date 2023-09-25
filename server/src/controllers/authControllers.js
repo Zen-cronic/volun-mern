@@ -27,7 +27,7 @@ const login = asyncHandler(async(req, res) => {
 
 
     // const isValidPwd = await bcrypt.compare(password, existingUser.password)
-    const isValidPwd = existingUser.matchPassword(password)
+    const isValidPwd = await existingUser.matchPassword(password)
 
     if(!isValidPwd){
         return res.status(400).json({message: "Wrong password"})
@@ -40,14 +40,14 @@ const login = asyncHandler(async(req, res) => {
         {
 
         UserInfo : {
-            userId: existingUser.userId,
+            volunId: existingUser._id,
             role: existingUser.role
              }
         },
 
         process.env.ACCESS_TOKEN,
         {
-            expiresIn: '15s'
+            expiresIn: '20s'
         }
     
     )

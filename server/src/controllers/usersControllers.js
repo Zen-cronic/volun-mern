@@ -30,9 +30,10 @@ const createNewVolunteer = asyncHandler(async(req,res)=>{
         return res.status(400).json({message: "Alreday registered"})
     }
 
-    const hashedPwd = await bcrypt.hash(password, 10)
+    // const hashedPwd = await bcrypt.hash(password, 10)
 
-    const newVolunteer = new User({username, userId, password: hashedPwd, role})
+    // const newVolunteer = new User({username, userId, password: hashedPwd, role})
+    const newVolunteer = new User({username, userId, password, role})
 
     await newVolunteer.save()
 
@@ -57,6 +58,28 @@ const getAllVolunteers = asyncHandler(async(req,res)=>{
     res.json({volunteers})
 
     
+})
+
+//get one user - both volun or admin
+const getUser = asyncHandler(async(req,res)=> {
+
+    const {id} = req.params
+
+    if(!id){
+
+        res.status(400).json({message: "db id needed in params for accesing a single user"})
+
+
+    }
+
+    const existingUser = await User.findById(id).lean().select({password: 0}).exec()
+
+    if(!existingUser){
+        res.status(400).json({message: "User DNE for get"})
+
+    }
+
+    res.json({existingUser})
 })
 
 //update volunteer e.g. username, and password with PUT
@@ -170,15 +193,29 @@ const updateVolunteer = asyncHandler(async(req,res)=>{
 //model changes  - updateSignedUpShifts 
 const updateSignedUpShifts = asyncHandler(async(req,res)=>{
 
-    const {userId, eventId, shiftId} = req.body
+    const {volunId, eventId, shiftId} = req.body
 
-    const existingUser = await User.findById(userId).select('-password').exec()
+    console.log('required fields updateSIgnedUPSHifts: ', {...req.body});
+
+    if(requiredInputChecker(req.body)){
+
+        return res.status(400).json({message: "All fields required"})
+
+    }
+    const existingUser = await User.findById(volunId).select('-password').exec()
     const existingEvent = await Event.findById(eventId).exec()
 
     const existingShift = existingEvent.shifts.find(shift => (shift._id.toString() === shiftId ))
 
     
 
+    const currentDate = new Date(Date.now())
+
+    if(isAfter(currentDate, existingShift.shiftStart)){
+
+        return res.status(400).json({message: "sign Up disabled for shift as it's past the sign up date"})
+
+    }
     if(!existingUser){
 
         return res.status(400).json({message: "User DNE for PATCH update"})
@@ -197,6 +234,7 @@ const updateSignedUpShifts = asyncHandler(async(req,res)=>{
         return res.status(400).json({message: "ALready signed up for event SHIFT - go explore more opport!"})
 
     }
+
 
     if(
         // !existingEvent.openPositions
@@ -219,9 +257,9 @@ const updateSignedUpShifts = asyncHandler(async(req,res)=>{
 
     existingShift.shiftPositions -= 1
 
-    // existingEvent.signedUpVolunteers.push({volunId: userId, shiftId})
+    // existingEvent.signedUpVolunteers.push({volunId: volunId, shiftId})
 
-    existingShift.signedUpVolunteers.push(userId)
+    existingShift.signedUpVolunteers.push(volunId)
 
     const updatedEvent = await existingEvent.save()
     const updatedUser = await existingUser.save()
@@ -232,11 +270,15 @@ const updateSignedUpShifts = asyncHandler(async(req,res)=>{
 const cancelSignedUpShifts = asyncHandler(async(req,res)=> {
 
 
-    const {userId, eventId, shiftId} = req.body
+    const {volunId, eventId, shiftId} = req.body
 
-    const existingUser = await User.findById(userId).select('-password').exec()
+    if(requiredInputChecker(req.body)){
+
+        return res.status(400).json({message: "All fields required"})
+
+    }
+    const existingUser = await User.findById(volunId).select('-password').exec()
     const existingEvent = await Event.findById(eventId).exec()
-    const existingShift = existingEvent.shifts.find(shift => (shift._id.toString() === shiftId ))
 
     
 
@@ -247,6 +289,8 @@ const cancelSignedUpShifts = asyncHandler(async(req,res)=> {
     if(!existingEvent){
         return res.status(400).json({message: "Event DNE for cancel PATCH update"})
     }
+
+    const existingShift = existingEvent.shifts.find(shift => (shift._id.toString() === shiftId ))
 
     if(!existingShift){
         return res.status(400).json({message: "SHIFT in event DNE for cancel PATCH update"})
@@ -281,7 +325,7 @@ const cancelSignedUpShifts = asyncHandler(async(req,res)=> {
     }
 
 
-    const newSignedUpVolunteers = removeElemObjIdArray(existingShift.signedUpVolunteers, userId)
+    const newSignedUpVolunteers = removeElemObjIdArray(existingShift.signedUpVolunteers, volunId)
     existingShift.signedUpVolunteers = newSignedUpVolunteers
     existingShift.shiftPositions += 1
 
@@ -694,6 +738,8 @@ module.exports = {
     sortVolunteersByHours,
     // refreshSignedUpEvents,
 
-    updateVolunteeredShifts
+    updateVolunteeredShifts,
+
+    getUser
 
 };

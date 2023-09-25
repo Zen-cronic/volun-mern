@@ -3,8 +3,32 @@ const express = require('express');
 const usersControllers = require('../controllers/usersControllers');
 const verifyRole = require('../middleware/verifyRole');
 const { ROLES } = require('../config/roles');
+const expressAsyncHandler = require('express-async-handler');
 
 const router = express.Router()
+
+// router.route('/userId/:id').
+//     get(usersControllers.getUser)
+
+router.route('/:id')
+    .get(usersControllers.getUser)
+
+// router.param('id', usersControllers.getUser)
+
+// router.route()
+// router.param('id', async(req,res, next, id)=> {
+
+//     console.log('/users:id router reached');
+//     const existingUser = await User.findById(id).lean().select({password: 0}).exec()
+
+//     if(!existingUser){
+//         res.status(400).json({message: "User DNE for get"})
+
+//     }
+
+//     res.json({existingUser})
+
+// })
 
 router.route('/')
    .get(
@@ -15,12 +39,12 @@ router.route('/')
     .put(usersControllers.updateVolunteer)
     
     //sign up for events
-    .patch(usersControllers.updateSignedUpShifts)
+    .patch(verifyRole(ROLES.VOLUNTEER),usersControllers.updateSignedUpShifts)
 
     //delete ltr
 
 router.route('/cancel')
-    .patch(usersControllers.cancelSignedUpShifts)
+    .patch(verifyRole(ROLES.VOLUNTEER), usersControllers.cancelSignedUpShifts)
 
     
 router.route('/search')

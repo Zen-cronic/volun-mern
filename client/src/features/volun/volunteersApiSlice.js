@@ -40,6 +40,63 @@ export const volunteersApiSlice = apiSlice.injectEndpoints({
 
                 [{type:'Volun', id: 'List'}]
             )
+        }),
+
+        patchSignedUpShift: builder.mutation({
+
+            query: (signUpObj) => ({
+
+                url: '/users',
+                method: 'PATCH',
+                body: {...signUpObj}
+            })
+        }),
+
+        patchCancelShift: builder.mutation({
+
+            query: (cancelObj) => ({
+
+                url: '/users/cancel',
+                method: 'PATCH',
+                body: {...cancelObj}
+
+            })
+        }),
+
+        getUserById: builder.query({
+
+            query: (id) => ({
+
+
+                url: `/users/${id}`,
+
+            }),
+
+            transformResponse: (responseData) => {
+
+                const {existingUser} = responseData
+
+                existingUser.id = existingUser._id
+
+                const serializedUser = existingUser
+
+                console.log('serializedUser from getUserById slice: ', serializedUser);
+                return volunteersAdapter.setOne(volunteersInitialState, serializedUser)
+            },
+
+            providesTags: (result, err, arg) => {
+
+            
+                 return  [
+
+                        ...result?.ids.map(id => ({
+                            type: 'POST', id
+                        }))
+                    ]            
+                
+                
+            }
+
         })
     })
 })
@@ -62,5 +119,10 @@ export const {
 export const {
 
     useGetAllVolunteersQuery,
+    usePatchSignedUpShiftMutation,
+    usePatchCancelShiftMutation,
+
+    useGetUserByIdQuery,
+
     
 } = volunteersApiSlice

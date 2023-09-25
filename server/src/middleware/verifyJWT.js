@@ -16,7 +16,7 @@ const verifyJWT = (req, res, next) => {
         return res.status(401).json({message: "Unauthorized - nu token"});
     }
 
-    console.log(authHeaders)
+    console.log("authHeasers with bearer: ",authHeaders)
 
     const accessToken = authHeaders.split(" ")[1]
 
@@ -33,7 +33,7 @@ const verifyJWT = (req, res, next) => {
             }
 
             req.role = decoded?.UserInfo?.role 
-            req.userId = decoded?.UserInfo?.userId 
+            req.volunId = decoded?.UserInfo?.volunId
 
             next()
         }

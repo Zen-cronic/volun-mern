@@ -75,7 +75,8 @@ const userSchema = new mongoose.Schema({
 
 userSchema.methods.matchPassword = async function( inputPwd){
 
-   
+//    const hashedInputPwd =await bcrypt.hash(inputPwd, 10)
+//    console.log("hashedInputPwd: ", hashedInputPwd);
     const isValidPwd = await bcrypt.compare( inputPwd, this.password )
 
     return isValidPwd
@@ -87,8 +88,8 @@ userSchema.pre('save', async function(next){
 
     console.log('pre-SAVE for password encryption');
     if(!this.isModified('password')){
-    //    return next()
-        next()
+       return next()
+        // next()
     }
 
     
@@ -96,6 +97,7 @@ userSchema.pre('save', async function(next){
     const hashedPwd =await bcrypt.hash(this.password, salt)
     this.password = hashedPwd
 
+    console.log("hashedPwd: ", hashedPwd);
     console.log('after NEXT from passwprod endcryoption preSAVE');
 })
 

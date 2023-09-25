@@ -35,7 +35,7 @@ const refresh = (req, res) => {
                     {
             
                     UserInfo : {
-                        userId: currentUser.userId ,
+                        volunId: currentUser._id ,
                         role: currentUser.role
                     
                          }
@@ -43,7 +43,7 @@ const refresh = (req, res) => {
             
                     process.env.ACCESS_TOKEN,
                     {
-                        expiresIn: '15s'
+                        expiresIn: '20s'
                     }
                 
                 )
