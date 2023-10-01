@@ -8,7 +8,7 @@ const verifyRole = (allowedRole)=> {
         }
 
         
-        console.log(req.role, allowedRole)
+        console.log("verifyRole, ", req.role, allowedRole)
 
         //rather than include, exact matching 
         const result = req.role.includes(allowedRole)

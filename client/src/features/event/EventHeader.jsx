@@ -21,7 +21,6 @@ const EventHeader = () => {
       {<EventSearchBar/>}
      <div>
            <Link to={'/dash/events'}>Back to Events List</Link>
-           {/* <Navigate to={'/events'}>Back to Events List</Navigate> */}
 
             {/* <button type='button' onClick={onBackToEventsClick}>Back to Events List</button> */}
         </div>

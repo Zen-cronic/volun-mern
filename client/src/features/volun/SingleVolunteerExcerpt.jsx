@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { selectVolunteerById } from './volunteersApiSlice'
 
-const SingleVolunteer = ({volunId}) => {
+const SingleVolunteerExcerpt = ({volunId}) => {
 
     const volunteer = useSelector((state)=> selectVolunteerById(state, volunId))
 
@@ -19,6 +19,7 @@ const SingleVolunteer = ({volunId}) => {
             <article>
                 <h2>{volunteer.username}</h2>
                 <p>student id: {volunteer.userId}</p>
+                <p>total VolunteeredHours: {volunteer.totalVolunteeredHours}</p>
                 {/* <Link to={`/volunteers/${volunteer.id}`}>View volunteer</Link> */}
                   
               
@@ -29,4 +30,4 @@ const SingleVolunteer = ({volunId}) => {
     return content
 }
 
-export default SingleVolunteer
+export default SingleVolunteerExcerpt

@@ -16,11 +16,16 @@ const SORT_INDEX ={
 
 const SORT_OBJECT = {
 
-    AZ : {
+    EVENT_AZ : {
 
-        sortOption: 'az',
+        sortOption: 'event_az',
         sortIndex: 'eventName' 
         
+    },
+
+    VOLUNTEER_AZ: {
+        sortOption: 'volunteer_az',
+        sortIndex: 'username'
     },
 
     SOONEST: {
@@ -40,6 +45,13 @@ const SORT_OBJECT = {
     LATEST: {
         sortOption: 'latest',
         sortIndex: 'createdAt'
+    },
+
+    // voluns
+
+    HOURS: {
+        sortOption: 'hours',
+        sortIndex: 'totalVolunteeredHours'
     }
 }
 

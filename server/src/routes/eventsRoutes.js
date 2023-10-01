@@ -24,8 +24,9 @@ router.route('/')
 // router.route('/refresh')
 //     .patch(eventsControllers.updateEventVolunteersCount)
 
-router.route('/eventvoluns')
-    .get(eventsControllers.getSignedUpVolunteers)
+//only admin
+router.route('/volunteers')
+    .post(eventsControllers.getSignedUpVolunteers)
     
 router.route('/search')
     .post( eventsControllers.searchEvents)

@@ -25,7 +25,7 @@ const sortOrder = (sortArr, sortIndex, orderBool) => {
     
     let sortedArr
     
-    //ascending
+    //ascending - true
     orderBool
     ?
     sortedArr = sortArr.sort((a,b) => {

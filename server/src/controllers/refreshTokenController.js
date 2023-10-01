@@ -43,7 +43,7 @@ const refresh = (req, res) => {
             
                     process.env.ACCESS_TOKEN,
                     {
-                        expiresIn: '20s'
+                        expiresIn: '90s'
                     }
                 
                 )

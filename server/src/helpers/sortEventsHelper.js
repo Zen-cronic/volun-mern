@@ -59,7 +59,10 @@ const sortEventsHelper = async(sortOption,orderBool) => {
 
    const {sortIndex} = Object.values(SORT_OBJECT).find(opt => (opt.sortOption === sortOption))
   
+
     const allSortedEvents = await Event.find().lean()
+
+   
 
     .then(events => (
 

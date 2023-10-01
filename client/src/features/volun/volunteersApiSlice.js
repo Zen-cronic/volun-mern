@@ -1,5 +1,6 @@
 import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 import { apiSlice } from "../../app/api/apiSlice";
+import { setSearchedVolunteers, setSortedVolunteers } from "./volunteersSlice";
 
 
 export const volunteersAdapter = createEntityAdapter()
@@ -97,6 +98,67 @@ export const volunteersApiSlice = apiSlice.injectEndpoints({
                 
             }
 
+        }),
+
+        postSearchedVolunteers: builder.query({
+
+            query: (searchQuery) => ({
+
+                url: `/users/search?q=${searchQuery}`,
+                method: 'POST',
+                
+
+            }),
+
+            async onQueryStarted(arg, {dispatch, queryFulfilled}){
+
+                try {
+                    const {data} = await queryFulfilled
+
+                    const {matchingVolunteers} = data
+
+                    dispatch(setSearchedVolunteers({matchingVolunteers}))
+
+                } catch (error) {
+                    console.error('onQueryStarted postSearchedVolun error: ', error);
+                }
+            },
+        }),
+
+        postSortedVolunteers: builder.query({
+
+            query: (sortOption) => ({
+
+                url: '/users/sort',
+                method: 'POST',
+                body: {[sortOption]: true}
+            }),
+
+            async onQueryStarted(arg, {queryFulfilled, dispatch}){
+
+                try {
+                    const {data} = await queryFulfilled
+
+                    const {sortedVolunteers} = data
+
+                    console.log("data from onQueryStarted postSorted VOlunters: ", data);
+
+                    dispatch(setSortedVolunteers({sortedVolunteers}))
+                } catch (error) {
+                    console.error('nQueryStarted postSorted VOlunters errir: ', error);
+                }
+            }
+        }),
+
+        getUpcomingSignedUpShifts: builder.query({
+
+            query: (volunId) => ({
+
+                url: `/users/shifts/${volunId}`,
+                method: 'GET',
+            }),
+
+
         })
     })
 })
@@ -122,7 +184,12 @@ export const {
     usePatchSignedUpShiftMutation,
     usePatchCancelShiftMutation,
 
+    // useLazyGetUserByIdQuery,
     useGetUserByIdQuery,
 
-    
+    useLazyPostSearchedVolunteersQuery,
+    useLazyPostSortedVolunteersQuery,
+
+    useGetUpcomingSignedUpShiftsQuery,
+
 } = volunteersApiSlice

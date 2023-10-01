@@ -3,15 +3,17 @@ const express = require('express');
 const usersControllers = require('../controllers/usersControllers');
 const verifyRole = require('../middleware/verifyRole');
 const { ROLES } = require('../config/roles');
-const expressAsyncHandler = require('express-async-handler');
 
 const router = express.Router()
 
 // router.route('/userId/:id').
 //     get(usersControllers.getUser)
 
+//for DashFooter user info w jwt-decode
 router.route('/:id')
     .get(usersControllers.getUser)
+
+
 
 // router.param('id', usersControllers.getUser)
 
@@ -30,12 +32,16 @@ router.route('/:id')
 
 // })
 
+router.route('/shifts/:volunId')
+    .get(usersControllers.getUpcomingSignedUpShifts)
+
 router.route('/')
    .get(
     verifyRole(ROLES.ADMIN),
      usersControllers.getAllVolunteers)
     .post(usersControllers.createNewVolunteer)
   
+    //ROLE.V
     .put(usersControllers.updateVolunteer)
     
     //sign up for events
@@ -48,14 +54,23 @@ router.route('/cancel')
 
     
 router.route('/search')
-    .post(usersControllers.searchVolunteers)
+    .post(
+        
+    verifyRole(ROLES.ADMIN),
+    usersControllers.searchVolunteers)
 
-router.route('/sort/az')
+
+router.route('/sort')
     
-    .get(usersControllers.sortVolunteersAlphabetically)
+    .post(verifyRole(ROLES.ADMIN),
+        usersControllers.sortVolunteers)
+
+// router.route('/sort/az')
     
-router.route('/sort/hours')
-    .get(usersControllers.sortVolunteersByHours)
+//     .get(usersControllers.sortVolunteersAlphabetically)
+    
+// router.route('/sort/hours')
+//     .get(usersControllers.sortVolunteersByHours)
 
 // router.route('/sort/shiftscount')
     

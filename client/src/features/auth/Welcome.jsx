@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom'
+import useAuth from '../../hooks/useAuth'
 
 const Welcome = () => {
 
     const date = new Date()
     const today = new Intl.DateTimeFormat('en-US', { dateStyle: 'full', timeStyle: 'long' }).format(date)
 
+    const {role, volunId} = useAuth()
     const content = (
         <section>
 
@@ -14,13 +16,15 @@ const Welcome = () => {
 
             <p><Link to="/dash/events">View techevents</Link></p>
 
-            {/* <p><Link to="/dash/events/new">Add New techNote</Link></p> */}
 
+            
             <p><Link to="/dash/volunteers">View User Settings</Link></p>
 
-            {/* register */}
-            {/* <p><Link to="/dash/volunteers/new">Add New User</Link></p> */}
+            {/* <p><Link to="/dash/volunteers/`${volunId}`">View User Settings</Link></p> */}
+            <p><Link to={`/dash/volunteers/${volunId}`}>See your volun info</Link></p>
 
+
+            
         </section>
     )
 

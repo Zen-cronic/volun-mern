@@ -16,7 +16,7 @@ const EventSort = () => {
            
             <option value={''}></option>
             <option value={'soonest'}>Soonest (Excludes Past events)</option>
-            <option value={'az'}>Alphabetically</option>
+            <option value={'event_az'}>Alphabetically</option>
             <option value={'open'}>Open Positions</option>
             {/* <option value={'newest'}>External</option> */}
             

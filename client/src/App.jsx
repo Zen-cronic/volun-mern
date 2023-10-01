@@ -18,6 +18,10 @@ import VolunteersList from './features/volun/VolunteersList'
 import DashLayout from './components/DashLayout'
 import Welcome from './features/auth/Welcome'
 import RequireAuth from './features/auth/RequireAuth'
+import EventStats from './features/event/EventStats'
+import SearchedVolunList from './features/volun/search/SearchedVolunList'
+import SortedVolunList from './features/volun/sort/SortedVolunList'
+import SingleVolunteerPage from './features/volun/SingleVolunteerPage'
 
 const App = () => {
   return (
@@ -43,11 +47,18 @@ const App = () => {
 
                   <Route path=':eventId'>
                       <Route index element={<EventPage/>}/>
-                      <Route path='edit' element={<EditEventForm/>}/>
+
+                  {/* <Route path=':eventId' element={<EventPage/>}> */}
+
+                      <Route element={<RequireAuth allowedRole={"ADMIN"}/>}>
+                        <Route path='edit' element={<EditEventForm/>}/>
+                        <Route path='stats' element={<EventStats/>}/>
+                        <Route path='new' element={<NewEventForm/>}/>
+
+                      </Route>
                   </Route>
 
-                  <Route path='new' element={<NewEventForm/>}/>
-
+                
                   <Route path='filter' element={<FilteredEventList/>}/>
 
                   <Route path='sort' element={<SortedEventsList/>}/>
@@ -62,15 +73,25 @@ const App = () => {
 
                   {/* prefetchVOluns here */}
                   {/* RequireAuth for admin only */}
-              <Route element={<RequireAuth allowedRole={"ADMIN"}/>}>
+              {/* <Route element={<RequireAuth allowedRole={"ADMIN"}/>}> */}
                 <Route path='volunteers' element={<VolunteerHeader/>}>
-                  <Route index={true} element={<VolunteersList/>}/>
-                  {/* <Route path='":volunId'>
+                  <Route element={<RequireAuth allowedRole={"ADMIN"}/>}>
+                    <Route index={true} element={<VolunteersList/>}/>
 
-                  </Route> */}
+                    {/* <Route path=':volunId'>
 
-                  </Route>  
+                    </Route> */}
 
+                    <Route path='search' element={<SearchedVolunList/>}/>
+
+                    <Route path='sort' element={<SortedVolunList/>}/>
+
+                </Route>  
+
+                 <Route element={<RequireAuth allowedRole={"VOLUNTEER"}/>}>
+
+                    <Route path=':volunId' element={<SingleVolunteerPage/>}/>
+                 </Route>
 
               </Route>
 

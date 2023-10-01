@@ -137,10 +137,10 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
     // https://stackoverflow.com/questions/68158110/redux-toolkit-rtk-query-sending-query-parameters
        postSearchedEvents: builder.query({
 
-        query: (searchQuery) => ({
+        query: (searchTerm) => ({
 
             // url:'/events/search?q=',
-            url:`/events/search?q=${searchQuery}`,
+            url:`/events/search?q=${searchTerm}`,
             method: 'POST',
             
             
@@ -162,7 +162,19 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
         
     }),
 
-        
+        getSignedUpVolunteers: builder.query({
+
+
+            // query: ({eventId}) => ({   //for lazyQUery fx with {}
+            query: (eventId) => ({           //for normal query wo {}
+
+                url: '/events/volunteers',
+                method: 'POST',
+                body: {eventId}
+            }),
+
+
+        })
 
     }),
 
@@ -190,6 +202,9 @@ export const {
     useGetEventsQuery,
     useLazyPostFilteredEventsQuery,
     useLazyPostSortedEventsQuery,
-    useLazyPostSearchedEventsQuery
+    useLazyPostSearchedEventsQuery,
+
+    useGetSignedUpVolunteersQuery,
+
 
 } = eventsApiSlice

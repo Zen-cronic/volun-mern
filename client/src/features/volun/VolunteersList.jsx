@@ -1,11 +1,11 @@
 import React from 'react'
 import { useGetAllVolunteersQuery } from './volunteersApiSlice'
 import { useNavigate } from 'react-router'
-import SingleVolunteer from './SingleVolunteer'
+import SingleVolunteer from './SingleVolunteerExcerpt'
 
 const VolunteersList = () => {
 
-    const {data: volunteers, isSuccess: isVolunSuccess, isLoading, isError, error} = useGetAllVolunteersQuery(undefined, {
+    const {data: volunteers, isSuccess: isVolunSuccess, isLoading, isError, error} = useGetAllVolunteersQuery('usersList', {
         pollingInterval: 15000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
