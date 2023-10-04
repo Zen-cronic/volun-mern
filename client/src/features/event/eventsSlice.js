@@ -2,15 +2,21 @@ import { createSlice } from "@reduxjs/toolkit";
 import { eventsAdapter } from "./eventsApiSlice";
 
 
+
 export const eventsSlice = createSlice({
 
     name: 'events',
     // initialState: { filteredEvents: []},
-    initialState: eventsAdapter.getInitialState({
+    // initialState: eventsAdapter.getInitialState({
+    //     filteredEvents: [],
+    //     sortedEvents: [],
+    //     searchedEvents: []
+    // }),
+    initialState: {
         filteredEvents: [],
         sortedEvents: [],
         searchedEvents: []
-    }),
+    },
 
     // reducers: {
 

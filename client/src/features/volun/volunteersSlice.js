@@ -8,11 +8,14 @@ export const volunteersSlice = createSlice({
 
 
     name:'volunteer',
-    initialState: volunteersAdapter.getInitialState({
+    initialState: 
+    // volunteersAdapter.getInitialState(
+        {
 
         sortedVolunteers: [],
         searchedVolunteers: []
-    }),
+    },
+    // ),
     reducers: {
 
         setSearchedVolunteers: (state, action) => {
