@@ -84,22 +84,25 @@ userSchema.methods.matchPassword = async function( inputPwd){
 
 
 
-userSchema.pre('save', async function(next){
+// userSchema.pre('save', async function(next){
 
-    console.log('pre-SAVE for password encryption');
-    if(!this.isModified('password')){
-       return next()
-        // next()
-    }
+//     console.log('pre-SAVE for password encryption');
+//     if(!this.isModified('password')){
+//        return next()
+//         // next()
+//     }
 
+//     if(this.isModified('password')){
+
+//         const salt =await bcrypt.genSalt(10)
+//         const hashedPwd =await bcrypt.hash(this.password, salt)
+//         this.password = hashedPwd
     
-    const salt =await bcrypt.genSalt(10)
-    const hashedPwd =await bcrypt.hash(this.password, salt)
-    this.password = hashedPwd
-
-    console.log("hashedPwd: ", hashedPwd);
-    console.log('after NEXT from passwprod endcryoption preSAVE');
-})
+//         console.log("hashedPwd: ", hashedPwd);
+//         console.log('password IS modified');
+//     }
+   
+// })
 
 
 //pre hook for signedUp and volunEvents

@@ -159,6 +159,27 @@ export const volunteersApiSlice = apiSlice.injectEndpoints({
             }),
 
 
+        }),
+
+        patchVolunteeredShifts: builder.mutation({
+
+            query: () => ({
+
+                url: '/users/volunteered',
+                method: 'PATCH',
+            }),
+
+            // not logged as page is reloaded - can only store in state
+            async onQueryStarted(undefined, {queryFulfilled}){
+
+                try {
+                    const {data} = await queryFulfilled
+
+                    console.log('data from onQueryStarted patchVolunteeredShifts: ', data);
+                } catch (error) {
+                    console.error('onQueryStarted patchVolunteeredShifts error: ', error);
+                }
+            }
         })
     })
 })
@@ -191,5 +212,7 @@ export const {
     useLazyPostSortedVolunteersQuery,
 
     useGetUpcomingSignedUpShiftsQuery,
+
+    usePatchVolunteeredShiftsMutation,
 
 } = volunteersApiSlice

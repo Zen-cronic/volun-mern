@@ -4,6 +4,7 @@ import VolunSearchBar from './search/VolunSearchBar'
 import { Link } from 'react-router-dom'
 import VolunSort from './sort/VolunSort'
 import useAuth from '../../hooks/useAuth'
+import PatchVolunteeredShiftsButton from './PatchVolunteeredShiftsButton'
 
 const VolunteerHeader = () => {
 
@@ -13,6 +14,7 @@ const VolunteerHeader = () => {
 
     <VolunSearchBar/>
     <VolunSort/>
+    
     <Link to={'/dash/volunteers'}>Back to volunteers list</Link>
 
   </>)
@@ -24,7 +26,7 @@ const VolunteerHeader = () => {
       <Link to={'/dash/volunteers'}>Back to volunteers list</Link> */}
 
       {isAdmin && adminHeaderContent}
-      
+      <PatchVolunteeredShiftsButton/>
       <Outlet/>
   </>)
 }

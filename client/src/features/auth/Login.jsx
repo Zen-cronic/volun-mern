@@ -3,6 +3,7 @@ import { useLoginMutation } from './authApiSlice';
 import { useDispatch } from 'react-redux';
 import { setCredentials } from './authSlice';
 import { useNavigate } from 'react-router';
+import usePersist from '../../hooks/usePersist';
 
 const Login =() => {
 
@@ -15,6 +16,7 @@ const Login =() => {
 
     const [login, {isSuccess, isLoading, isError, error}] = useLoginMutation()
     
+    const [persist, setPersist] = usePersist()
     useEffect(() => {
         
         if(isSuccess){
@@ -47,6 +49,9 @@ const Login =() => {
         console.error("Login error: ", error)
       }
     }
+
+    const handlePersistToggle = () => setPersist(prev => !prev)
+
   return (
 
     <>
@@ -71,6 +76,16 @@ const Login =() => {
 
         <button type='submit'
          >Submit</button>
+
+        <label>
+        <input
+            type='checkbox'
+            onChange={handlePersistToggle}
+            checked={persist}
+         />
+          Trust this 
+        </label>
+       
     </form>
 
 

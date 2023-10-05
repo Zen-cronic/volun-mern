@@ -215,6 +215,7 @@ const updateSignedUpShifts = asyncHandler(async(req,res)=>{
 
     if(isAfter(currentDate, existingShift.shiftStart)){
 
+        
         return res.status(400).json({message: "sign Up disabled for shift as it's past the sign up date"})
 
     }
@@ -349,6 +350,20 @@ const cancelSignedUpShifts = asyncHandler(async(req,res)=> {
     
 })
 })
+
+//chking update and cancel signedUpShifts
+
+const checkUpdatableAndCancelableShifts = [
+
+    asyncHandler(async(req,res,next)=> {
+
+        
+    }),
+
+    asyncHandler(async(req,res,next)=> {
+            
+        } )
+    ]
 //search volun  - ltr: exclude ADMIN
 const searchVolunteers = asyncHandler(async(req,res)=>{
 
@@ -855,12 +870,12 @@ const getUpcomingSignedUpShifts = asyncHandler(async(req,res) => {
 
         const includedEvent = allEventsWithShifts.find(event => {
 
-            const eventId = event.eventShifts.find(shift => (
+            const foundEvent = event.eventShifts.find(shift => (
 
                 shift.toString() === signedUpShift.toString()
             ))
 
-            return eventId
+            return foundEvent
         })
 
         const event = await Event.findById(includedEvent.eventId)

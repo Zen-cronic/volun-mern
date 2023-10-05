@@ -13,7 +13,9 @@ const EventPage = () => {
 
   const navigate = useNavigate()
 
-  const {role, isAdmin} = useAuth()
+  const {role, isAdmin, volunId} = useAuth()
+
+  // const {data: user, isSuccess: isUserDataSuccess, isLoading, isError, error} = useGetUserByIdQuery(volunId)
 
   // const volunId = useSelector(state => selectVolunteerById(state, volunId))
   //vs getEventByIdQuery

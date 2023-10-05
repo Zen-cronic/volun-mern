@@ -43,6 +43,7 @@ const useAuth = () => {
 
     }
 
+    // return {volunId: '', role: '', isVolunteer, isAdmin}
 
     // throw new Error('MUST have a token for useAuth hook')
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router'
-import { selectVolunteerById, useGetUpcomingSignedUpShiftsQuery, useGetUserByIdQuery } from './volunteersApiSlice'
+import {  useGetUpcomingSignedUpShiftsQuery, useGetUserByIdQuery } from './volunteersApiSlice'
 import EventExcerpt from '../event/EventExcerpt'
 import EventShift from '../event/EventShift'
 
@@ -12,13 +12,15 @@ const SingleVolunteerPage = () => {
 
     // const volunteer = useSelector(state => selectVolunteerById(state, volunId))
 
-    const {data: user, isSuccess, isLoading, isError, error} = useGetUserByIdQuery(volunId)
+    const {data: user, isSuccess: isUserDataSuccess, isLoading, isError, error} = useGetUserByIdQuery(volunId)
 
     const {data: upcomingShiftsData, isSuccess: isUpcomingShiftsSuccess} = useGetUpcomingSignedUpShiftsQuery(volunId)
 
     console.log('volunteer data via useGetUserById singleVpage: ', user);
+   
     let content 
-    if(isSuccess && isUpcomingShiftsSuccess){
+
+    if(isUserDataSuccess && isUpcomingShiftsSuccess){
 
         const {entities} = user
 
@@ -48,11 +50,29 @@ const SingleVolunteerPage = () => {
                 </>
             )
         })
+
+        const volunteeredShiftsArr = volunteer.volunteeredShifts.map(shiftObj => {
+
+            const shiftId = shiftObj.shiftId
+            const shiftDuration = shiftObj.shiftDuration
+            // console.log('shiftDuration from volunteeredSHifts: ', shiftDuration);
+           return ( 
+           
+           <li key={shiftObj.shiftId}>
+
+                <label>shiftId: {shiftId}</label>
+                <p>shiftDuration: {shiftDuration}</p>
+            </li>
+           )
+
+    })
         content = (
             <article>
                 <h4>Your name: {volunteer.username}</h4>
                 <p>your student id: {volunteer.userId}</p>
-                <p>Your upcoming signedUPshifts: {upcomingShiftsArr}</p>
+                <p>totalVolunteeredHours: {volunteer.totalVolunteeredHours}</p>
+                <ol>Volunteered Shifts: {volunteeredShiftsArr} </ol>
+                <ol>Your upcoming signedUPshifts: {upcomingShiftsArr}</ol>
             </article>
         )
     }

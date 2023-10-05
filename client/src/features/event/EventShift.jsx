@@ -1,22 +1,63 @@
-import React from 'react'
+import React, {useState} from 'react'
 import useAuth from '../../hooks/useAuth';
-import { usePatchCancelShiftMutation, usePatchSignedUpShiftMutation } from '../volun/volunteersApiSlice';
+import { selectVolunteerById, useGetUserByIdQuery, usePatchCancelShiftMutation, usePatchSignedUpShiftMutation } from '../volun/volunteersApiSlice';
+import { useSelector } from 'react-redux';
 
 const EventShift = ({shift, eventId}) => {
 
   const {role, isVolunteer, volunId} = useAuth()
 
-  // const [getSignedUpVolunteers, {dta}] = useLazyGetSignedUpVolunteersQuery()
+  // const [reloadPage, setReloadPage] = useState(false)
+
   const shiftId = shift?._id
 
-  const [signUpShift] = usePatchSignedUpShiftMutation()
-  const [cancelShift] =usePatchCancelShiftMutation()
+  const [disableSignUp, setDisableSignUp] = useState(false)
 
-  // const navigate = useNavigate(
+  const [signUpShift,] = usePatchSignedUpShiftMutation()
+  const [cancelShift,] =usePatchCancelShiftMutation()
+
+  //canNOT use memoized selector for volunteer - /users isNOT memoized
+  // const volunteer = useSelector(state => selectVolunteerById(state, volunId))
+
+  // if(volunteer){
+
+  //   const {signedUpShifts} = volunteer
+
+  //   console.log('selected volunteer from eventShift: ', volunteer)
+    
+  //   const alreadySignedUp = signedUpShifts.find(id => id.toString() === shiftId.toString())
+
+  //   if(alreadySignedUp){
+  //     setDisableSignUp(true)
+  //   }
+  // }
+
+
+  //infinite rerendering
+  const {data: user, isSuccess: isVolunteerDataSuccess, isLoading, isError, error} = useGetUserByIdQuery(volunId)
+
+  if(isVolunteerDataSuccess){
+  
+      
+    const {entities} = user
+    const volunteer = entities[volunId]
+
+    const {signedUpShifts} = volunteer
+
+    console.log('selected volunteer from eventShift: ', volunteer)
+
+    const alreadySignedUp = signedUpShifts.find(id => id.toString() === shiftId.toString())
+
+    if(alreadySignedUp){
+      setDisableSignUp(true)
+    }
+  }
+
+
   console.log('shiftId: ', shiftId);
-  // console.log('volunId from useAuth: ', volunId  );
-  // console.log('eventId from EventPage: ', eventId);
 
+  
+  
   const handleSignUpShift = async () => {
 
     try {
@@ -24,6 +65,14 @@ const EventShift = ({shift, eventId}) => {
       const data = await signUpShift({eventId, shiftId, volunId}).unwrap()
 
       console.log('return data from updateSignUPShift from front: ', data)
+
+      window.location.reload(true)
+      // if(isSignUpSuccess){
+      //   console.log('signedUP');
+      //   window.location.reload(true)
+      //   // location.replace('/dash/events')
+
+      // }
 
     } catch (error) {
       console.log("updateSignUPShift from front Error: ", error);
@@ -36,8 +85,19 @@ const EventShift = ({shift, eventId}) => {
       
       const data = await cancelShift({eventId, shiftId, volunId}).unwrap()
 
+      //not logged as page is reloaded, only the onQueryStartred is logged
       console.log('return data from cancelShift from front: ', data)
 
+      // if(isCancelSuccess){
+      //   // location.reload(true)
+      //   console.log('cancelled event');
+      //   window.location.replace('/dash/events')
+      // }
+
+      window.location.reload(true)
+      // location.reload(true)
+
+      // setReloadPage(true)
 
     } catch (error) {
       console.log("cancelShift from front Error: ", error);
@@ -71,24 +131,14 @@ return (    <li key={shiftId}>
 
   <p className='permissionButtons'> 
 
-  {/* updatre and canccel for volun */}
-
     {
       (isVolunteer && role ==='VOLUNTEER') &&
     <>
-    <button className='signUpButton' type='button' onClick={handleSignUpShift}>Sign Up for shift!</button>
-      <button className='cancelSignUp' type='button' onClick={handleCancelShift}>Cancel shift</button>
+    <button className='signUpButton' type='button' disabled={disableSignUp} onClick={handleSignUpShift}>Sign Up for shift!</button>
+      <button className='cancelSignUp' type='button' disabled={true} onClick={handleCancelShift}>Cancel shift</button>
 
     </>
     }
-
-     {/* {
-      (isAdmin && role==='ADMIN') && 
-        <>
-        <button>Edit for admin</button>
-        <button type='button' onClick={handleViewSignedUpVolunteers}>See signedUPVolunteers for admin</button>
-        </>
-     } */}
    
  
   </p>

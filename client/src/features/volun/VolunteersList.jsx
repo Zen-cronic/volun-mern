@@ -1,7 +1,6 @@
 import React from 'react'
 import { useGetAllVolunteersQuery } from './volunteersApiSlice'
-import { useNavigate } from 'react-router'
-import SingleVolunteer from './SingleVolunteerExcerpt'
+import SingleVolunteerExcerpt from './SingleVolunteerExcerpt'
 
 const VolunteersList = () => {
 
@@ -26,7 +25,7 @@ const VolunteersList = () => {
         content = ids.map((volunId) => (
 
             // <EventExcerpt key={eventId} eventId={eventId}/>
-            <SingleVolunteer key={volunId} volunId={volunId}/>
+            <SingleVolunteerExcerpt key={volunId} volunId={volunId}/>
         ))
     }
   return content
