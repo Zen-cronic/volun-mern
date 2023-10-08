@@ -340,13 +340,16 @@ const cancelSignedUpShifts = asyncHandler(async(req,res)=> {
     await existingUser.save()
 
 
-    console.log(nowDate, shiftStartDate);
+    // console.log(nowDate, shiftStartDate);
 
-    res.json({nowDate, shiftStartDate, 
+    res.json({
+        // nowDate, shiftStartDate, 
         eventName: existingEvent.eventName, 
         username: existingUser.username, 
         shiftDuration: existingShift.shiftDuration,
-    differenceInHours: differenceHours,
+        shiftId: existingShift._id,
+
+    // differenceInHours: differenceHours,
     
 })
 })
@@ -357,12 +360,96 @@ const checkUpdatableAndCancelableShifts = [
 
     asyncHandler(async(req,res,next)=> {
 
+        const {volunId, eventId, shiftId, buttonType} = req.body
+    
+        if(requiredInputChecker(req.body)){
+    
+            return res.status(400).json({message: "All fields required checkUpdateAndCancelShifts"})
+    
+        }
+
+        const existingUser = await User.findById(volunId).select('-password').exec()
+        const existingEvent = await Event.findById(eventId).exec()
+        //? needed for when existingEvent DNE
+        const existingShift = existingEvent?.shifts.find(shift => (shift._id.toString() === shiftId ))
+    
+                //some
+        if([existingUser, existingEvent, existingShift].some(elem => !elem)){
+    
+            return res.status(400).json({message: "User|Event|Shift DNE for PATCH update|cancel"})
+        }
+
+                //every
+        // if(![existingUser, existingEvent, existingShift].every(elem => elem)){
+    
+        //     return res.status(400).json({message: "User|Event|Shift DNE for PATCH update"})
+        // }
+
+
+        const currentDate = new Date(Date.now())
+
+
+        // if(isAfter(currentDate, existingShift.shiftStart)){
+    
+            
+        //     return res.json({disable: true, message: "sign Up / cancel disabled for shift as it's past the sign up date"})
+    
+        // }
+    
+        if(buttonType === 'cancel'){
+
+            res.locals.existingUser = existingUser
+            res.locals.existingEvent = existingEvent
+            res.locals.existingShift = existingShift
+
+            return next()
+        }
+
+        if(existingUser.signedUpShifts.includes(existingShift._id)){
+
+            return res.json({disable: true, message: "ALready signed up for event SHIFT - go explore more opport!"})
+    
+        }
+    
+    
+        if(!existingShift.shiftPositions
+        ){
+  
+            return res.status(400).json({disable: true, message: "All shift positons filled up! Try other shifts"})
+    
+        }
+
+    
         
+    
+        res.json({disable: false, message: "Can sign up for shift"})
+
     }),
 
-    asyncHandler(async(req,res,next)=> {
+    asyncHandler(async(req,res)=> {
             
-        } )
+        const {existingEvent, existingUser, existingShift} = res.locals
+
+        if(!existingUser.signedUpShifts.includes(existingShift._id)){
+        
+            return res.status(400).json({message: "Cannot canel event - you haven't signed up for this"})
+    
+        }    
+
+        const nowDate = new Date(Date.now())
+        const shiftStartDate = existingShift.shiftStart
+        const differenceHours = Math.abs(differenceInHours(shiftStartDate, nowDate))
+        console.log(differenceHours);
+    
+    
+        if(differenceHours <= 1){
+    
+           return res.status(400).json({message: "Canel option disbled cuz less than 1 hour till event"})
+        }
+    
+        res.json({disable: false, message: "Can cancel shift"})
+
+        })
     ]
 //search volun  - ltr: exclude ADMIN
 const searchVolunteers = asyncHandler(async(req,res)=>{
@@ -439,89 +526,89 @@ const searchVolunteers = asyncHandler(async(req,res)=>{
 // })
 
 //chk w event.localDate if signedUpEvents is valid or not
-const sortVolunteersByEventsCount = asyncHandler(async(req, res)=> {
+// const sortVolunteersByEventsCount = asyncHandler(async(req, res)=> {
 
 
 
 
-   const countObj = {}
+//    const countObj = {}
 
-    const currentDate = new Date(Date.now())
+//     const currentDate = new Date(Date.now())
     
-    const allVolunteers = await User.find({role: {$eq: ROLES.VOLUNTEER}}).select(['-password', '-__v']).exec()
+//     const allVolunteers = await User.find({role: {$eq: ROLES.VOLUNTEER}}).select(['-password', '-__v']).exec()
 
 
-    for(let i = 0; i<allVolunteers.length; i++){
+//     for(let i = 0; i<allVolunteers.length; i++){
 
-        const volun = allVolunteers[i]
+//         const volun = allVolunteers[i]
 
-        const signedUpEvents = volun.signedUpEvents
+//         const signedUpEvents = volun.signedUpEvents
 
-        let volunteeredCount = 0
-        for(let j=0; j<signedUpEvents.length; j++){
+//         let volunteeredCount = 0
+//         for(let j=0; j<signedUpEvents.length; j++){
 
-            const eventId = signedUpEvents[j]
+//             const eventId = signedUpEvents[j]
 
-            const event= await Event.findById(eventId).exec()
+//             const event= await Event.findById(eventId).exec()
 
-            const convertedLocalEventDate = new Date(event.localEventDate)
+//             const convertedLocalEventDate = new Date(event.localEventDate)
         
-            if(isBefore(convertedLocalEventDate, currentDate)){
+//             if(isBefore(convertedLocalEventDate, currentDate)){
 
-                volunteeredCount++
+//                 volunteeredCount++
                 
-                console.log('event alr done by ', volun.username);
-                // countMap.set(volun._id, volunteeredCount )
-                // countObj.se
+//                 console.log('event alr done by ', volun.username);
+//                 // countMap.set(volun._id, volunteeredCount )
+//                 // countObj.se
 
-                const isPropAlrExists = objKeysIncludes(countObj, volun._id)
+//                 const isPropAlrExists = objKeysIncludes(countObj, volun._id)
 
-                if(isPropAlrExists){
+//                 if(isPropAlrExists){
 
   
-                      countObj = {...countObj, [volun._id]: volunteeredCount}
-                    // proppedCountObj[volun._id] = volunteeredCount
-                }
+//                       countObj = {...countObj, [volun._id]: volunteeredCount}
+//                     // proppedCountObj[volun._id] = volunteeredCount
+//                 }
 
-                else{
-                            //if prop alr exists, the val is replaced aft incrementing
-                     countObj[volun._id] = volunteeredCount
-                }
+//                 else{
+//                             //if prop alr exists, the val is replaced aft incrementing
+//                      countObj[volun._id] = volunteeredCount
+//                 }
       
 
                 
-                // countObj.id = volun._id
-                // countObj.count = volunteeredCount
-            }
+//                 // countObj.id = volun._id
+//                 // countObj.count = volunteeredCount
+//             }
         
-            else if(isAfter(convertedLocalEventDate, currentDate)){
+//             else if(isAfter(convertedLocalEventDate, currentDate)){
             
-                 console.log('event Not yet ', volun.username);
+//                  console.log('event Not yet ', volun.username);
             
-            }
-        }
-    }
+//             }
+//         }
+//     }
 
 
-console.log('currentDate', currentDate);
+// console.log('currentDate', currentDate);
 
-const proppedCountObjArr = Object.entries(countObj).map(([id, count])=> {
+// const proppedCountObjArr = Object.entries(countObj).map(([id, count])=> {
 
-    return {id: id, count: count}
-})
+//     return {id: id, count: count}
+// })
 
-const sortedCountObjArr = sortOrder(proppedCountObjArr, "count", false)
+// const sortedCountObjArr = sortOrder(proppedCountObjArr, "count", false)
 
-    res.json({
-        // countMap:[ ...countMap.entries()],
-        countObj,
+//     res.json({
+//         // countMap:[ ...countMap.entries()],
+//         countObj,
     
-         currentDate, 
+//          currentDate, 
        
-        proppedCountObjArr,
-        sortedCountObjArr
-    })
-})
+//         proppedCountObjArr,
+//         sortedCountObjArr
+//     })
+// })
 
 //update volunteereedShifts + calculate volunteered hours
 // const updateVolunteeredShifts = asyncHandler(async(req,res)=>{
@@ -928,5 +1015,7 @@ module.exports = {
     // sortVolunteers  //arr of asyncHanlders
     sortVolunteers,
 
-    getUpcomingSignedUpShifts
+    getUpcomingSignedUpShifts,
+
+    checkUpdatableAndCancelableShifts
 };

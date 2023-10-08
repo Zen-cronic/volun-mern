@@ -1,7 +1,8 @@
 import React, {useState} from 'react'
 import useAuth from '../../hooks/useAuth';
-import { selectVolunteerById, useGetUserByIdQuery, usePatchCancelShiftMutation, usePatchSignedUpShiftMutation } from '../volun/volunteersApiSlice';
+import { selectVolunteerById, useGetUserByIdQuery, useLazyPostCheckButtonsQuery, usePatchCancelShiftMutation, usePatchSignedUpShiftMutation } from '../volun/volunteersApiSlice';
 import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 const EventShift = ({shift, eventId}) => {
 
@@ -34,28 +35,51 @@ const EventShift = ({shift, eventId}) => {
 
 
   //infinite rerendering
-  const {data: user, isSuccess: isVolunteerDataSuccess, isLoading, isError, error} = useGetUserByIdQuery(volunId)
+  // const {data: user, isSuccess: isVolunteerDataSuccess, isLoading, isError, error} = useGetUserByIdQuery(volunId)
 
-  if(isVolunteerDataSuccess){
+  // if(isVolunteerDataSuccess){
   
       
-    const {entities} = user
-    const volunteer = entities[volunId]
+  //   const {entities} = user
+  //   const volunteer = entities[volunId]
 
-    const {signedUpShifts} = volunteer
+  //   const {signedUpShifts} = volunteer
 
-    console.log('selected volunteer from eventShift: ', volunteer)
+  //   console.log('selected volunteer from eventShift: ', volunteer)
 
-    const alreadySignedUp = signedUpShifts.find(id => id.toString() === shiftId.toString())
+  //   const alreadySignedUp = signedUpShifts.find(id => id.toString() === shiftId.toString())
 
-    if(alreadySignedUp){
-      setDisableSignUp(true)
-    }
-  }
+  //   if(alreadySignedUp){
+  //     setDisableSignUp(true)
+  //   }
+  // }
 
+  const [checkButton] = useLazyPostCheckButtonsQuery()
 
   console.log('shiftId: ', shiftId);
 
+  useEffect(() => {
+    
+    const disableSignUpButton = async()=>{
+
+      //try Promise.all for both buttons
+      try {
+        const data = await checkButton({eventId, shiftId, volunId, buttonType: 'signup'}).unwrap()
+        // const cancelableData = await checkButton({eventId, shiftId, volunId, buttonType: 'cancel'}).unwrap()
+        console.log('return data from checkButton from front: ', data);
+  
+        const {disable, message} = data
+  
+        setDisableSignUp(disable)
+  
+      } catch (error) {
+        console.log('disableSignUpButton error: ', error);
+      }
+    }
+
+    disableSignUpButton()
+  }, []);
+  
   
   
   const handleSignUpShift = async () => {

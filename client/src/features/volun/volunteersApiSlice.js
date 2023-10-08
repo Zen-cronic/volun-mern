@@ -180,6 +180,18 @@ export const volunteersApiSlice = apiSlice.injectEndpoints({
                     console.error('onQueryStarted patchVolunteeredShifts error: ', error);
                 }
             }
+        }),
+
+        postCheckButtons: builder.query({
+
+            query: (checkObj) => ({
+
+                url: '/users/check-buttons',
+                method: 'POST',
+                body: {...checkObj}
+            })
+
+
         })
     })
 })
@@ -214,5 +226,7 @@ export const {
     useGetUpcomingSignedUpShiftsQuery,
 
     usePatchVolunteeredShiftsMutation,
+
+    useLazyPostCheckButtonsQuery,
 
 } = volunteersApiSlice

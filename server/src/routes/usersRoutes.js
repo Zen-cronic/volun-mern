@@ -83,4 +83,7 @@ router.route('/sort')
 router.route('/volunteered')
     .patch(usersControllers.updateVolunteeredShifts)
 
+router.route('/check-buttons')
+    .post(usersControllers.checkUpdatableAndCancelableShifts)
+
 module.exports =router;
