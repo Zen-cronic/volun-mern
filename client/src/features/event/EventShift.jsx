@@ -12,8 +12,8 @@ const EventShift = ({shift, eventId}) => {
 
   const shiftId = shift?._id
 
-  const [disableSignUp, setDisableSignUp] = useState(false)
-
+  const [disableSignUpButton, setDisableSignUpButton] = useState(false)
+  const [disableCancelButton, setDisableCancelButton] = useState(false);
   const [signUpShift,] = usePatchSignedUpShiftMutation()
   const [cancelShift,] =usePatchCancelShiftMutation()
 
@@ -64,13 +64,24 @@ const EventShift = ({shift, eventId}) => {
 
       //try Promise.all for both buttons
       try {
-        const data = await checkButton({eventId, shiftId, volunId, buttonType: 'signup'}).unwrap()
+        // const updatableData = await checkButton({eventId, shiftId, volunId, buttonType: 'signup'}).unwrap()
         // const cancelableData = await checkButton({eventId, shiftId, volunId, buttonType: 'cancel'}).unwrap()
-        console.log('return data from checkButton from front: ', data);
+
+        // await Promise.all([updatableData, cancelableData])
+
+        const [updatableData, cancelableData] = await Promise.all([
+         checkButton({eventId, shiftId, volunId, buttonType: 'signup'}).unwrap(), 
+         checkButton({eventId, shiftId, volunId, buttonType: 'cancel'}).unwrap()])
+
+
+        console.log('return updatabledata from checkButton from front: ', updatableData);
+        console.log('return cancelableData from checkButton from front: ', cancelableData);
+
+        const {disable: disableUpdate, message} = updatableData
+        const {disable: disableCancel, message: cancelMessage} = cancelableData
   
-        const {disable, message} = data
-  
-        setDisableSignUp(disable)
+        setDisableSignUpButton(disableUpdate)
+        setDisableCancelButton(disableCancel)
   
       } catch (error) {
         console.log('disableSignUpButton error: ', error);
@@ -112,16 +123,8 @@ const EventShift = ({shift, eventId}) => {
       //not logged as page is reloaded, only the onQueryStartred is logged
       console.log('return data from cancelShift from front: ', data)
 
-      // if(isCancelSuccess){
-      //   // location.reload(true)
-      //   console.log('cancelled event');
-      //   window.location.replace('/dash/events')
-      // }
-
       window.location.reload(true)
-      // location.reload(true)
 
-      // setReloadPage(true)
 
     } catch (error) {
       console.log("cancelShift from front Error: ", error);
@@ -150,16 +153,13 @@ return (    <li key={shiftId}>
   <p>Shift End: {shift.localShiftEnd}</p>
   <p>open shift poistion: {shift.shiftPositions}</p>
 
-  {/* each shift volun here */}
-  {/* <p>shiftVolunteers: {shift.signedUpVolunteers}</p> */}
-
   <p className='permissionButtons'> 
 
     {
       (isVolunteer && role ==='VOLUNTEER') &&
     <>
-    <button className='signUpButton' type='button' disabled={disableSignUp} onClick={handleSignUpShift}>Sign Up for shift!</button>
-      <button className='cancelSignUp' type='button' disabled={true} onClick={handleCancelShift}>Cancel shift</button>
+    <button className='signUpButton' type='button' disabled={disableSignUpButton} onClick={handleSignUpShift}>Sign Up for shift!</button>
+      <button className='cancelSignUp' type='button' disabled={disableCancelButton} onClick={handleCancelShift}>Cancel shift</button>
 
     </>
     }

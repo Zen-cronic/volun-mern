@@ -1,5 +1,5 @@
 import React from 'react'
-import './App.css'
+// import './App.css'
 import {Route, Routes} from 'react-router-dom'
 import Layout from './components/Layout'
 import Public from './components/Public'
@@ -24,6 +24,7 @@ import SingleVolunteerPage from './features/volun/SingleVolunteerPage'
 import PrefetchEvents from './features/auth/PrefetchEvents'
 import PrefetchVolunteers from './features/auth/PrefetchVolunteers'
 import PersistLogin from './features/auth/PersistLogin'
+import Register from './features/auth/Register'
 
 const App = () => {
   return (
@@ -34,6 +35,7 @@ const App = () => {
 
           <Route path='/login' element={<Login/>}/>
 
+          <Route path='/register' element={<Register/>}/>
           <Route element={<PersistLogin/>}>
             <Route element={<PrefetchEvents/>}>
             
