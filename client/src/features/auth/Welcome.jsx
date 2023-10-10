@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
+import { LinkContainer } from 'react-router-bootstrap'
 
 const Welcome = () => {
 

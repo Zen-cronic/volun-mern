@@ -8,11 +8,6 @@ import EventSearchBar from './search/EventSearchBar';
 
 const EventHeader = () => {
 
-  // const navigate = useNavigate()
-  // const onBackToEventsClick = ()=> {
-
-  //   navigate('/events', {replace: true})
-  // }
 
   return (
     
@@ -21,9 +16,7 @@ const EventHeader = () => {
       {<EventSearchBar/>}
      <div>
            <Link to={'/dash/events'}>Back to Events List</Link>
-
-            {/* <button type='button' onClick={onBackToEventsClick}>Back to Events List</button> */}
-        </div>
+      </div>
 
        
         <Outlet/>

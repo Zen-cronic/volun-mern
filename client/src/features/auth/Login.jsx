@@ -4,7 +4,8 @@ import { useDispatch } from 'react-redux';
 import { setCredentials } from './authSlice';
 import { useNavigate } from 'react-router';
 import usePersist from '../../hooks/usePersist';
-
+import { Form, Button, Row, Col } from 'react-bootstrap';
+import AuthFormContainer from './AuthFormContainer';
 const Login =() => {
 
     const [userId, setUserId] = useState('');
@@ -17,6 +18,7 @@ const Login =() => {
     const [login, {isSuccess, isLoading, isError, error}] = useLoginMutation()
     
     const [persist, setPersist] = usePersist()
+
     useEffect(() => {
         
         if(isSuccess){
@@ -52,44 +54,62 @@ const Login =() => {
 
     const handlePersistToggle = () => setPersist(prev => !prev)
 
+
   return (
 
-    <>
-    <h3>Login With your student Id and school password</h3>
-    <form 
-    onSubmit={handleLoginSubmit}
-
-    >
-
-        <label>UserId</label>
-        <input
-            type='text'
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-        />
-        <label>Password</label>
-        <input
-            type='text'
+    <AuthFormContainer>
+        <h3>Sign In Here</h3>
+      <Form onSubmit={handleLoginSubmit}>
+          <Form.Group className='my-2' controlId='userId'> 
+            <Form.Label>Student/Employee Id</Form.Label>
+            <Form.Control
+            
+                type='text'
+                value={userId}
+                onChange={(e) => setUserId(e.target.value)}
+                placeholder='Your school Id'
+                >
+          
+            </Form.Control>
+      
+          </Form.Group>
+        
+        
+          <Form.Group className='my-2' controlId='password'>
+            <Form.Label>Password</Form.Label>
+            <Form.Control 
+            type='text' 
+            placeholder='Enter password'
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-        />
+            onChange={(e) => setPassword(e.target.value)} />
 
-        <button type='submit'
-         >Submit</button>
+          </Form.Group>  
+          
+          <Button 
+          type='submit'
+          variant='secondary'
+          className='mt-3'
+          >Sign In
+          </Button>
 
-        <label>
-        <input
-            type='checkbox'
-            onChange={handlePersistToggle}
-            checked={persist}
-         />
-          Trust this 
-        </label>
-       
-    </form>
+          <Form.Group className='my-2' controlId='persistCheckbox'>
+            <Form.Check
+            type='switch'
+              onChange={handlePersistToggle}
+              checked={persist}
+              label='Trust this device'
+            >
+             
+            </Form.Check>
+            
+          </Form.Group>
+        
+        {isLoading && <div>Loading...</div>}
+
+      </Form>
 
 
-    </>
+    </AuthFormContainer>
   )
 }
 

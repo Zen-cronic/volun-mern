@@ -1,8 +1,8 @@
 import React from 'react'
-// import './App.css'
 import {Route, Routes} from 'react-router-dom'
+
 import Layout from './components/Layout'
-import Public from './components/Public'
+import PublicPage from './components/PublicPage'
 import Login from './features/auth/Login'
 import EventHeader from './features/event/EventHeader'
 import EventList from './features/event/EventList'
@@ -26,16 +26,19 @@ import PrefetchVolunteers from './features/auth/PrefetchVolunteers'
 import PersistLogin from './features/auth/PersistLogin'
 import Register from './features/auth/Register'
 
+import { ToastContainer } from 'react-bootstrap'
+import 'react-toastify/dist/ReactToastify.css'
 const App = () => {
   return (
     <Routes>
 
       <Route path='/' element={<Layout/>}>
-          <Route index={true} element={<Public/>}/>
+          <Route index={true} element={<PublicPage/>}/>
 
           <Route path='/login' element={<Login/>}/>
 
           <Route path='/register' element={<Register/>}/>
+          
           <Route element={<PersistLogin/>}>
             <Route element={<PrefetchEvents/>}>
             

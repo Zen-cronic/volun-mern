@@ -1,6 +1,9 @@
 import React from 'react'
 import useAuth from '../hooks/useAuth'
 import { useGetUserByIdQuery } from '../features/volun/volunteersApiSlice'
+import { Col, Container, Row } from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
+import { Link } from 'react-router-dom'
 
 const DashFooter = () => {
 
@@ -39,14 +42,31 @@ const DashFooter = () => {
 
     
     content = (
-      <>
-<section>
-    <article>Hey! {username
-        } | Status : {role}</article>
-        <p>isAdmin: {isAdmin.toString()} </p>
-        <p>isVolunteer: {isVolunteer.toString()}</p>
-        </section>
-      </>
+
+      <footer className='bg-secondary text-white position-static bottom-0 w-100  h-auto border-top'>
+        <Container >
+          <Row className='py-2'>
+            <Col>
+                
+                  <Link to={'/dash'}> Home </Link>
+               
+            </Col>
+
+
+            <Col>
+              <section>
+               <article>Hey! {username} | Status : {role}</article>
+                <p>isAdmin: {isAdmin.toString()} </p>
+                <p>isVolunteer: {isVolunteer.toString()}</p>
+              </section>
+            </Col>
+            <Col>
+                <p> Copyright &copy; KZH 2023</p>
+
+            </Col>
+          </Row>
+        </Container>
+      </footer>
       
     )
   return content

@@ -1,9 +1,10 @@
-import { Link } from 'react-router-dom'
-import {Container, Nav, Navbar} from 'react-bootstrap'
-import {FaSignInAlt, FaRegistered} from 'react-icons/fa'
-import {LinkContainer} from 'react-router-bootstrap'
+import React from 'react'
+import { Container, Nav, Navbar } from 'react-bootstrap'
+import { FaRegistered, FaSignInAlt } from 'react-icons/fa'
+import { Outlet } from 'react-router'
+import { LinkContainer } from 'react-router-bootstrap'
 
-const Public = () => {
+const PublicHeader = () => {
 
 
     const headerContent = (
@@ -21,9 +22,7 @@ const Public = () => {
                                 </Nav.Link>
                                
                             </LinkContainer>
-                            {/* <Nav.Link href='/login'>
-                                <FaSignInAlt/> Login here
-                            </Nav.Link> */}
+                          
 
                             <LinkContainer to='/register'>
                                 <Nav.Link>
@@ -37,33 +36,12 @@ const Public = () => {
             </Navbar>
         </header>
     )
-    const content = (
-        <section className="public">
-            <header>
-                <h1>Welcome to <span className="nowrap">Volunteers!</span></h1>
-            </header>
-            <main>
-                <p>For all students across ...</p>
-                
-                <br />
-            </main>
-            <footer>
-                
-                <Link to="/login">Volunteer Login</Link>
-
-                {/* volun sign up */}
-                {/* <Link to="/login">Volunteer Login</Link> */}
-
-            </footer>
-        </section>
-
-    )
-    return (
-
-        <>
-            {headerContent}
-            {content}
-        </>
-    )
+  return (
+    <>
+        {headerContent}
+        {/* <Outlet/> */}
+    </>
+  )
 }
-export default Public
+
+export default PublicHeader
