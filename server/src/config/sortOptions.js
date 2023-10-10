@@ -42,10 +42,10 @@ const SORT_OBJECT = {
         
     },
 
-    LATEST: {
-        sortOption: 'latest',
-        sortIndex: 'createdAt'
-    },
+    // LATEST: {
+    //     sortOption: 'latest',
+    //     sortIndex: 'createdAt'
+    // },
 
     // voluns
 

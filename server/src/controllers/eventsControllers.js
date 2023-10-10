@@ -151,114 +151,33 @@ const getAllEventsDates = asyncHandler(async(req,res)=> {
 })
 
 
-//sort events alphabetically
-// const sortEventsAlphabetically = asyncHandler(async(req,res)=> {
-
-//     const allSortedEvents = await Event.find().lean()
-//     // .select(['eventName', 'eventDate', '_id'])
-//     // .then(events => (
-
-//     //     events.map(event => (
-//     //         event.eventName
-//     //     ))
-//     // ))
-//     .then(events => (
-
-//        events.sort((a,b) => {
-
-//             if (a.eventName< b.eventName) {
-//                 return -1;
-//               } else if (a.eventName > b.eventName ) {
-//                 return 1;
-//               }
-//               return 0;
-            
-//        })
-//     ))
-    
-//     res.json({allSortedEvents})
-
-
-
-
-// })
-
-// //sort events by soonest date
-// const sortEventsBySoonest = asyncHandler(async(req,res)=> {
-
-//     const allSortedEvents = await Event.find().lean()
-
-//     .then(events => (
-
-//        events.sort((a,b) => {
-
-//             if (a.eventDate< b.eventDate) {
-//                 return -1;
-//               } else if (a.eventDate > b.eventDate ) {
-//                 return 1;
-//               }
-//               return 0;
-            
-//        })
-//     ))
-    
-//     res.json({allSortedEvents})
-
-
-
-
-// })
-
-// const sortEventsByOpen = asyncHandler(async(req,res)=> {
-
-//     const allSortedEvents = await Event.find().lean()
-
-//     .then(events => (
-
-//        events.sort((a,b) => {
-
-//             if (a.openPositions< b.openPositions) {
-//                 return -1;
-//               } else if (a.openPositions > b.openPositions ) {
-//                 return 1;
-//               }
-//               return 0;
-            
-//        })
-//     ))
-    
-//     res.json({allSortedEvents})
-
-
-
-
-// })
-
 //combine event sort 
 const sortEvents = [
     asyncHandler(async(req,res, next) => {
 
-    //only 1 sort option at a time
-    const [[sortOption, orderBool]] = Object.entries(req.body)
+        //only 1 sort option at a time
+        const [[sortOption, orderBool]] = Object.entries(req.body)
 
-    if(typeof orderBool !== 'boolean'){
+        if(typeof orderBool !== 'boolean'){
 
-        throw new Error('Sort val must be a boolean for either ascending or descending')
-    }
+            throw new Error('Sort val must be a boolean for either ascending or descending')
+        }
 
-    if(sortOption === SORT_OBJECT.SOONEST.sortOption){
-        console.log('next() to handle sort event dates');
-        return next()
-    }
-    const sortedEvents = await sortEventsHelper(sortOption, orderBool)
+        //sort by aplhabetically, or open positions
+        if(sortOption === SORT_OBJECT.SOONEST.sortOption){
+            console.log('next() to handle sort event dates');
+            return next()
+        }
+        const sortedEvents = await sortEventsHelper(sortOption, orderBool)
 
-    //serizlisation
-            .then(events => (events.map(event =>( {eventId: event._id, eventName: event.eventName}))))
+        //serizlisation
+                .then(events => (events.map(event =>( {eventId: event._id, eventName: event.eventName}))))
 
-    // sortedEvents = sortedEvents.map(event =>( {eventId: event._id, eventName: event.eventName}))
-    res.json({sortedEvents})
+        res.json({sortedEvents})
 }),
 
+
+    //sort by soonest shift date
     asyncHandler(async(req,res)=> {
 
 

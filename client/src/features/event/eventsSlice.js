@@ -2,11 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { eventsAdapter } from "./eventsApiSlice";
 
 
-// const eventsSliceInitialState = eventsAdapter.getInitialState({
-//     filteredEvents: [],
-//         sortedEvents: [],
-//         searchedEvents: []
-// })
+
 export const eventsSlice = createSlice({
 
     name: 'events',
@@ -22,34 +18,16 @@ export const eventsSlice = createSlice({
         searchedEvents: []
     },
 
-    // reducers: {
-
-    //     setFilteredEvents: (state, action) => {
-
-    //         const {idsWithTags}= action.payload
-
-    //         console.log("idsWithTags from eventSlice: ", idsWithTags);
-    //         if(Array.isArray(idsWithTags)){
-    //             console.log('idsWithTags is an Array');
-    //         }
-    //         else{
-    //             console.log('idswithTags is NOT an array');
-    //         }
-
-
-    //         state.filteredEvents.push( idsWithTags)
-    //     }
-    // }
 
     reducers: {
 
         setFilteredEvents: (state, action) => {
 
-            const {idsWithTags} = action.payload
+            const {sortedIdsWithTags} = action.payload
 
-            console.log('idsWithTags in setFiltereEvents reducer', idsWithTags);
+            console.log('sortedIdsWithTags in setFiltereEvents reducer', sortedIdsWithTags);
 
-            state.filteredEvents = idsWithTags
+            state.filteredEvents = sortedIdsWithTags
         },
 
         setSortedEvents: (state, action) => {

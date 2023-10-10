@@ -2,6 +2,8 @@ const convertLocalDateString = require("./convertLocalDateString")
 const Event = require("../models/Event")
 const hourMinFormat = require("./hourMinFormat")
 const { closestTo, isAfter,  isEqual, compareAsc } = require("date-fns");
+const sortUpcomingEventsDates = require("./sortUpcomingEventsDates");
+
 
 //filter by date
 const filterEventsByDate = async(date)=>{
@@ -106,63 +108,65 @@ const filterEventsUpcomingShifts = async(isUpcoming) => {
 
     //with recursion
 
-    const sortedUpcomingEventDatesFx = (event, datesArr, invalidArr =[]) => {
+    // const sortedUpcomingEventDatesFx = (event, datesArr, invalidArr =[]) => {
 
-        const currentDate =new Date(Date.now())
+    //     const currentDate =new Date(Date.now())
 
 
-        const cmpDatesArray = datesArr.filter(date => (
+    //     const cmpDatesArray = datesArr.filter(date => (
 
-            invalidArr.some(invalidDate => isEqual(invalidDate, date))
-            ?
-            false
-            :
-            true
-        ))
+    //         invalidArr.some(invalidDate => isEqual(invalidDate, date))
+    //         ?
+    //         false
+    //         :
+    //         true
+    //     ))
 
-        console.log('cmpDatesArray: ', cmpDatesArray);
-        const closestToCurrentDate = closestTo(currentDate, cmpDatesArray)
+    //     console.log('cmpDatesArray: ', cmpDatesArray);
+    //     const closestToCurrentDate = closestTo(currentDate, cmpDatesArray)
 
-        console.log("clossestToCurrentDate: ", closestToCurrentDate);
+    //     console.log("clossestToCurrentDate: ", closestToCurrentDate);
 
-        //ethier condi alone works
-        if(
-            closestToCurrentDate ===  undefined 
-            ||
-            !cmpDatesArray?.length 
-            ){
+    //     //ethier condi alone works
+    //     if(
+    //         closestToCurrentDate ===  undefined 
+    //         ||
+    //         !cmpDatesArray?.length 
+    //         ){
 
-            return []
-        }
+    //         return []
+    //     }
 
-        if(isAfter(closestToCurrentDate, currentDate)){
+    //     if(isAfter(closestToCurrentDate, currentDate)){
 
-            console.log(closestToCurrentDate, " is after ", currentDate);
+    //         console.log(closestToCurrentDate, " is after ", currentDate);
                 
-            return [{eventDate: closestToCurrentDate, eventName: event?.eventName,eventId: event?._id}]
+    //         return [{eventDate: closestToCurrentDate, eventName: event?.eventName,eventId: event?._id}]
 
-        }
-
-
-
-        // console.log('reched HERE - b4 next fx call');
+    //     }
 
 
-        invalidArr.push(closestToCurrentDate)
-        return sortedUpcomingEventDatesFx(event, datesArr, invalidArr)
 
-    // console.log('reched HERE - after fx called');
+    //     // console.log('reched HERE - b4 next fx call');
 
-    }
 
-    const sortedUpcomingEventsDates = allEvents.flatMap(event => {
+    //     invalidArr.push(closestToCurrentDate)
+    //     return sortedUpcomingEventDatesFx(event, datesArr, invalidArr)
 
-        const result = sortedUpcomingEventDatesFx(event, event.eventDates)
+    // // console.log('reched HERE - after fx called');
 
-        console.log("recursed result: ", result);
+    // }
 
-        return result
-    } )
+    // const sortedUpcomingEventsDates = allEvents.flatMap(event => {
+
+    //     const result = sortedUpcomingEventDatesFx(event, event.eventDates)
+
+    //     console.log("recursed result: ", result);
+
+    //     return result
+    // } )
+
+    const sortedUpcomingEventsDates = sortUpcomingEventsDates(allEvents)
 
     const filteredEventIds =  sortedUpcomingEventsDates.map(event => (
             event?.eventId.toString()
@@ -176,7 +180,6 @@ const filterEventsUpcomingShifts = async(isUpcoming) => {
 }
 
 
-//idsWithTags arr as param
 //similar to sortOrder - except .length property on the value found by index
 //@Param shape: arr = [{eventId:... , filterTags: ...}]
 
@@ -195,6 +198,7 @@ const filteredTagsSort = (arr)=> {
         
 
             return 1;
+
          }else if(a[sortIndex].length > b[sortIndex].length){
                 return -1;
           }

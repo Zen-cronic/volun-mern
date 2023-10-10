@@ -58,7 +58,7 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
             try {
 
                 const {data} = await queryFulfilled
-                const {idsWithTags} = data
+                const {idsWithTags, sortedIdsWithTags} = data
 
 
                 console.log('data from onQUeryStarted /filter: ', data);
@@ -67,8 +67,9 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
 
                 const {filteredEvents} = getState().events
                 console.log('fitleredEvents in state from onQUeryStarted: ', filteredEvents);
+
                 console.log('idsWIthTags from onQUeryStarted from filter: ', idsWithTags); //DNE after serialization in transformResponse
-                dispatch(setFilteredEvents({idsWithTags}))
+                dispatch(setFilteredEvents({sortedIdsWithTags}))
 
             } catch (error) {
                 console.log('filterEvents error: ',error);
@@ -142,7 +143,7 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
         
     }),
 
-        getSignedUpVolunteers: builder.query({
+       getSignedUpVolunteers: builder.query({
 
 
             // query: ({eventId}) => ({   //for lazyQUery fx with {}
