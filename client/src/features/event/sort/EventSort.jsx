@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useLazyPostSortedEventsQuery } from '../eventsApiSlice';
 import { useNavigate } from 'react-router';
+import { Button, Form } from 'react-bootstrap';
 
 const EventSort = () => {
 
@@ -12,7 +13,7 @@ const EventSort = () => {
 
     const sortOptionsSelect = (
 
-        <select value={sortOption} name='sortSelect' onChange={onSortOptionsChange}>
+        <Form.Select value={sortOption} name='sortSelect' onChange={onSortOptionsChange}>
            
             <option value={''}></option>
             <option value={'soonest'}>Soonest (Excludes Past events)</option>
@@ -20,7 +21,7 @@ const EventSort = () => {
             <option value={'open'}>Open Positions</option>
             {/* <option value={'newest'}>External</option> */}
             
-        </select>
+        </Form.Select>
     )
 
     const handleSortSubmit = async () => {
@@ -41,7 +42,7 @@ const EventSort = () => {
     }
    const sortSubmitButton = (
 
-    <button onClick={handleSortSubmit}>Sort {sortOption}</button>
+    <Button onClick={handleSortSubmit}>Sort {sortOption}</Button>
    )
 
   return (

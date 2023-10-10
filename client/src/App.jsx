@@ -26,7 +26,7 @@ import PrefetchVolunteers from './features/auth/PrefetchVolunteers'
 import PersistLogin from './features/auth/PersistLogin'
 import Register from './features/auth/Register'
 
-import { ToastContainer } from 'react-bootstrap'
+import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 const App = () => {
   return (
@@ -34,6 +34,8 @@ const App = () => {
 
       <Route path='/' element={<Layout/>}>
           <Route index={true} element={<PublicPage/>}/>
+
+          {/* <Route element={<ToastContainer/>}> */}
 
           <Route path='/login' element={<Login/>}/>
 
@@ -110,6 +112,7 @@ const App = () => {
 
         
           </Route>
+        {/* </Route> */}
       </Route>
     </Routes>
   )

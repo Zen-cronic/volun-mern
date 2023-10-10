@@ -5,25 +5,47 @@ import { Link } from 'react-router-dom';
 import EventFilter from './filter/EventFilter';
 import EventSort from './sort/EventSort';
 import EventSearchBar from './search/EventSearchBar';
+import { Container , Row,Col} from 'react-bootstrap';
 
 const EventHeader = () => {
 
 
-  return (
+  const eventHeaderContent = (
     
-    <>{<EventFilter/>}
-      {<EventSort/>}
-      {<EventSearchBar/>}
-     <div>
-           <Link to={'/dash/events'}>Back to Events List</Link>
-      </div>
+    <Container className='my-2'>
 
-       
-        <Outlet/>
-       
+      <Row>
+        <Col xs={6} lg={3}>
+        {<EventSearchBar/>}
+        </Col>
+
+        <Col xs={6} lg={3}>
+        {<EventSort/>}
+        </Col>
+
+        <Col xs={6} lg={3}>
+          <EventFilter/>
+        </Col>
+     
+      </Row>
       
+      
+
+    </Container>
+    
+  )
+  return (
+    <>
+      {eventHeaderContent}
+      
+       <Link to={'/dash/events'}>Back to Events List</Link>
+      
+      <Outlet/>
     </>
   )
+
+       
+       
 }
 
 export default EventHeader

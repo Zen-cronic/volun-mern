@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useGetEventsQuery, useLazyPostSearchedEventsQuery } from '../eventsApiSlice'
+import { Button, Form } from 'react-bootstrap'
 
 const EventSearchBar = () => {
 
@@ -37,15 +38,15 @@ const EventSearchBar = () => {
    }
    const searchBar = (
 
-    <form onSubmit={handleSearchSubmit}>
-        <input 
+    <Form onSubmit={handleSearchSubmit}>
+        <Form.Control  
           type='text'
           value={searchQuery ?? ""}
           onChange={e => setSearchQuery(e.target.value)}
         />
 
-  <button type="submit">Search</button>
-    </form>
+  <Button type="submit">Search</Button>
+    </Form>
 
     
    )

@@ -15,7 +15,7 @@ const Login =() => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const [login, {isSuccess, isLoading, isError, error}] = useLoginMutation()
+    const [login, {isSuccess, isLoading}] = useLoginMutation()
     
     const [persist, setPersist] = usePersist()
 
@@ -68,6 +68,7 @@ const Login =() => {
                 value={userId}
                 onChange={(e) => setUserId(e.target.value)}
                 placeholder='Your school Id'
+                aria-describedby='passwordHelpBlock'
                 >
           
             </Form.Control>
@@ -78,7 +79,7 @@ const Login =() => {
           <Form.Group className='my-2' controlId='password'>
             <Form.Label>Password</Form.Label>
             <Form.Control 
-            type='text' 
+            type='password' 
             placeholder='Enter password'
             value={password}
             onChange={(e) => setPassword(e.target.value)} />

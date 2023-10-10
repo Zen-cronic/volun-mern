@@ -2,6 +2,8 @@ import React from 'react'
 import { useState } from 'react';
 import { useLazyPostSortedVolunteersQuery } from '../volunteersApiSlice';
 import { useNavigate } from 'react-router';
+import { Button, Form } from 'react-bootstrap';
+
 
 const VolunSort = () => {
 
@@ -15,7 +17,7 @@ const VolunSort = () => {
 
   const sortOptionsSelect = (
 
-      <select value={sortOption} name='sortSelect' onChange={onSortOptionsChange}>
+      <Form.Select value={sortOption} name='sortSelect' onChange={onSortOptionsChange}>
          
           <option value={''}></option>
           <option value={'hours'}>By Volunteered Hours (from highest)</option>
@@ -23,7 +25,7 @@ const VolunSort = () => {
 
           
           
-      </select>
+      </Form.Select>
   ) 
 
   const handleVolunSortSubmit = async( ) => {
@@ -45,7 +47,7 @@ const VolunSort = () => {
   
   const sortSubmitButton = (
 
-    <button onClick={handleVolunSortSubmit}>Sort {sortOption}</button>
+    <Button onClick={handleVolunSortSubmit}>Sort {sortOption}</Button>
    )
 
   return (

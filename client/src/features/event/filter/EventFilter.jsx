@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useLazyPostFilteredEventsQuery } from '../eventsApiSlice';
 import { useNavigate } from 'react-router';
+import { Button, Form, } from 'react-bootstrap';
 
 const EventFilter = () => {
 
@@ -32,26 +33,34 @@ const EventFilter = () => {
 
     const venueOptionsSelect = (
 
-        <select value={venue} name='venueFilter' onChange={onVenueFilterChange}>
+        <Form.Select value={venue} name='venueFilter' onChange={onVenueFilterChange}>
            
-            <option value={''}></option>
+            <option value={''}> - Select Campus -</option>
             <option value={'Casa Loma'}>Casa Loma</option>
             <option value={'St James'}>St James</option>
             <option value={'Waterfront'}>Waterfront</option>
             <option value={'External'}>External</option>
             
-        </select>
+        </Form.Select>
     )
 
     const isOpenButton = (
 
-        <>
-        <label>IS OPEN events only</label>
-  <input type='checkbox'
+        <Form.Group controlId='isOpenFilter' className=' my-1 '>
+            
+          <Form.Check
+            type='checkbox'
+            onChange={onIsOpenFilterChange}    
             checked={isOpen}
-            onChange={onIsOpenFilterChange}            
-        />
-        </>
+            label='Is Open Positions Only'
+            >
+             
+            </Form.Check>
+
+        </Form.Group>
+      
+            
+               
       
     )
 
@@ -74,7 +83,7 @@ const EventFilter = () => {
     }
    const filterSubmitButton = (
 
-    <button onClick={handleFilterSubmit}>Search With Filteres</button>
+    <Button onClick={handleFilterSubmit}>Search With Filter</Button>
    )
 
 

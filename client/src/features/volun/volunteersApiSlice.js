@@ -192,6 +192,44 @@ export const volunteersApiSlice = apiSlice.injectEndpoints({
             })
 
 
+        }),
+
+        postNewVolunteer: builder.mutation({
+            query: (newVolunteer) => ({
+
+                url: '/register',
+                method: 'POST',
+                body: {...newVolunteer}
+            }),
+
+            transformResponse: (responseData) => {
+
+                const {newVolunteer} = responseData
+
+                console.log(responseData, " responseData from postNewVolunteer slice");
+                const serializedVolunteer = newVolunteer
+
+                serializedVolunteer.id = newVolunteer._id
+
+                return volunteersAdapter.upsertOne(volunteersInitialState, serializedVolunteer)
+            },
+
+            // providesTags: (result, err, arg)=> (
+
+            //     result
+            //     ?
+            //     [{type:'Volun', id: result.ids.map(id => id)}]
+            //     :
+            //     [{type:'Volun', id: 'List'}]
+
+                
+
+            // )
+
+            invalidatesTags: (
+
+                [{ type: 'Volun', id: "LIST" }]
+            )
         })
     })
 })
@@ -228,5 +266,7 @@ export const {
     usePatchVolunteeredShiftsMutation,
 
     useLazyPostCheckButtonsQuery,
+
+    usePostNewVolunteerMutation,
 
 } = volunteersApiSlice

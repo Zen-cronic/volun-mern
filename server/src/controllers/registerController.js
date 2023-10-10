@@ -4,7 +4,8 @@ const requiredInputChecker = require("../helpers/requiredInputChecker")
 
 const registerNewVolunteer = asyncHandler(async(req,res)=>{
 
-    const {username, userId, password, role} = req.body
+    //role prop is VOLUNTEER by default
+    const {username, userId, password} = req.body
 
     if(requiredInputChecker(req.body)){
         return res.status(400).json({message: "All fields required"})
@@ -19,7 +20,7 @@ const registerNewVolunteer = asyncHandler(async(req,res)=>{
         return res.status(400).json({message: "Alreday registered"})
     }
 
-    const newVolunteer = new User({username, userId, password, role})
+    const newVolunteer = new User({username, userId, password})
 
     await newVolunteer.save()
 

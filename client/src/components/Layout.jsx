@@ -1,7 +1,8 @@
-import { ToastContainer } from 'react-bootstrap'
+import { Container } from 'react-bootstrap'
 import { Outlet } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 import PublicHeader from './PublicHeader'
+import { ToastContainer } from 'react-toastify'
 
 const Layout = () => {
 
@@ -14,7 +15,10 @@ const Layout = () => {
         <>
             {displayPublicHeader && <PublicHeader/>}
             <ToastContainer/>
-            <Outlet />
+           
+                 <Outlet />
+            
+            
         </>
    )
 }

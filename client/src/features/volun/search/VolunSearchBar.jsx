@@ -19,7 +19,7 @@ const VolunSearchBar = () => {
 
         if(!searchTerm){
             setSearchTerm("")
-            return null
+            return 
         }
         
         const encodedSearchTerm = encodeURI(searchTerm)
@@ -48,15 +48,15 @@ const VolunSearchBar = () => {
         }
     }
   return (
-    <form onSubmit={handleVolunSearchClick}>
-        <input
+    <Form onSubmit={handleVolunSearchClick}>
+        <Form.Control
             type='text'
             value={searchTerm ?? ""}
             onChange={e => setSearchTerm(e.target.value)}
             placeholder='type volun name...'
         />
-        <button type='submit'>Search</button>
-    </form>
+        <Button type='submit'>Search</Button>
+    </Form>
   )
 }
 
