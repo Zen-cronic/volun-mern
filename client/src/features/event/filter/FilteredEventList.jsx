@@ -7,10 +7,6 @@ import { selectFilteredEvents } from '../eventsSlice'
 //rmove async!
 const FilteredEventList = () => {
 
-    // const [filterEvents, {data: filteredEventsData, isSuccess, isLoading, isUninitialized}] = useLazyPostFilteredEventsQuery()
-
-    // await filterEvents({venue, isOpen}, true)
-
     
     const filteredEvents = useSelector(selectFilteredEvents)
 
@@ -32,11 +28,6 @@ const FilteredEventList = () => {
     })
 
     
-
-    // if(isUninitialized){
-
-    //     results = (<p>query has not be initialized yet</p>)
-    // }
   return content
 }
 

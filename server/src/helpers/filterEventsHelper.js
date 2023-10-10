@@ -1,16 +1,11 @@
 const convertLocalDateString = require("./convertLocalDateString")
 const Event = require("../models/Event")
-const { VENUES } = require("../config/eventVenues")
 const hourMinFormat = require("./hourMinFormat")
-
+const { closestTo, isAfter,  isEqual, compareAsc } = require("date-fns");
 
 //filter by date
 const filterEventsByDate = async(date)=>{
 
-
-
-    // console.log('Input str -> Date: ', new Date(date + "T05:00"))
-    // console.log('utc input date: ',new Date(date))
 
     const matchingEvents = await Event.find().lean().exec()
         .then((events) => (
@@ -44,7 +39,7 @@ const filterEventsByDate = async(date)=>{
                 event._id.toString()
             ))
         ))
-    // res.json({matchingEvents})
+
     return matchingEvents
 }
 
@@ -54,22 +49,14 @@ const filterEventsByDate = async(date)=>{
 //filter by venue
 const filterEventsByVenue = async(venue)=> {
 
-    // const {venue}= venue
-
-    // if(!Object.values(VENUES).includes(venue)){
-
-    //     // return res.status(400).json({message: "Venue DNE"})
-    //     throw new Error('venue not found')
-    // }
+   
     const eventsByVenuesIds = await Event.find({eventVenue: {$eq:venue }})
         .then(events => (
             events.map(event => (
                 event._id.toString()
             ))
         ))
-    // console.log(eventsByVenues);
-    // res.json({eventsByVenues})
-    // return new Promise(eventsByVenues)
+    
     return eventsByVenuesIds
 }
 
@@ -106,32 +93,120 @@ const filterEventsOpen = async(isOpen) => {
 return events
 }
 
+//filter upcoming (+ auto sorted)
+const filterEventsUpcomingShifts = async(isUpcoming) => {
 
-//filteredIdsWTags Obj as param
 
-const filteredTagsSort = (obj)=> {
-
-    if(!(obj instanceof Object)){
-
-        throw new Error('Must be an obj for sorting filtered tags')
+    //must be true
+    if(!isUpcoming){
+        return Promise.resolve([])
     }
 
+    const allEvents = await Event.find().lean().exec()
 
-   const sortedEntries = [...Object.entries(obj)].sort((a,b) => {
+    //with recursion
 
-        //[1] = value, [0] = key
-        if (a[1].length < b[1].length ) {
+    const sortedUpcomingEventDatesFx = (event, datesArr, invalidArr =[]) => {
+
+        const currentDate =new Date(Date.now())
+
+
+        const cmpDatesArray = datesArr.filter(date => (
+
+            invalidArr.some(invalidDate => isEqual(invalidDate, date))
+            ?
+            false
+            :
+            true
+        ))
+
+        console.log('cmpDatesArray: ', cmpDatesArray);
+        const closestToCurrentDate = closestTo(currentDate, cmpDatesArray)
+
+        console.log("clossestToCurrentDate: ", closestToCurrentDate);
+
+        //ethier condi alone works
+        if(
+            closestToCurrentDate ===  undefined 
+            ||
+            !cmpDatesArray?.length 
+            ){
+
+            return []
+        }
+
+        if(isAfter(closestToCurrentDate, currentDate)){
+
+            console.log(closestToCurrentDate, " is after ", currentDate);
+                
+            return [{eventDate: closestToCurrentDate, eventName: event?.eventName,eventId: event?._id}]
+
+        }
+
+
+
+        // console.log('reched HERE - b4 next fx call');
+
+
+        invalidArr.push(closestToCurrentDate)
+        return sortedUpcomingEventDatesFx(event, datesArr, invalidArr)
+
+    // console.log('reched HERE - after fx called');
+
+    }
+
+    const sortedUpcomingEventsDates = allEvents.flatMap(event => {
+
+        const result = sortedUpcomingEventDatesFx(event, event.eventDates)
+
+        console.log("recursed result: ", result);
+
+        return result
+    } )
+
+    const filteredEventIds =  sortedUpcomingEventsDates.map(event => (
+            event?.eventId.toString()
+    ))
+
+
+    console.log('filtereedEventIds: ', filteredEventIds );
+    console.log('sortedUpcomingEventsDates from filterEventsHelper ', sortedUpcomingEventsDates);
+
+    return filteredEventIds
+}
+
+
+//idsWithTags arr as param
+//similar to sortOrder - except .length property on the value found by index
+//@Param shape: arr = [{eventId:... , filterTags: ...}]
+
+const filteredTagsSort = (arr)=> {
+
+    if(!Array.isArray(arr)){
+
+        throw new Error('Must be an array for sorting filtered tags')
+    }
+
+    const sortIndex= 'filterTags'
+   const sortedArr = [...arr].sort((a,b) => {
+
+
+        if(a[sortIndex].length < b[sortIndex].length){
+        
+
             return 1;
-          } else if (a[1].length > b[1].length ) {
-            return -1;
+         }else if(a[sortIndex].length > b[sortIndex].length){
+                return -1;
           }
           return 0;
         
    })
 
-   const sortedObj = Object.fromEntries(sortedEntries)
-
-    return sortedObj
+   console.log('sortedEntries from filterTagsSort: ');
+   sortedArr.map(entry => {
+       console.log(entry);
+   })
+    return sortedArr
 }
 
 
@@ -139,6 +214,6 @@ module.exports = {
     filterEventsByDate, 
     filterEventsByVenue,
     filterEventsOpen,
-
+    filterEventsUpcomingShifts,
     filteredTagsSort
 };

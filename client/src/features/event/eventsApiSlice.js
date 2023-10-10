@@ -51,27 +51,7 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
         }),
 
     //omit transformREsponse for eventsFilter state
-        // transformResponse: (responseData) => {
-
-        //     const {idsWithTags} = responseData
-        //     // console.log('idsWithTags from responseData: ', idsWithTags);
-
-        //     // if(idsWithTags?.length){
-        //     //     const normailzedFilteredEvents = idsWithTags.map(event=> {
-
-        //     //         event.id = event.eventId 
-        //     //         return normailzedFilteredEvents
-        //     //     })
-
-        //     // }
-
-        //     const normailzedFilteredEvents = idsWithTags.map(event=> {
-        //         event.id = event.eventId 
-        //         return event
-        //     })
-
-        //     return eventsAdapter.setAll(eventsInitialState, normailzedFilteredEvents)
-        // },
+      
 
         async onQueryStarted(arg, {dispatch, getState, queryFulfilled}){
 

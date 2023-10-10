@@ -1,11 +1,15 @@
-//either ascending or descending
+//@Params - sortArr is an arry of Documents/obj
+//@Params - sortIndex is the key to sort by, must be a level one deep propertyKey
+//@Params - orderBool is a boolean for either ascending or descending
+
+//@Returns - an array of sorted Documents/obj
 
 const sortOrder = (sortArr, sortIndex, orderBool) => {
 
     
 
    
-//sortArr is an arry of Documents/obj
+
     if(!Array.isArray(sortArr)){
 
         throw new Error('Sort Arr must be an array')

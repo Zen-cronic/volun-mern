@@ -7,29 +7,16 @@ const EventFilter = () => {
 
 
     const [isOpen, setIsOpenFilter] = useState(false);
+    const [isUpcoming, setIsUpcomingFilter] = useState(false);
     const [venue, setVenueFilter] = useState('');
 
-    // const {filterEvents, isLoading, isSuccess: isFilterSuccess, isError: isFilterError, error: filterError} = usePostFilteredEventsQuery
 
-    const [filterEvents, {isLoading, isSuccess: isFilterSuccess, data: filteredEventsData }] = useLazyPostFilteredEventsQuery()
+    const [filterEvents] = useLazyPostFilteredEventsQuery()
     const navigate = useNavigate()
-    // useEffect(() => {
-
-    //     if(isFilterSuccess){
-
-    //         // setIsOpenFilter(prev => !prev)
-    //         // setVenueFilter('')
-
-    //         //filter route
-    //         console.log('currentFilters: ', isOpen, venue);
-    //         // navigate('/events/filter')
-
-    //     }
-
-    // }, [isFilterSuccess, navigate]);
 
     const onVenueFilterChange = (e) => setVenueFilter( e.target.value)
     const onIsOpenFilterChange = (e) => setIsOpenFilter(prev => !prev)
+    const onIsUpcomingFilterChange = (e) => setIsUpcomingFilter(prev => !prev)
 
     const venueOptionsSelect = (
 
@@ -59,9 +46,24 @@ const EventFilter = () => {
 
         </Form.Group>
       
+        
+    )
+    const isUpcomingButton = (
+
+        <Form.Group controlId='isUpcomingFilter' className=' my-1 '>
             
-               
+          <Form.Check
+            type='checkbox'
+            onChange={onIsUpcomingFilterChange}    
+            checked={isUpcoming}
+            label='Is Upcoming events/shifts only'
+            >
+             
+            </Form.Check>
+
+        </Form.Group>
       
+        
     )
 
     const handleFilterSubmit = async () => {
@@ -69,15 +71,13 @@ const EventFilter = () => {
         try {
    
 
-            const preferCacheValue = true
-            // console.log('filterKeys obj: ', filterKeysObj);
-            const {data} = await filterEvents({venue, isOpen}, preferCacheValue).unwrap()
-            // const {data} = await filterEvents({...filterKeysObj})
+            const preferCacheValue = false
+            await filterEvents({venue, isOpen, isUpcoming}, preferCacheValue).unwrap()
+
             navigate('/dash/events/filter')
 
-            console.log("Filtered events data: ", data);
         } catch (error) {
-            console.log("Filter error: ", error);
+            console.log("Events Filter error: ", error);
         }
 
     }
@@ -94,6 +94,7 @@ const EventFilter = () => {
 
         {venueOptionsSelect}
         {isOpenButton}
+        {isUpcomingButton}
         {filterSubmitButton}
 
     </>

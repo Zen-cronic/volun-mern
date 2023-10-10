@@ -1,16 +1,18 @@
 const asyncHandler = require("express-async-handler");
+
 const Event = require("../models/Event");
 const requiredInputChecker = require("../helpers/requiredInputChecker");
 const includesSearchTerm = require('../helpers/includesSearchTerm')
-
-const {VENUES} = require('../config/eventVenues');
-const { filterEventsByVenue, filterEventsByDate, filterEventsOpen, filteredTagsSort } = require("../helpers/filterEventsHelper");
-const { FILTER_OPTIONS } = require("../config/filterOptions");
-const { SORT_OPTIONS, SORT_OBJECT } = require("../config/sortOptions");
+const { filterEventsByVenue, filterEventsByDate, filterEventsOpen, filteredTagsSort, filterEventsUpcomingShifts } = require("../helpers/filterEventsHelper");
 const { sortEventsHelper } = require("../helpers/sortEventsHelper");
 const filterNonDuplicate = require("../helpers/filterNonDuplicate");
 const { closestTo, isAfter,  isEqual, compareAsc } = require("date-fns");
+const objKeysIncludes = require("../helpers/objKeysIncludes");
 
+const { FILTER_OPTIONS } = require("../config/filterOptions");
+const { SORT_OBJECT } = require("../config/sortOptions");
+const elemObjIncludes = require("../helpers/elemObjIncludes");
+const filterArrSortLoose = require("../helpers/filterArrSortLoose");
 
 const createNewEvent = asyncHandler(async(req,res)=>{
 
@@ -149,137 +151,6 @@ const getAllEventsDates = asyncHandler(async(req,res)=> {
 })
 
 
-
-//combine filter
-// const filterEvents = asyncHandler(async(req, res)=> {
-
-//     let filterArrObj = {}
-
-//     let filteredIds = []
-//     let filteredIdsWTags = {}
-
-//     // let filteredSortedIdsWTags = filteredTagsSort(filteredIdsWTags)
-
-//     //this map is async
-//     const result = await Promise.all(Object.entries(req.body).map((async([key, val]) => {
-
-       
-
-//         console.log([key, val]);
-
-//         let propArr 
-
-//         switch (key) {
-//             case FILTER_OPTIONS.VENUE:
-
-//                 propArr = await filterEventsByVenue(val)
-//                 break;
-
-//             case FILTER_OPTIONS.DATE:
-
-//                 propArr = await filterEventsByDate(val)
-
-//                 break;
-
-//             case FILTER_OPTIONS.IS_OPEN:
-
-//                 propArr = await filterEventsOpen(val)
-
-//                 break;
-            
-//             default:
-//                 break;
-//         }
-
-//         filterArrObj[key] = propArr
-//     }))
-//     )
-    
-
-//     if(Object.keys(filterArrObj).length > 1){
-
-//         // filteredIds = filterTwoDArrSort(Object.values(filterArrObj))
-
-//         filteredIds = filterArrSortLoose(Object.values(filterArrObj))
-
-//              //throws arg not arr Error from filterArrSort helper
-//         // finalFilterArr = filterArrSort(filterArrObj)
-
-//     //    filterArr = filterArrSort(filterArr)
-
-//     }
-//     else{
-
-//         filteredIds = Object.values(filterArrObj)
-
-//     }
-
- 
-//     const tagsArr = Object.keys(filterArrObj)
-//     const idsArr = Object.values(filterArrObj)
-
-//     console.log(idsArr);
-//     for(let i = 0; i<filteredIds.length; i++){
-
-       
-//         for(let j=0; j<idsArr.length; j++){
-
-//             const currentId = filteredIds[i]
-//             console.log(currentId);
-
-//             const isPropAlrExists = objKeysIncludes(filteredIdsWTags, currentId)
-//             const isInIdsArr =  idsArr[j]?.includes(currentId)
-//             if(
-//                 // !Object.keys(filteredIdsWTags)?.includes(currentId) 
-//                  !isPropAlrExists 
-//                 && isInIdsArr
-//                ){
-
-//                 // filteredIdsWTags[filteredIds[i]] = Object.values(filterArrObj)[j]
-
-//                 //prop for tags obj - key id : val tags
-//                 filteredIdsWTags[currentId] =[ tagsArr[j]]
-//             }
-
-//             //is id alr exist and is included in tag
-//             else if(
-//                 // Object.keys(filteredIdsWTags)?.includes(currentId) 
-//                  isPropAlrExists
-//                  && isInIdsArr
-//                 // && Array.isArray( filteredIdsWTags[currentId])
-
-//             ){
-
-//         //curruenId prop should be used as an expression
-//                  filteredIdsWTags =  {...filteredIdsWTags, [currentId] : [...filteredIdsWTags[currentId],tagsArr[j]] }
-
-
-//         //the remainnig tags appear correctly
-//         // console.log('another elem to be added to prop val arr', tagsArr[j]);
-            
-//             }
-
-   
-
-         
-//         }
-
-//     }
-
-//     const filteredSortedIdsWTags = filteredTagsSort(filteredIdsWTags)
-
-//     console.log("Final filter: ", filteredIds);
-
-//      res.json({
-//         filterArrObj, 
-//         filteredIds,
-//         filteredIdsWTags, 
-//         filteredSortedIdsWTags
-//        })
-// })
-
-
-
 //sort events alphabetically
 // const sortEventsAlphabetically = asyncHandler(async(req,res)=> {
 
@@ -394,78 +265,76 @@ const sortEvents = [
 
         const allEvents = await Event.find().lean().exec()
 
-        //w recursion
+        //with recursion
 
-        const sortEventDatesFx = (event, datesArr, invalidArr =[]) => {
+        const sortUpcomingEventDatesFx = (event, datesArr, invalidArr =[]) => {
 
-        const currentDate =new Date(Date.now())
+            const currentDate =new Date(Date.now())
 
-        // const cmpDatesArray = datesArr.filter(date => invalidArr.includes(date)? false : true)
-        const cmpDatesArray = datesArr.filter(date => (
+            // const cmpDatesArray = datesArr.filter(date => invalidArr.includes(date)? false : true)
+            const cmpDatesArray = datesArr.filter(date => (
 
-            invalidArr.some(invalidDate => isEqual(invalidDate, date))
-            ?
-            false
-            :
-            true
-        ))
+                invalidArr.some(invalidDate => isEqual(invalidDate, date))
+                ?
+                false
+                :
+                true
+            ))
 
-        console.log('cmpDatesArray: ', cmpDatesArray);
-        const closestToCurrentDate = closestTo(currentDate, cmpDatesArray)
+            console.log('cmpDatesArray: ', cmpDatesArray);
+            const closestToCurrentDate = closestTo(currentDate, cmpDatesArray)
 
-        console.log("clossestToCurrentDate: ", closestToCurrentDate);
+            console.log("clossestToCurrentDate: ", closestToCurrentDate);
 
-        //ether condi alone works
-        if(
-            closestToCurrentDate ===  undefined 
-            ||
-            !cmpDatesArray?.length 
-            ){
+            //ether condi alone works
+            if(
+                closestToCurrentDate ===  undefined 
+                ||
+                !cmpDatesArray?.length 
+                ){
 
-            return []
-        }
+                return []
+            }
 
-        if(isAfter(closestToCurrentDate, currentDate)){
+            if(isAfter(closestToCurrentDate, currentDate)){
 
-                    console.log(closestToCurrentDate, " is after ", currentDate);
-                //  return [{eventDate: closestToCurrentDate, eventName: event?.eventName, eventId: event?._id
-                // //  return [{eventDate: closestToCurrentDate
+                        console.log(closestToCurrentDate, " is after ", currentDate);
+                    //  return [{eventDate: closestToCurrentDate, eventName: event?.eventName, eventId: event?._id
+                    // //  return [{eventDate: closestToCurrentDate
 
-                //     // eventId: event._id, eventName: event.eventName
-                // }]
+                    //     // eventId: event._id, eventName: event.eventName
+                    // }]
 
-            return [{eventDate: closestToCurrentDate, eventName: event?.eventName,eventId: event?._id}]
+                return [{eventDate: closestToCurrentDate, eventName: event?.eventName,eventId: event?._id}]
 
-        }
-
-
-        // return undefined
-
-        console.log('reched HERE');
+            }
 
 
-        invalidArr.push(closestToCurrentDate)
-        return sortEventDatesFx(event, datesArr, invalidArr)
 
-        // console.log('reched to here');
-        // return []
+            // console.log('reched HERE - b4 next fx call');
+
+
+            invalidArr.push(closestToCurrentDate)
+            return sortUpcomingEventDatesFx(event, datesArr, invalidArr)
+
+            // console.log('reched HERE - after fx called');
 
         }
 
-        const sortedEventsDates = allEvents.flatMap(event => {
+        const sortedUpcomingEventsDates = allEvents.flatMap(event => {
 
-        const result = sortEventDatesFx(event, event.eventDates)
+            const result = sortUpcomingEventDatesFx(event, event.eventDates)
 
-        console.log("result: ", result);
+            console.log("result: ", result);
 
-        return result
+            return result
         } )
 
-        const sortedEvents = [...sortedEventsDates].sort((a,b) => compareAsc(a?.eventDate, b?.eventDate))
+        const sortedEvents = [...sortedUpcomingEventsDates].sort((a,b) => compareAsc(a?.eventDate, b?.eventDate))
 
         //when sortedEventsDates return [] empty
         // const emptySortedEvents = [].sort((a,b) => compareAsc(a.eventDate, b.eventDate))
-        res.json({sortedEventsDates, 
+        res.json({sortedUpcomingEventsDates, 
         // sortedEvents, 
         // emptySortedEvents
         sortedEvents
@@ -663,148 +532,170 @@ const getSignedUpVolunteers = asyncHandler(async(req,res)=>{
     res.json({shiftVolunteers, totalUniqueVolunteers})
     
 })
+
 const filterEvents = 
 [   //venue filter
         asyncHandler(async(req,res,next)=> {
 
 
-        // if(!Object.keys(req.body).includes(FILTER_OPTIONS.VENUE)){
-        if(!objKeysIncludes(req.body,FILTER_OPTIONS.VENUE ) ){
+            // if(!Object.keys(req.body).includes(FILTER_OPTIONS.VENUE)){
+            if(!objKeysIncludes(req.body,FILTER_OPTIONS.VENUE ) ){
 
-            return next()
-        }
+                return next()
+            }
 
-        const {venue} = req.body
-        res.locals.filteredVenue = await filterEventsByVenue(venue)
+            const {venue} = req.body
+            res.locals.filteredVenue = await filterEventsByVenue(venue)
 
-        next()
+            next()
         }),
 
 
         //date filter
         asyncHandler(async(req,res, next)=>{
 
-        if(!objKeysIncludes(req.body,FILTER_OPTIONS.DATE ) ){
-            return next()
-        }
+            if(!objKeysIncludes(req.body,FILTER_OPTIONS.DATE ) ){
+                return next()
+            }
 
-        const {date} = req.body
-        res.locals.filteredDate = await filterEventsByDate(date)
+            const {date} = req.body
+            res.locals.filteredDate = await filterEventsByDate(date)
 
-        next()
+            next()
         }),
 
         //isOpen filter
         asyncHandler(async(req,res, next)=>{
 
-        if(!objKeysIncludes(req.body, FILTER_OPTIONS.IS_OPEN) ){
+            if(!objKeysIncludes(req.body, FILTER_OPTIONS.IS_OPEN) ){
+
+                return next()
+            }
+
+            const {isOpen} = req.body
+            res.locals.filteredIsOpen= await filterEventsOpen(isOpen)
+
+            next()
+        }),
+
+        //isUpcomingShifts filter
+        asyncHandler(async(req,res, next)=>{
+
+             if(!objKeysIncludes(req.body, FILTER_OPTIONS.IS_UPCOMING) ){
 
             return next()
-        }
+             }
 
-        const {isOpen} = req.body
-        res.locals.filteredIsOpen= await filterEventsOpen(isOpen)
+            const {isUpcoming} = req.body
+            res.locals.filteredIsUpcoming= await filterEventsUpcomingShifts(isUpcoming)
 
-        next()
+            next()
+
         }),
 
         //sorted filter
         asyncHandler(async(req,res)=>{
 
 
-        //either of thses could be [] OR undefined
-        const filteredVenue = res.locals.filteredVenue
-        const filteredDate = res.locals.filteredDate
-        const filteredIsOpen = res.locals.filteredIsOpen 
+            //any of thses could be [] OR undefined
+            const filteredVenue = res.locals.filteredVenue
+            const filteredDate = res.locals.filteredDate
+            const filteredIsOpen = res.locals.filteredIsOpen 
+            const filteredIsUpcoming = res.locals.filteredIsUpcoming
 
-        let filteredResultsByKey = {}
-        // let idsWithTags = {}
-        let idsWithTags= []
+            let filteredResultsByKey = {}
+            let idsWithTags= []
 
-        Object.keys(req.body).map(((filterKey) => {
+            Object.keys(req.body).map(((filterKey) => {
 
-            switch (filterKey) {
-                case FILTER_OPTIONS.DATE:
-                    
-                    // filteredResultsByKey[filterKey] = filteredDate
-                    filteredResultsByKey = {...filteredResultsByKey, [filterKey]: filteredDate}
-                    break;
-            
-                case FILTER_OPTIONS.IS_OPEN:
-
-                    // filteredResultsByKey[filterKey] = filteredIsOpen
-                    filteredResultsByKey = {...filteredResultsByKey, [filterKey]: filteredIsOpen}
-
-
-                    break;
-
-                case FILTER_OPTIONS.VENUE:
-                    // filteredResultsByKey[filterKey] = filteredVenue
-                    filteredResultsByKey = {...filteredResultsByKey, [filterKey]: filteredVenue}
-
-
-                    break;
-                default:
-                    break;
-            }
-
-        }))
-
-
-        const filteredAllIds = filterArrSortLoose(Object.values(filteredResultsByKey))
-
-        filteredAllIds.forEach( (id) => {
-
-        Object.entries(filteredResultsByKey).forEach(([filterKey, result]) => {
-
-                if(result.includes(id) ) {
-
+                switch (filterKey) {
+                    case FILTER_OPTIONS.DATE:
+                        
+                        // filteredResultsByKey[filterKey] = filteredDate 
+                        filteredResultsByKey = {...filteredResultsByKey, [filterKey]: filteredDate}
+                        break;
                 
+                    case FILTER_OPTIONS.IS_OPEN:
 
-                    const isEventIdAlrExists = elemObjIncludes(idsWithTags, id)
-                
-            
-                    if(isEventIdAlrExists){
+                        // filteredResultsByKey[filterKey] = filteredIsOpen
+                        filteredResultsByKey = {...filteredResultsByKey, [filterKey]: filteredIsOpen}
 
 
-                        const bufferArr = idsWithTags.map(event => {
+                        break;
 
-                            if(event.eventId === id){
+                    case FILTER_OPTIONS.VENUE:
+                        // filteredResultsByKey[filterKey] = filteredVenue
+                        filteredResultsByKey = {...filteredResultsByKey, [filterKey]: filteredVenue}
 
-                                event = {...event, filterTags: [...event.filterTags, filterKey]}
-                            //return event DNR(return) every event
-                            }
 
-                            return event
-                        })
+                        break;
 
-                        idsWithTags = bufferArr
-                    }
-                    else{
+                    case FILTER_OPTIONS.IS_UPCOMING:
+                        filteredResultsByKey = {...filteredResultsByKey, [filterKey]: filteredIsUpcoming}
 
-                        //for better normalization in front
-                        //   idsWithTags = [...idsWithTags, {  eventId: id,  
-                        //     filterTags: [filterKey]}]
-
-                        idsWithTags.push({eventId: id, filterTags: [filterKey]})
-                    }
+                    default:
+                        break;
                 }
+
+            }))
+
+
+            const filteredAllIds = filterArrSortLoose(Object.values(filteredResultsByKey))
+
+            filteredAllIds.forEach( (id) => {
+
+            Object.entries(filteredResultsByKey).forEach(([filterKey, result]) => {
+
+                    if(result.includes(id) ) {
+
+                    
+
+                        const isEventIdAlrExists = elemObjIncludes(idsWithTags, id)
+                    
+                
+                        if(isEventIdAlrExists){
+
+
+                            const bufferArr = idsWithTags.map(event => {
+
+                                if(event.eventId === id){
+
+                                    event = {...event, filterTags: [...event.filterTags, filterKey]}
+                                //return event DNR(return) every event
+                                }
+
+                                return event
+                            })
+
+                            idsWithTags = bufferArr
+                        }
+                        else{
+
+                            //for better normalization in front
+                            //   idsWithTags = [...idsWithTags, {  eventId: id,  
+                            //     filterTags: [filterKey]}]
+
+                            idsWithTags.push({eventId: id, filterTags: [filterKey]})
+                        }
+                    }
+                })
+            
             })
-        
-        })
 
-        // const sortedIdsWithTags = filteredTagsSort(idsWithTags)
+            const sortedIdsWithTags = filteredTagsSort(idsWithTags)
 
+            console.log('idsWIthTags: ',idsWithTags);
+            console.log('sortedIdsWithTags: ',sortedIdsWithTags);
+            // console.log"arr idsWithTags: ", idsWithTags);
 
-        // console.log("arr idsWithTags: ", idsWithTags);
-
-        res.status(200).json({filteredResultsByKey, 
-            filteredAllIds,
-            idsWithTags,
-            // sortedIdsWithTags
+            res.status(200).json({filteredResultsByKey, 
+                filteredAllIds,
+                idsWithTags,
+                sortedIdsWithTags
 } )
 
 })]
+
 module.exports = {
     createNewEvent,
     getAllEvents,

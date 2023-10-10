@@ -2,9 +2,10 @@ const toLowerNoSpace = require("./toLowerNoSpace");
 
 const includesSearchTerm = (searchIndex, searchTerm) => {
   
-    //can simplify to || !== string
+   
     if(typeof searchIndex !== 'string' || typeof searchTerm !== 'string' ){
 
+        //alt
 //    if (! [searchIndex, searchTerm].every(e => (typeof e === 'string'))){
 
         throw new Error('Search Index OR seach term not a string')
@@ -17,6 +18,6 @@ const includesSearchTerm = (searchIndex, searchTerm) => {
 
 }
 
-module.exports =    includesSearchTerm;
+module.exports =  includesSearchTerm;
 
 
