@@ -1,5 +1,5 @@
 
-//a Date obj into string with date-fns 
+//a Date obj into string with Date fx
 
 const { TIME_ZONE } = require("../config/timeZones");
 

@@ -1,13 +1,16 @@
 const convertLocalDateString = require("./convertLocalDateString")
 const Event = require("../models/Event")
 const hourMinFormat = require("./hourMinFormat")
-const { closestTo, isAfter,  isEqual, compareAsc } = require("date-fns");
 const sortUpcomingEventsDates = require("./sortUpcomingEventsDates");
 
 
 //filter by date
 const filterEventsByDate = async(date)=>{
 
+    if(typeof date !== 'string'){
+
+        throw new Error('date must be a string - filterEventsByDate')
+    }
 
     const matchingEvents = await Event.find().lean().exec()
         .then((events) => (
@@ -18,14 +21,15 @@ const filterEventsByDate = async(date)=>{
                 const convertedDateWithTime =  new Date(date + hourMinFormat())
 
                 const currentlocalDateStr= convertLocalDateString(convertedDateWithTime)
-                // const localDateStr= convertLocalDateString(new Date(date + convertedTime))
               
+                
+                //split cuz time is not considered in the filter, only date
                 const localEventDatesArrSplit = event.localEventDates.map(dateStr => (dateStr.split(' ')[0]))
+                const currentlocalDateStrSplit = currentlocalDateStr.split(' ')[0]
 
-                console.table('localEventDatesArrSplit from filterEventsHelper: ', localEventDatesArrSplit);
-                //if currentLocalDateStr is included in event.localEventDates[].split()
-                // if(currentlocalDateStr.split(' ')[0] === localEventDateStr.split(' ')[0]){
-                if(localEventDatesArrSplit.includes(currentlocalDateStr.split(' ')[0])){
+                // console.table('localEventDatesArrSplit from filterEventsHelper: ', localEventDatesArrSplit);
+
+                if(localEventDatesArrSplit.includes(currentlocalDateStrSplit)){
 
                     
                     return true

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useLazyPostFilteredEventsQuery } from '../eventsApiSlice';
 import { useNavigate } from 'react-router';
 import { Button, Form, } from 'react-bootstrap';
+import DatePicker from "react-datepicker";
+import format from 'date-fns/format';
+import "react-datepicker/dist/react-datepicker.css";
 
 const EventFilter = () => {
 
@@ -9,6 +12,8 @@ const EventFilter = () => {
     const [isOpen, setIsOpenFilter] = useState(false);
     const [isUpcoming, setIsUpcomingFilter] = useState(false);
     const [venue, setVenueFilter] = useState('');
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [date, setDateFilter] = useState("");
 
 
     const [filterEvents] = useLazyPostFilteredEventsQuery()
@@ -17,6 +22,15 @@ const EventFilter = () => {
     const onVenueFilterChange = (e) => setVenueFilter( e.target.value)
     const onIsOpenFilterChange = (e) => setIsOpenFilter(prev => !prev)
     const onIsUpcomingFilterChange = (e) => setIsUpcomingFilter(prev => !prev)
+  
+    // const onDateFilterChange = (date) => {
+
+    //     // console.log('date: ', date);
+    //     setDateFilter(date)
+        
+    //     console.log('date: ', date);
+
+    // }
 
     const venueOptionsSelect = (
 
@@ -48,6 +62,7 @@ const EventFilter = () => {
       
         
     )
+
     const isUpcomingButton = (
 
         <Form.Group controlId='isUpcomingFilter' className=' my-1 '>
@@ -66,13 +81,53 @@ const EventFilter = () => {
         
     )
 
+    const datePicker = (
+
+        
+        <Form.Group className='my-1' >
+
+            <Form.Label
+            //  htmlFor="dateFilter"
+            >Date Filter</Form.Label>
+            {/* <Form.Control id='dateFilter'
+                type='text'
+                value={date}
+                as={DatePicker}
+                
+            /> */}
+            <DatePicker className='mx-2'
+                    
+                    showIcon={true}
+                    selected={selectedDate} 
+                    onChange={date => {
+
+                        const formattedlocalDate = format(date, 'yyyy-MM-dd')
+                        console.log('formattedlocalDate: ', formattedlocalDate);
+
+                        setDateFilter(formattedlocalDate)
+                        setSelectedDate(date)
+                    }} 
+                    dateFormat="yyyy-MM-dd"
+                    minDate={new Date()}
+                    placeholderText="Select a date"
+                    
+                    ariaDescribedBy="dateFilter"
+                    ariaLabelledBy="dateFilter"
+                    
+                 />
+    </Form.Group>
+          
+        
+       
+    )
+
     const handleFilterSubmit = async () => {
 
         try {
    
 
             const preferCacheValue = false
-            await filterEvents({venue, isOpen, isUpcoming}, preferCacheValue).unwrap()
+            await filterEvents({venue, isOpen, isUpcoming, date}, preferCacheValue).unwrap()
 
             navigate('/dash/events/filter')
 
@@ -81,6 +136,7 @@ const EventFilter = () => {
         }
 
     }
+
    const filterSubmitButton = (
 
     <Button onClick={handleFilterSubmit}>Search With Filter</Button>
@@ -95,6 +151,7 @@ const EventFilter = () => {
         {venueOptionsSelect}
         {isOpenButton}
         {isUpcomingButton}
+        {datePicker}
         {filterSubmitButton}
 
     </>
