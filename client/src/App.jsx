@@ -8,7 +8,7 @@ import EventHeader from './features/event/EventHeader'
 import EventList from './features/event/EventList'
 import EventPage from './features/event/EventPage'
 import EditEventForm from './features/event/EditEventForm'
-import NewEventForm from './features/event/NewEventForm'
+import NewEventForm from './features/event/form/NewEventForm'
 import FilteredEventList from './features/event/filter/FilteredEventList'
 import SortedEventsList from './features/event/sort/SortedEventsList'
 import SearchedEventsList from './features/event/search/SearchedEventsList'
@@ -25,9 +25,8 @@ import PrefetchEvents from './features/auth/PrefetchEvents'
 import PrefetchVolunteers from './features/auth/PrefetchVolunteers'
 import PersistLogin from './features/auth/PersistLogin'
 import Register from './features/auth/Register'
-
-import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+
 const App = () => {
   return (
     <Routes>
@@ -60,12 +59,12 @@ const App = () => {
                           <Route element={<RequireAuth allowedRole={"ADMIN"}/>}>
                             <Route path='edit' element={<EditEventForm/>}/>
                             <Route path='stats' element={<EventStats/>}/>
-                            <Route path='new' element={<NewEventForm/>}/>
+                       
 
                           </Route>
                       </Route>
 
-                    
+                      <Route path='new' element={<NewEventForm/>}/>
                       <Route path='filter' element={<FilteredEventList/>}/>
 
                       <Route path='sort' element={<SortedEventsList/>}/>

@@ -155,11 +155,40 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
             }),
 
 
-        })
+        }),
+
+        postNewEvent: builder.mutation({
+            query: (newEvent) => ({
+
+                url: '/events',
+                method: 'POST',
+                body: {...newEvent}
+            }),
+
+            transformResponse: (responseData) => {
+
+                const {newEvent} = responseData
+
+                newEvent.id = newEvent._id
+
+                const serializedEvent = newEvent
+
+                console.log('serializedEvent from postNewEvent slice: ', serializedEvent);
+                return eventsAdapter.setOne(eventsInitialState, serializedEvent)
+            },       
+            
+    
+            invalidatesTags: [{type: 'Event', id: 'List'}],
+
+        
+
+   
+        }),
 
     }),
 
-   
+        
+
 })
 
 
@@ -187,5 +216,6 @@ export const {
 
     useGetSignedUpVolunteersQuery,
 
+    usePostNewEventMutation,
 
 } = eventsApiSlice

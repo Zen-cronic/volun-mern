@@ -211,7 +211,7 @@ export const volunteersApiSlice = apiSlice.injectEndpoints({
 
                 serializedVolunteer.id = newVolunteer._id
 
-                return volunteersAdapter.upsertOne(volunteersInitialState, serializedVolunteer)
+                return volunteersAdapter.setOne(volunteersInitialState, serializedVolunteer)
             },
 
             // providesTags: (result, err, arg)=> (
