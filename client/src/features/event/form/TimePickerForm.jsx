@@ -52,7 +52,7 @@ const TimePickerForm = ({shift, updateShift, startOrEnd}) => {
           
        
           timeFormat='hh:mm aa'
-          filterTime={filterPassedTime}
+          // filterTime={filterPassedTime}
           />
           
         </Form.Group>

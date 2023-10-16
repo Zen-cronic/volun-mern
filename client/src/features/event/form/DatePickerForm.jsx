@@ -14,12 +14,14 @@ const DatePickerForm = ({eventDate, updateEvent}) => {
         <DatePicker 
           showIcon={true}
             selected={selectedDate} 
+            dateFormat="yyyy-MM-dd"
+            minDate={new Date()}
             onChange={date =>
             
                {
        
     
-                const formattedlocalDate = format(date, 'yyyy-MM-dd')
+                const formattedlocalDate = format(date, 'yyyy-MM-dd').concat('T00:00')
     
                 console.log('formattedlocalDate: ', formattedlocalDate);
 
@@ -30,8 +32,7 @@ const DatePickerForm = ({eventDate, updateEvent}) => {
                 // updateEventAndShift({...eventDate, date: dateStr})
                } 
                }
-            dateFormat="yyyy-MM-dd"
-            minDate={new Date()}
+         
             
             
           />

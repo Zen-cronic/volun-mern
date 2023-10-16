@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import AddEventDateAndShiftTime from './AddEventDateAndShiftTime'
-import { Button, Row, Form, Container, Col, Stack, FloatingLabel } from 'react-bootstrap'
 import { usePostNewEventMutation } from '../eventsApiSlice'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
+import isValidNumberInput from '../../../helpers/isValidNumberInput'
+import { Container, Row, Form, Stack, Col, FloatingLabel,Button, } from 'react-bootstrap'
 
 const NewEventForm = () => {
     const [listId, setListId] = useState(1)
@@ -51,17 +52,13 @@ const NewEventForm = () => {
             eventDates: [...formData.eventDates, {
                 listId: listId,
                 date: ''
-                // childListIdForShift: listId
             }],
             shifts: [...formData.shifts, {
                 shiftListId: shiftListId,
                 shiftStart: '',
                 shiftEnd: '',
-                shiftPositions: 0,
-                
-
-                parentListIdForShift: listId 
-                // parentListIdForShift: listId
+                shiftPositions: '',
+                 parentListIdForShift: listId 
             }]
         })
 
@@ -167,31 +164,53 @@ const NewEventForm = () => {
 
         e.preventDefault()
 
-        //TC mini form validation
+        //mini input validation
+        if(formData.shifts.some(shift => !isValidNumberInput(shift.shiftPositions))){
 
-        const eventDates = formData.eventDates.map(eventDate => (eventDate.date))
-        const shifts = formData.shifts.map(shift => {
+          
+          toast.error('Please enter a valid number greater than 0 for shift positions')
+          return
+        
+      }
+
+       //data format for back
+        const modifiedEventDatesOnly = formData.eventDates.map(eventDate => (eventDate.date))
+
+        const modifiedShifts = formData.shifts.map(shift => {
 
           const correspondingEvent = formData.eventDates.find(eventDate=>   eventDate.listId === shift.parentListIdForShift)
 
-         const shiftStart = correspondingEvent.date + 'T' + shift.shiftStart
-          const shiftEnd = correspondingEvent.date + 'T' + shift.shiftEnd
+        //  const shiftStart = correspondingEvent.date + 'T' + shift.shiftStart
+        //   const shiftEnd = correspondingEvent.date + 'T' + shift.shiftEnd
+
+        const shiftStart = correspondingEvent.date.replace('T00:00', 'T' + shift.shiftStart)
+        const shiftEnd = correspondingEvent.date.replace('T00:00', 'T' + shift.shiftEnd)
 
           return {
             ...shift,
             shiftStart,
-            shiftEnd
+            shiftEnd,
+            shiftPositions: Number(shift.shiftPositions)
+
           }
 
       
         })
-
+        
+   
         console.log('------------------');
-        console.log('modified shifts: ', shifts);
-        console.log('modified eventDates: ', eventDates);
+        console.log('modified shifts for back: ', modifiedShifts);
+        console.log('modified eventDatesOnly for back: ', modifiedEventDatesOnly);
+
+        const formDataForBack = {...formData, eventDates: modifiedEventDatesOnly, shifts: modifiedShifts}
+        console.log('formData from handleSubmitForm: ', formDataForBack);
+
+      
+
+        
         try {
             
-            const newEvent = await createNewEvent(formData).unwrap()
+            const newEvent = await createNewEvent({...formDataForBack}).unwrap()
 
             // console.log('formData to submit: ', formData);
 
@@ -222,25 +241,9 @@ const NewEventForm = () => {
               placeholder='Enter event name'
 
             />
+            </FloatingLabel>
 
-          </FloatingLabel>
-
-          <FloatingLabel
-            controlId='eventFormInput'
-            label='Event Venue'
-            className="mb-3">
-            
-            <Form.Control 
-              type='text'
-              value={formData.eventVenue}
-              onChange={e => setFormData({...formData, eventVenue: e.target.value})}
-              placeholder='Enter event venue'
-
-            />
-
-          </FloatingLabel>
-
-          <FloatingLabel
+      <FloatingLabel
             controlId='eventFormInput'
             label='Event Description'
             className="mb-3">
@@ -254,6 +257,30 @@ const NewEventForm = () => {
             />
 
           </FloatingLabel>
+
+       
+
+          <FloatingLabel
+            controlId='eventFormInput'
+            label='Event Venue'
+            className="mb-3">
+            
+              
+            <Form.Select value={formData.eventVenue} name='venueFilter' onChange={e => setFormData({...formData, eventVenue: e.target.value})}>
+              
+                <option value={''}> - Select Campus -</option>
+                <option value={'Casa Loma'}>Casa Loma</option>
+                <option value={'St James'}>St James</option>
+                <option value={'Waterfront'}>Waterfront</option>
+                <option value={'External'}>External</option>
+                
+            </Form.Select>
+            
+    
+
+          </FloatingLabel>
+
+          
 
           <br></br>
 
@@ -292,6 +319,10 @@ const NewEventForm = () => {
           onClick={handleFormSubmit}
           >
           Submit Event</Button>
+
+          <Row>
+            <br></br>
+          </Row>
 
             </Form>
         </Stack>

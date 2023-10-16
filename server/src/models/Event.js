@@ -184,19 +184,7 @@ const EventSchema = new mongoose.Schema({
     },
 
     
-  
 
-    // signedUpVolunteers: [{
-
-    //     volunId : {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'voluns'
-    //     },
-
-    //     shiftId: {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //     }
-    // }]
     
     eventVenue: {type:String,
         required: true}

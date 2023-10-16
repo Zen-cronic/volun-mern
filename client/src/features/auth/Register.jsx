@@ -4,6 +4,7 @@ import { Button, Form } from 'react-bootstrap'
 import {toast} from 'react-toastify'
 import { usePostNewVolunteerMutation } from '../volun/volunteersApiSlice'
 import { useNavigate } from 'react-router-dom'
+import isValidNumberInput from '../../helpers/isValidNumberInput'
 
 //navigate to login aft successful registration
 
@@ -31,15 +32,7 @@ const Register = () => {
 
 }, [navigate, isSuccess]);
 
-  const isNumberInput = (userId) => {
-
-    //empty input
-    if(userId.trim() === '') {
-      return false
-    }
-
-    return !isNaN(userId)
-  }
+  //isValidNumberInput as helper fx
 
   const handleRegisterSubmit = async(e ) => {
 
@@ -54,7 +47,7 @@ const Register = () => {
       return 
     }
 
-    if(!isNumberInput(userId)){
+    if(!isValidNumberInput(userId)){
       toast.error('Please enter a valid number for your student Id')
       return
     }

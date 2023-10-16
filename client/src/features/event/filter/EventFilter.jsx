@@ -23,14 +23,6 @@ const EventFilter = () => {
     const onIsOpenFilterChange = (e) => setIsOpenFilter(prev => !prev)
     const onIsUpcomingFilterChange = (e) => setIsUpcomingFilter(prev => !prev)
   
-    // const onDateFilterChange = (date) => {
-
-    //     // console.log('date: ', date);
-    //     setDateFilter(date)
-        
-    //     console.log('date: ', date);
-
-    // }
 
     const venueOptionsSelect = (
 

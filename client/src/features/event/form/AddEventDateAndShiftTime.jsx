@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import TimePickerForm from './TimePickerForm';
 import DatePickerForm from './DatePickerForm';
+import ShiftPositionsForm from './ShiftPositionsForm';
 
 const AddEventDateAndShiftTime = ({
     eventDate, 
@@ -16,22 +17,8 @@ const AddEventDateAndShiftTime = ({
 
   
 
-    //state as number vs as string
-    const [shiftPositions, setShiftPositions] = useState(0)
-
- 
-  
-    const shiftPositionsForm = (
-
-        <Form.Group controlId='shiftPositions' className='mb-3'> 
-            <Form.Control
-              type='number'
-              value={shiftPositions}
-              
-              onChange={(e) => setShiftPositions(e.target.value)}
-            />
-        </Form.Group>
-    )
+   
+   
     // const handleShiftStartChange = (e) => 
   return (
     <Row>
@@ -56,7 +43,7 @@ const AddEventDateAndShiftTime = ({
         </Col>
 
         <Col>
-          {shiftPositionsForm}
+          {<ShiftPositionsForm shift={shift} updateShift={updateShift}/>}
         </Col>
 
       <Col xs={1}>
