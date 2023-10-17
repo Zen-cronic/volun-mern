@@ -1,8 +1,7 @@
+//same algo in back
+//@desc makes an array with non-duplicates
 
-
-const filterNonDuplicate = (arr) =>{
-
-  
+const filterNonDuplicate = (arr) => {
 
     if(!Array.isArray(arr)){
         throw new Error('arr param must be an arr')
@@ -22,4 +21,4 @@ const filterNonDuplicate = (arr) =>{
   
 }
 
-module.exports = filterNonDuplicate;
+export default filterNonDuplicate

@@ -8,6 +8,7 @@ router.route('/')
     .post(eventsControllers.createNewEvent)
     .get(eventsControllers.getAllEvents)
     .patch(eventsControllers.addShiftToEvent)
+    .put(eventsControllers.updateEventInfo)
 
 
     //delete ltr

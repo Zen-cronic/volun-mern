@@ -33,6 +33,16 @@ const EventShiftSchema = new mongoose.Schema({
     shiftPositions: {
         type:  Number,
        required: true,
+
+    //    validate: {
+
+    //     validator: function(){
+            
+    //         return (this.shiftPositions > 0)
+    //     },
+
+    //     message: 'shiftPositions must be greater than 0 upon creation'
+    // }
     },
 
     signedUpVolunteers:[ {
@@ -46,6 +56,7 @@ const EventShiftSchema = new mongoose.Schema({
 //validate shiftStart and shiftEnd times
 EventShiftSchema.pre('validate', function(next){
    
+    
     if(!this.$parent().isNew
     &&
         !this.$parent().isModified('shifts')
@@ -130,6 +141,36 @@ EventShiftSchema.pre('save', function(next){
     this.localShiftEnd = convertLocalDateString(this.shiftEnd)
 
     next()
+})
+
+//pre for shiftPositions 
+EventShiftSchema.pre('save', function(next){
+
+    //if NOt isNew - allow 0 to save (signing up)
+    // AND
+    //if IS modified - allow 0 to save (signing up)
+
+    //condition for signing up: 1) !isNew 2) shifts isModified
+
+    if(!this.$parent().isNew
+    &&
+        this.$parent().isModified('shifts')
+    ){
+
+        console.log('3.5) parent doc is NOT new, therefore not called - shiftPosi > 0');
+        return next()
+    }
+
+    //if isNew - shiftPosi must > 0
+    //if modified - shiftPosi must > 0
+
+    if(this.shiftPositions <= 0){
+
+        throw new Error('shiftPositions must be greater than 0 upon creation And reSave from signing up')
+    }
+
+    next()
+
 })
 
 const EventSchema = new mongoose.Schema({

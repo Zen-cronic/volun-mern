@@ -267,135 +267,58 @@ const sortEvents = [
 })
 ]
 
+const updateEventInfo = asyncHandler(async(req,res)=>{
 
-//combine normal sorts with sortEventsDates abv as arr
-// const sortEventsDates = asyncHandler(async(req,res)=> {
+    const {eventId, eventName, eventVenue,
+        eventDates, eventDescription, shifts} = req.body
 
-//             //canNOt tell what sort options will be passed - but here can tell
-//     // const [[sortOption, orderBool]] = Object.entries(req.body)
+    if(requiredInputChecker(req.body)){
+        return res.status(400).json({message: "All fields required"})
+    }
 
-//     // const {soonest} = req.body
+    const existingEvent = await Event.findById(eventId).exec()
 
-//     const allEvents = await Event.find().lean().exec()
+    if(!existingEvent){
+        return res.status(400).json({message: "Event DNE for PUT event info"})
+    }
 
+    //eventName canNOT be the same as an exisintgEvent - ltr more rigorous srh algo
+    const duplicate = await Event.findOne({eventName}).lean().exec()
 
-//     // const sortedEventsDates = allEvents.map(event => {
-//     // const sortedEventsDates = allEvents.flatMap(event => {
+    if(duplicate && duplicate._id.toString() !== existingEvent.id){
 
-//     //     const closestToCurrentDate = closestTo(currentDate, event.eventDates)
-//     //     if( isAfter(closestToCurrentDate, currentDate)){
-//     //     // if( isBefore(closestToCurrentDate, currentDate)){
+        return res.status(409).json({message: "The renamed eventName already exists", duplicateEvent: duplicate})
+    }
 
-//     //         return [{eventDate: closestToCurrentDate, eventId: event._id, eventName: event.eventName}]
-//     //     }
+    //algorize this
+    // existingEvent.eventName = eventName
+    // existingEvent.eventVenue = eventVenue
+    // existingEvent.eventDates = eventDates
+    // existingEvent.eventDescription = eventDescription
+    // existingEvent.shifts = shifts
 
-
-
-//     //     // return []
-
-//     //     else{
-
-//     //         invalidArr.push(closestToCurrentDate)
-
-//     //             //only works if only 1 invalid date
-//     //         // const anotherClosest = closestTo(currentDate, [...event.eventDates.splice(event.eventDates.indexOf(closestToCurrentDate), 1)])
-
-//     //             //DNW - need to remove invalid date(s) from params
-//     //         // const anotherClosest = closestTo(currentDate, [...event.eventDates])
-
-//     //         const anotherClosest = closestTo(currentDate, event.eventDates.filter(date => invalidArr.includes(date)? false: true))
-//     //         if( isAfter(anotherClosest, currentDate)){
-//     //             // if( isBefore(closestToCurrentDate, currentDate)){
-        
-//     //                 return [{eventDate: closestToCurrentDate, eventId: event._id, eventName: event.eventName}]
-//     //             }
-
-//     //         else 
-//     //             return []
-//     //     }
-
-//     // })
-
-//         //w recursion
     
-//     const sortEventDatesFx = (event, datesArr, invalidArr =[]) => {
+    //NOT a pojo, use toObject() to access keys/vals
+    Object.keys(req.body).map((key) => {
 
-//         const currentDate =new Date(Date.now())
+        const matchingEventKey = Object.keys(existingEvent.toObject()).find((eventKey)=> eventKey.includes(key))
+
+        if(matchingEventKey !== undefined){
+
+            existingEvent[matchingEventKey] = req.body[key]
+        }
+
+
+
+    })
     
-//         // const cmpDatesArray = datesArr.filter(date => invalidArr.includes(date)? false : true)
-//         const cmpDatesArray = datesArr.filter(date => (
 
-//             invalidArr.some(invalidDate => isEqual(invalidDate, date))
-//             ?
-//             false
-//             :
-//             true
-//         ))
-        
-//         console.log('cmpDatesArray: ', cmpDatesArray);
-//         const closestToCurrentDate = closestTo(currentDate, cmpDatesArray)
+    await existingEvent.save()
 
-//         console.log("clossestToCurrentDate: ", closestToCurrentDate);
+    res.json({existingEvent})
+  
 
-//         //ether condi alone works
-//         if(
-//             closestToCurrentDate ===  undefined 
-//             ||
-//             !cmpDatesArray?.length 
-//             ){
-
-//             return []
-//         }
-        
-//         if(isAfter(closestToCurrentDate, currentDate)){
-
-//                     console.log(closestToCurrentDate, " is after ", currentDate);
-//                 //  return [{eventDate: closestToCurrentDate, eventName: event?.eventName, eventId: event?._id
-//                 // //  return [{eventDate: closestToCurrentDate
-
-//                 //     // eventId: event._id, eventName: event.eventName
-//                 // }]
-
-//             return [{eventDate: closestToCurrentDate, eventName: event?.eventName,eventId: event?._id}]
-
-//         }
-
-        
-//         // return undefined
-
-//         console.log('reched HERE');
-
-
-//         invalidArr.push(closestToCurrentDate)
-//         return sortEventDatesFx(event, datesArr, invalidArr)
-
-//         // console.log('reched to here');
-//         // return []
-        
-//     }
-
-//     const sortedEventsDates = allEvents.flatMap(event => {
-
-//         const result = sortEventDatesFx(event, event.eventDates)
-
-//         console.log("result: ", result);
-
-//         return result
-//     } )
-
-//     const ascendingEvents = [...sortedEventsDates].sort((a,b) => compareAsc(a?.eventDate, b?.eventDate))
-
-//         //when sortedEventsDates return [] empty
-//     // const emptySortedEvents = [].sort((a,b) => compareAsc(a.eventDate, b.eventDate))
-//     res.json({sortedEventsDates, 
-//         // sortedEvents, 
-//         // emptySortedEvents
-//         ascendingEvents
-//     })
-
-
-
-// })
+})
 
 const addShiftToEvent = asyncHandler(async(req,res)=> {
 
@@ -618,23 +541,15 @@ const filterEvents =
 
 })]
 
+
 module.exports = {
     createNewEvent,
     getAllEvents,
-    // getOpenEvents,
+    updateEventInfo,
 
-    // updateEventVolunteersCount,
     searchEvents,
 
     getAllEventsDates,
-
-    // filterEventsByDate,
-    // filterEventsByVenue, 
-    // filterEvents,
-
-    // sortEventsAlphabetically,
-    // sortEventsBySoonest,
-    // sortEventsByOpen,
 
     sortEvents,
 
@@ -643,5 +558,5 @@ module.exports = {
 
     getSignedUpVolunteers,
 
-    filterEvents        
+    filterEvents       
 };

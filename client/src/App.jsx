@@ -7,7 +7,6 @@ import Login from './features/auth/Login'
 import EventHeader from './features/event/EventHeader'
 import EventList from './features/event/EventList'
 import EventPage from './features/event/EventPage'
-import EditEventForm from './features/event/EditEventForm'
 import NewEventForm from './features/event/form/NewEventForm'
 import FilteredEventList from './features/event/filter/FilteredEventList'
 import SortedEventsList from './features/event/sort/SortedEventsList'
@@ -16,7 +15,6 @@ import VolunteerHeader from './features/volun/VolunteerHeader'
 import VolunteersList from './features/volun/VolunteersList'
 import DashLayout from './components/DashLayout'
 import Welcome from './features/auth/Welcome'
-import RequireAuth from './features/auth/RequireAuth'
 import EventStats from './features/event/EventStats'
 import SearchedVolunList from './features/volun/search/SearchedVolunList'
 import SortedVolunList from './features/volun/sort/SortedVolunList'
@@ -25,7 +23,11 @@ import PrefetchEvents from './features/auth/PrefetchEvents'
 import PrefetchVolunteers from './features/auth/PrefetchVolunteers'
 import PersistLogin from './features/auth/PersistLogin'
 import Register from './features/auth/Register'
+import RoleBasedRoute from './features/auth/RoleBasedRoute'
+import EditEvent from './features/event/form/EditEvent'
+
 import 'react-toastify/dist/ReactToastify.css'
+
 
 const App = () => {
   return (
@@ -33,8 +35,6 @@ const App = () => {
 
       <Route path='/' element={<Layout/>}>
           <Route index={true} element={<PublicPage/>}/>
-
-          {/* <Route element={<ToastContainer/>}> */}
 
           <Route path='/login' element={<Login/>}/>
 
@@ -56,8 +56,8 @@ const App = () => {
                       <Route path=':eventId'>
                           <Route index element={<EventPage/>}/>
 
-                          <Route element={<RequireAuth allowedRole={"ADMIN"}/>}>
-                            <Route path='edit' element={<EditEventForm/>}/>
+                          <Route element={<RoleBasedRoute allowedRole={"ADMIN"}/>}>
+                            <Route path='edit' element={<EditEvent/>}/>
                             <Route path='stats' element={<EventStats/>}/>
                        
 
@@ -75,10 +75,10 @@ const App = () => {
                   </Route>
 
                       {/* prefetchVOluns here */}
-                      {/* RequireAuth for admin only */}
-                  {/* <Route element={<RequireAuth allowedRole={"ADMIN"}/>}> */}
+                      {/* RoleBaseRoute for admin only */}
+                  {/* <Route element={<RoleBaseRoute allowedRole={"ADMIN"}/>}> */}
                     <Route path='volunteers' element={<VolunteerHeader/>}>
-                      <Route element={<RequireAuth allowedRole={"ADMIN"}/>}>
+                      <Route element={<RoleBasedRoute allowedRole={"ADMIN"}/>}>
 
                         {/* <Route element={<PrefetchVolunteers/>}> */}
                           <Route index={true} element={<VolunteersList/>}/>
@@ -91,7 +91,7 @@ const App = () => {
                         {/* </Route> */}
                     </Route>  
 
-                    <Route element={<RequireAuth allowedRole={"VOLUNTEER"}/>}>
+                    <Route element={<RoleBasedRoute allowedRole={"VOLUNTEER"}/>}>
 
                         <Route path=':volunId' element={<SingleVolunteerPage/>}/>
                     </Route>

@@ -185,6 +185,24 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
    
         }),
 
+        updateEventInfo: builder.mutation({
+
+            query: (updateEvent) => ({
+
+                url: '/events',
+                method: 'PUT',
+                body: {...updateEvent}
+            }),
+
+           //transformResponse not needed for updateEventInfo
+
+           invalidatesTags: (result, err, arg) => (
+
+            [{type: 'Event', id: arg.eventId}]
+           )
+    
+        })
+
     }),
 
         
@@ -217,5 +235,8 @@ export const {
     useGetSignedUpVolunteersQuery,
 
     usePostNewEventMutation,
+
+    useUpdateEventInfoMutation,
+    
 
 } = eventsApiSlice

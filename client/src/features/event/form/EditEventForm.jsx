@@ -1,35 +1,37 @@
 import React, { useState, useEffect } from 'react'
 import AddEventDateAndShiftTime from './AddEventDateAndShiftTime'
-import { usePostNewEventMutation } from '../eventsApiSlice'
+
 import { toast } from 'react-toastify'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate} from 'react-router-dom'
 import isValidNumberInput from '../../../helpers/isValidNumberInput'
 import { Container, Row, Form, Stack, Col, FloatingLabel,Button, } from 'react-bootstrap'
-import filterNonDuplicate from '../../../helpers/filterNonDuplicate'
+import { useUpdateEventInfoMutation } from '../eventsApiSlice'
 
-const NewEventForm = () => {
+
+const EditEventForm = ({event}) => {
+
 
     const [listId, setListId] = useState(1)
     const [shiftListId, setShiftListId] = useState(1*100)
   
     const navigate =useNavigate()
+
+    
     const [formData, setFormData] = useState({
   
-      eventName: '',
-       eventVenue: '',
-        eventDates: [], 
-        eventDescription: '',
-        shifts: []
+      eventName: event.eventName,
+       eventVenue: event.eventVenue,
+        eventDates: event.eventDates, 
+        eventDescription: event.eventDescription,
+        shifts: event.shifts
     })
 
-    const [createNewEvent, {isSuccess, isLoading}] = usePostNewEventMutation()
+    const [updateEventInfo, {isSuccess: isUpdateSuccess, isLoading: isUpdateLoading}] = useUpdateEventInfoMutation()
 
     useEffect(() => {
       
-      // console.log('aft changes in formData.eventDates: ', formData.eventDates);
-      // console.log('aft changes in formData.shifts: ', formData.shifts);
-      
-      if(isSuccess){
+    
+      if(isUpdateSuccess){
 
         setFormData({
   
@@ -40,12 +42,12 @@ const NewEventForm = () => {
             shifts: []
         })
 
-        toast.success('Event created successfully')
+        toast.success('Event updated successfully')
 
         navigate('/dash/events')
       }
 
-    }, [isSuccess, navigate]);
+    }, [isUpdateSuccess, navigate]);
 
     //onClick addEventDateAndSHift, both eventDates and shifts changes
     const addEventDateAndShift = () => {
@@ -138,9 +140,7 @@ const NewEventForm = () => {
       return (
 
   <AddEventDateAndShiftTime
-
-    // key={eventDate.listId} 
-    key={Math.random(2)}
+    key={eventDate.listId} 
     
      listId={listId-1} 
         eventDate={eventDate} 
@@ -178,25 +178,22 @@ const NewEventForm = () => {
       }
 
        //data format for back
-        const modifiedEventDatesOnly = filterNonDuplicate(formData.eventDates.map(eventDate => (eventDate.date)))
+        const modifiedEventDatesOnly = formData.eventDates.map(eventDate => (eventDate.date))
 
         const modifiedShifts = formData.shifts.map(shift => {
 
-          const correspondingEvent = formData.eventDates.find(eventDate=>   eventDate.listId === shift.parentListIdForShift)
+              const correspondingEvent = formData.eventDates.find(eventDate=>   eventDate.listId === shift.parentListIdForShift)
 
-        //  const shiftStart = correspondingEvent.date + 'T' + shift.shiftStart
-        //   const shiftEnd = correspondingEvent.date + 'T' + shift.shiftEnd
+            const shiftStart = correspondingEvent.date.replace('T00:00', 'T' + shift.shiftStart)
+            const shiftEnd = correspondingEvent.date.replace('T00:00', 'T' + shift.shiftEnd)
 
-        const shiftStart = correspondingEvent.date.replace('T00:00', 'T' + shift.shiftStart)
-        const shiftEnd = correspondingEvent.date.replace('T00:00', 'T' + shift.shiftEnd)
+              return {
+                ...shift,
+                shiftStart,
+                shiftEnd,
+                shiftPositions: Number(shift.shiftPositions)
 
-          return {
-            ...shift,
-            shiftStart,
-            shiftEnd,
-            shiftPositions: Number(shift.shiftPositions)
-
-          }
+              }
 
       
         })
@@ -214,19 +211,20 @@ const NewEventForm = () => {
         
         try {
             
-            const newEvent = await createNewEvent({...formDataForBack}).unwrap()
+            const updatedEvent = await updateEventInfo(formDataForBack).unwrap()
 
-            // console.log('formData to submit: ', formData);
 
-            console.log('newEvent from createNewEvent fribt: ', newEvent);
+            console.log('updatedEvent from front ', updatedEvent);
 
-            //TC navigate
+
         } catch (err) {
-          toast.error('Error creating new event')
-            console.error('error from createNewEvent: ',err);
+          toast.error('Error updating new event')
+          console.error('error from updatedEventInfo: ',err);
         }
     }
     
+    const createdAt = new Date(event.createdAt).toLocaleString('en-US', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
+    const updatedAt = new Date(event.updatedAt).toLocaleString('en-US', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
   return (
 
     <Container>
@@ -336,4 +334,4 @@ const NewEventForm = () => {
   )
 }
 
-export default NewEventForm
+export default EditEventForm

@@ -1,8 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Outlet, useNavigate, useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router-dom'
 import { selectEventById } from './eventsApiSlice'
-// import { selectVolunteerById, usePatchCancelShiftMutation, usePatchSignedUpShiftMutation } from '../volun/volunteersApiSlice'
 import useAuth from '../../hooks/useAuth'
 import EventShift from './EventShift'
 
@@ -58,7 +57,7 @@ const EventPage = () => {
     content = (
       <article>
           <h1>{event.eventName}</h1>
-          <p className="excerpt">{event.eventDescription}</p>
+          <p className="excerpt">Event Description: {event.eventDescription}</p>
           <p>Event VEnue: {event.eventVenue}</p>
           <label>Event Dates: </label>
           <ol key={event.id + 'a'}>

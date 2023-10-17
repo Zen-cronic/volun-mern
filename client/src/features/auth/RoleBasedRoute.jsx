@@ -3,7 +3,7 @@ import React from 'react'
 import { Navigate, Outlet, useLocation } from 'react-router'
 import useAuth from '../../hooks/useAuth'
 
-const RequireAuth = ({allowedRole}) => {
+const RoleBasedRoute = ({allowedRole}) => {
 
     const location = useLocation()
     const {role} = useAuth()
@@ -21,4 +21,4 @@ const RequireAuth = ({allowedRole}) => {
     }
 }
 
-export default RequireAuth
+export default RoleBasedRoute
