@@ -81,10 +81,13 @@ const EditEventForm = ({event, eventId}) => {
 
           return {
           
+            //to keep shiftId unchanged when sending submitting to back
+            shiftId: shift._id,
+            
             shiftListId: initialShiftListId,
             shiftStart: shiftStartTime,
             shiftEnd: shiftEndTime,
-            shiftPositions: shift.shiftPositions, 
+            shiftPositions: shift.shiftPositions.toString(), 
             parentListIdForShift: correspondingEvent.listId,
           }
        })

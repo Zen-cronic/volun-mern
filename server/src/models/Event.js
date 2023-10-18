@@ -124,15 +124,17 @@ EventShiftSchema.pre('save', function(next){
 //pre for localStart and localEnd
 EventShiftSchema.pre('save', function(next){
 
-    if(!this.$parent().isNew
-    &&
-        !this.$parent().isModified('shifts')
-    ){
+    //if NOT new 
+    //AND if shifts arr NOT modified
+    // if(!this.$parent().isNew
+    // &&
+    //     !this.$parent().isModified('shifts')
+    // ){
 
-        console.log('parent doc is NOT new, therefore 3) pre-SAVE not called');
-        return next()
+    //     console.log('parent doc is NOT new, therefore 3) pre-SAVE not called');
+    //     return next()
         
-    }
+    // }
 
     console.log('3) pre localStart and LocalEnd eventSHIFTschema called');
 
@@ -157,7 +159,7 @@ EventShiftSchema.pre('save', function(next){
         this.$parent().isModified('shifts')
     ){
 
-        console.log('3.5) parent doc is NOT new, therefore not called - shiftPosi > 0');
+        console.log('parent doc is NOT new, therefore 3.5) not called - shiftPosi > 0');
         return next()
     }
 
@@ -169,6 +171,7 @@ EventShiftSchema.pre('save', function(next){
         throw new Error('shiftPositions must be greater than 0 upon creation And reSave from signing up')
     }
 
+    console.log('3.5) shiftPositions pre called');
     next()
 
 })

@@ -20,7 +20,7 @@ export const volunteersApiSlice = apiSlice.injectEndpoints({
 
                 const {volunteers} = responseData
 
-                console.log('volunteers', responseData);
+                // console.log('volunteers', responseData);
                 const serializedVolunteers = volunteers.map(volun => {
 
                     volun.id = volun._id
@@ -81,7 +81,7 @@ export const volunteersApiSlice = apiSlice.injectEndpoints({
 
                 const serializedUser = existingUser
 
-                console.log('serializedUser from getUserById slice: ', serializedUser);
+                // console.log('serializedUser from getUserById slice: ', serializedUser);
                 return volunteersAdapter.setOne(volunteersInitialState, serializedUser)
             },
 
@@ -141,7 +141,7 @@ export const volunteersApiSlice = apiSlice.injectEndpoints({
 
                     const {sortedVolunteers} = data
 
-                    console.log("data from onQueryStarted postSorted VOlunters: ", data);
+                    // console.log("data from onQueryStarted postSorted VOlunters: ", data);
 
                     dispatch(setSortedVolunteers({sortedVolunteers}))
                 } catch (error) {
@@ -206,7 +206,7 @@ export const volunteersApiSlice = apiSlice.injectEndpoints({
 
                 const {newVolunteer} = responseData
 
-                console.log(responseData, " responseData from postNewVolunteer slice");
+                // console.log(responseData, " responseData from postNewVolunteer slice");
                 const serializedVolunteer = newVolunteer
 
                 serializedVolunteer.id = newVolunteer._id

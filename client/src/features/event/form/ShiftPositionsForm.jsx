@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Form } from 'react-bootstrap'
 
 const ShiftPositionsForm = ({shift, updateShift}) => {
-    const [shiftPositions, setShiftPositions] = useState('')
+    const [shiftPositions, setShiftPositions] = useState(shift.shiftPositions ?? "")
    
   
     const handleShiftPositionsChange = (e) => {

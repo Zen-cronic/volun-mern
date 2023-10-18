@@ -24,7 +24,7 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
                     return event
                 })
 
-                console.log("normailzed events: ", normalizedEvents);
+                // console.log("normailzed events: ", normalizedEvents);
                 return eventsAdapter.setAll(eventsInitialState, normalizedEvents)
             },
 
@@ -61,18 +61,18 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
                 const {idsWithTags, sortedIdsWithTags} = data
 
 
-                console.log('data from onQUeryStarted /filter: ', data);
+                // console.log('data from onQUeryStarted /filter: ', data);
 
                 // console.log("array of entities from {data}: ", Object.values(data.entities));
 
                 const {filteredEvents} = getState().events
-                console.log('fitleredEvents in state from onQUeryStarted: ', filteredEvents);
+                // console.log('fitleredEvents in state from onQUeryStarted: ', filteredEvents);
 
-                console.log('idsWIthTags from onQUeryStarted from filter: ', idsWithTags); //DNE after serialization in transformResponse
+                // console.log('idsWIthTags from onQUeryStarted from filter: ', idsWithTags); //DNE after serialization in transformResponse
                 dispatch(setFilteredEvents({sortedIdsWithTags}))
 
             } catch (error) {
-                console.log('filterEvents error: ',error);
+                console.error('filterEvents error: ',error);
             }
         },
         // providesTags: (result, err, arg) => (
@@ -104,7 +104,7 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
                 const {data}= await queryFulfilled
 
                 const {sortedEvents } = data
-                console.log("data from postSortedEvents queryFulilled: ", data);
+                // console.log("data from postSortedEvents queryFulilled: ", data);
 
                 dispatch(setSortedEvents({sortedEvents}))
             } catch (error) {
@@ -133,7 +133,7 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
                 const {data}= await queryFulfilled
 
                 const {matchingEvents} = data
-                console.log("data from postSEARCHEDevents queryFulilled: ", data);
+                // console.log("data from postSEARCHEDevents queryFulilled: ", data);
 
                 dispatch(setSearchedEvents({matchingEvents}))
             } catch (error) {

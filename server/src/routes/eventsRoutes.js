@@ -23,8 +23,8 @@ router.route('/volunteers')
 router.route('/search')
     .post( eventsControllers.searchEvents)
 
-router.route('/dates')
-    .get(eventsControllers.getAllEventsDates)
+// router.route('/dates')
+//     .get(eventsControllers.getAllEventsDates)
     
 //combined sort
 router.route('/sort')

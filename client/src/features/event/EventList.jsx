@@ -23,7 +23,7 @@ const EventList = () => {
     if(isEventsSuccess){
 
         const {ids} = events
-        console.log('all Events ids from useQUery:', ids);
+        // console.log('all Events ids from useQUery:', ids);
         content = ids.map((eventId) => (
 
             <EventExcerpt key={eventId} eventId={eventId}/>

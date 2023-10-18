@@ -17,20 +17,7 @@ router.route('/:id')
 
 // router.param('id', usersControllers.getUser)
 
-// router.route()
-// router.param('id', async(req,res, next, id)=> {
 
-//     console.log('/users:id router reached');
-//     const existingUser = await User.findById(id).lean().select({password: 0}).exec()
-
-//     if(!existingUser){
-//         res.status(400).json({message: "User DNE for get"})
-
-//     }
-
-//     res.json({existingUser})
-
-// })
 
 router.route('/shifts/:volunId')
     .get(usersControllers.getUpcomingSignedUpShifts)
@@ -65,20 +52,6 @@ router.route('/sort')
     .post(verifyRole(ROLES.ADMIN),
         usersControllers.sortVolunteers)
 
-// router.route('/sort/az')
-    
-//     .get(usersControllers.sortVolunteersAlphabetically)
-    
-// router.route('/sort/hours')
-//     .get(usersControllers.sortVolunteersByHours)
-
-// router.route('/sort/shiftscount')
-    
-//     .get(usersControllers.sortVolunteersByShiftsCount)
-    
-
-// router.route('/refresh')
-//     .patch(usersControllers.refreshSignedUpEvents)
 
 router.route('/volunteered')
     .patch(usersControllers.updateVolunteeredShifts)

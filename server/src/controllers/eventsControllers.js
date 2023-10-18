@@ -67,39 +67,6 @@ const getAllEvents = asyncHandler(async(req,res)=>{
 
 
 
-//update Event info 
-
-//update Event VOlunteer count - auto prefetch PATCH
-// const updateEventVolunteersCount = asyncHandler(async(req,res)=>{
-
-//     const {eventId} = req.body
-
-//     if(requiredInputChecker(req.body)){
-//         return res.status(400).json({message: "All fields required"})
-//     }
-
-//     const existingEvent = await Event.findById(eventId).exec()
-
-//     if(!existingEvent){
-//         return res.status(400).json({message: "Event DNE for PATCH event volun update"})
-//     }
-
-//     const volunteersForThisEvent = await User.find({signedUpEvents: {$eq: existingEvent._id}})
-
-//     volunteersForThisEvent.map((volun)=> {
-
-//         if(!existingEvent.eventVolunteers.includes(volun._id)){
-
-//             existingEvent.eventVolunteers.push(volun._id)
-
-//         } 
-//     })
-
-
-//     await existingEvent.save()
-
-//     res.json({volunteersForThisEvent, existingEvent})
-// })
 
 //search events
 const searchEvents = asyncHandler(async(req,res)=>{
@@ -267,6 +234,7 @@ const sortEvents = [
 })
 ]
 
+//[] keep the _id of shifts as before
 const updateEventInfo = asyncHandler(async(req,res)=>{
 
     const {eventId, eventName, eventVenue,
@@ -290,6 +258,7 @@ const updateEventInfo = asyncHandler(async(req,res)=>{
         return res.status(409).json({message: "The renamed eventName already exists", duplicateEvent: duplicate})
     }
 
+ 
     //algorize this
     // existingEvent.eventName = eventName
     // existingEvent.eventVenue = eventVenue
@@ -301,6 +270,10 @@ const updateEventInfo = asyncHandler(async(req,res)=>{
     //NOT a pojo, use toObject() to access keys/vals
     Object.keys(req.body).map((key) => {
 
+        //updating shifts handled elsewhere
+        if(key === 'shifts'){
+            return null
+        }
         const matchingEventKey = Object.keys(existingEvent.toObject()).find((eventKey)=> eventKey.includes(key))
 
         if(matchingEventKey !== undefined){
@@ -311,10 +284,54 @@ const updateEventInfo = asyncHandler(async(req,res)=>{
 
 
     })
+
+    const existingAllShifts  = existingEvent.shifts
+
+
+    await Promise.all(shifts.map(async (returnedShift) => {
+
+        let existingShift =existingAllShifts.find(shift => shift._id.toString() === returnedShift?.shiftId)
+
+        if(existingShift){
+
+            console.log('retunredShiftObj: ',returnedShift);
+            // existingShift = {...existingShift,
+            //     shiftStart: returnedShift.shiftStart,
+            //     shiftEnd: returnedShift.shiftEnd,
+            //     shiftPositions: returnedShift.shiftPositions
+            // }
+
+            // existingEvent.shifts
+
+        
+           const res = await Event.updateOne(
+                {   _id: existingEvent._id,
+                    "shifts._id": existingShift._id },
+
+                { $set: { "shifts.$.shiftStart": new Date(returnedShift.shiftStart),
+                            "shifts.$.shiftEnd": new Date(returnedShift.shiftEnd),
+                            "shifts.$.shiftPositions": returnedShift.shiftPositions
+                    } },
+
+                
+            )
+
+            // console.log('res: ', res);
+
+           
+        }
+
+        else{
+            existingEvent.shifts.push(returnedShift)
+        }
+    }))
+
+    
     
 
-    await existingEvent.save()
+    const udpatedEvent = await existingEvent.save()
 
+    console.log('udpatedEvent: ', udpatedEvent);
     res.json({existingEvent})
   
 
