@@ -8,7 +8,7 @@ import { Container, Row, Form, Stack, Col, FloatingLabel,Button, } from 'react-b
 import { useUpdateEventInfoMutation } from '../eventsApiSlice'
 
 
-//event obj from back - localEventDates
+//event obj from back - localEventDates+T00:00
 const EditEventForm = ({event, eventId}) => {
 
 
@@ -29,19 +29,21 @@ const EditEventForm = ({event, eventId}) => {
 
     const [updateEventInfo, {isSuccess: isUpdateSuccess, isLoading: isUpdateLoading}] = useUpdateEventInfoMutation()
 
-   //reformat data for front rendering
+   //reformat data for front rendering 
+   //local dates format from back using date-fns-tz format(): yyyy-MM-dd HH:mm TZ
+
     useEffect(() => {
       
       if(event){
 
-        let initialListId =  0
-       let initialShiftListId =  0
+        let initialListId = listId -1
+       let initialShiftListId =  shiftListId -1
 
        const eventDatesWithListIdsAndDates = event.localEventDates.map(localEventDate => {
 
         // const listId = initialListId++
         initialListId++
-        const date = localEventDate.split(' ')[0]
+        const date = localEventDate.split(' ')[0].concat('T00:00')
 
         return {
           listId : initialListId, 
@@ -58,21 +60,32 @@ const EditEventForm = ({event, eventId}) => {
             throw new Error('Must be an arr for shiftsWithListIds')
           }
 
-          const shiftStart = shift.localShiftStart.split(' ')[0]
-          const shiftEnd = shift.localShiftEnd.split(' ')[0]
+          const splitLocalShiftStart = shift.localShiftStart.split(' ')
+          const splitLocalShiftEnd = shift.localShiftEnd.split(' ')
+
+          //for finding correspodingEvent only
+          const shiftStartDate = splitLocalShiftStart[0]
+
+          //HH:mm format
+          const shiftStartTime =splitLocalShiftStart[1].slice(0,5)
+          const shiftEndTime = splitLocalShiftEnd[1].slice(0,5)
+
+          
+
           initialShiftListId++
 
-          const parentEventObj = eventDatesWithListIdsAndDates.find(eventDateObj => eventDateObj.date.includes(shiftStart)
+          //eventDateObj.date = date + T00:00
+          const correspondingEvent = eventDatesWithListIdsAndDates.find(eventDateObj => eventDateObj.date.includes(shiftStartDate)
           )
         
 
           return {
           
             shiftListId: initialShiftListId,
-            shiftStart,
-            shiftEnd,
+            shiftStart: shiftStartTime,
+            shiftEnd: shiftEndTime,
             shiftPositions: shift.shiftPositions, 
-            parentListIdForShift: parentEventObj.listId,
+            parentListIdForShift: correspondingEvent.listId,
           }
        })
 
@@ -86,8 +99,9 @@ const EditEventForm = ({event, eventId}) => {
           shifts: shiftsWithListIds
         })
 
-        setListId(initialListId)
-        setShiftListId(initialShiftListId)
+        //only works with + 1
+        setListId(initialListId +1)
+        setShiftListId(initialShiftListId +1)
 
       }
     }, []);
@@ -216,6 +230,8 @@ const EditEventForm = ({event, eventId}) => {
         updateShift={updateShift}
         shift={correspondingShift}
         shiftListId={shiftListId - 1}
+
+        eventId={eventId}
     />
       )
        

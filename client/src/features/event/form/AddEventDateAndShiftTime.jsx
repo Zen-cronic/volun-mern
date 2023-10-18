@@ -11,7 +11,9 @@ const AddEventDateAndShiftTime = ({
     shiftListId,
     removeEventAndShift,      
     updateEvent,
-    updateShift  
+    updateShift ,
+
+    eventId
 
 }) => {
 
@@ -23,7 +25,7 @@ const AddEventDateAndShiftTime = ({
   return (
     <Row>
         <Col >
-            {<DatePickerForm eventDate={eventDate} updateEvent={updateEvent}/>}
+            {<DatePickerForm eventDate={eventDate} updateEvent={updateEvent} eventId={eventId}/>}
         </Col>
 
         <Col xs={1}>
@@ -32,13 +34,13 @@ const AddEventDateAndShiftTime = ({
         <Col>
 
         {/* {timePickerForm} */}
-        <TimePickerForm shift={shift} updateShift={updateShift} startOrEnd={'start'}/>
+        <TimePickerForm shift={shift} updateShift={updateShift} startOrEnd={'start'} />
 
         </Col>
         <Col>
 
         {/* {timePickerForm} */}
-        <TimePickerForm shift={shift} updateShift={updateShift} startOrEnd={'end'}/>
+        <TimePickerForm shift={shift} updateShift={updateShift} startOrEnd={'end'} />
 
         </Col>
 

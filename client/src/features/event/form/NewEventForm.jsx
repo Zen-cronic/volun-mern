@@ -139,8 +139,8 @@ const NewEventForm = () => {
 
   <AddEventDateAndShiftTime
 
-    // key={eventDate.listId} 
-    key={Math.random(2)}
+    key={eventDate.listId} 
+    // key={Math.random(2)}
     
      listId={listId-1} 
         eventDate={eventDate} 
@@ -178,7 +178,7 @@ const NewEventForm = () => {
       }
 
        //data format for back
-        const modifiedEventDatesOnly = filterNonDuplicate(formData.eventDates.map(eventDate => (eventDate.date)))
+        const modifiedEventDates = filterNonDuplicate(formData.eventDates.map(eventDate => (eventDate.date)))
 
         const modifiedShifts = formData.shifts.map(shift => {
 
@@ -187,14 +187,14 @@ const NewEventForm = () => {
         //  const shiftStart = correspondingEvent.date + 'T' + shift.shiftStart
         //   const shiftEnd = correspondingEvent.date + 'T' + shift.shiftEnd
 
-        const shiftStart = correspondingEvent.date.replace('T00:00', 'T' + shift.shiftStart)
-        const shiftEnd = correspondingEvent.date.replace('T00:00', 'T' + shift.shiftEnd)
+          const shiftStart = correspondingEvent.date.replace('T00:00', 'T' + shift.shiftStart)
+          const shiftEnd = correspondingEvent.date.replace('T00:00', 'T' + shift.shiftEnd)
 
           return {
             ...shift,
             shiftStart,
             shiftEnd,
-            shiftPositions: Number(shift.shiftPositions)
+            shiftPositions: parseInt(shift.shiftPositions)
 
           }
 
@@ -204,9 +204,9 @@ const NewEventForm = () => {
    
         console.log('------------------');
         console.log('modified shifts for back: ', modifiedShifts);
-        console.log('modified eventDatesOnly for back: ', modifiedEventDatesOnly);
+        console.log('modified eventDatesOnly for back: ', modifiedEventDates);
 
-        const formDataForBack = {...formData, eventDates: modifiedEventDatesOnly, shifts: modifiedShifts}
+        const formDataForBack = {...formData, eventDates: modifiedEventDates, shifts: modifiedShifts}
         console.log('formData from handleSubmitForm: ', formDataForBack);
 
       

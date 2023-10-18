@@ -28,6 +28,11 @@ const DatePickerForm = ({eventDate, updateEvent, eventId}) => {
             //   :
             //   selectedDate} 
 
+              selected={eventDate.date
+              ? 
+              convertLocalDateToSameDateUTC(eventDate.date)
+              // new  Date(eventDate.date)
+              : selectedDate}
     
       //reFactor for NewEventForm
 
