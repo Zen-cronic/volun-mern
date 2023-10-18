@@ -8,12 +8,14 @@ const TimePickerForm = ({shift, updateShift, startOrEnd}) => {
     const [selectedTime, setSelectedTime] = useState(new Date());
     const [time, setTime] = useState('')
 
-    const filterPassedTime = (time) => {
-      const currentDate = new Date();
-      const selectedDateTime = new Date(time);
+    // const filterPassedTime = (time) => {
+    //   const currentDate = new Date();
+    //   const selectedDateTime = new Date(time);
   
-      return currentDate.getTime() < selectedDateTime.getTime();
-    };
+    //   return currentDate.getTime() < selectedDateTime.getTime();
+    // };
+
+    console.log('shiftTime of each timePIckerForm editEvent: ', shift);
 
     const timePickerForm = (
 

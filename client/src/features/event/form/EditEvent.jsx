@@ -13,7 +13,7 @@ const EditEvent = () => {
     let content 
 
     if(event){
-        content = (<EditEventForm event={event}/>)
+        content = (<EditEventForm event={event} eventId={eventId}/>)
     }
 
     else {

@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react'
 import AddEventDateAndShiftTime from './AddEventDateAndShiftTime'
 
 import { toast } from 'react-toastify'
-import { useNavigate} from 'react-router-dom'
+import { useNavigate, useParams} from 'react-router-dom'
 import isValidNumberInput from '../../../helpers/isValidNumberInput'
 import { Container, Row, Form, Stack, Col, FloatingLabel,Button, } from 'react-bootstrap'
 import { useUpdateEventInfoMutation } from '../eventsApiSlice'
 
 
-const EditEventForm = ({event}) => {
+//event obj from back - localEventDates
+const EditEventForm = ({event, eventId}) => {
 
 
     const [listId, setListId] = useState(1)
@@ -16,17 +17,80 @@ const EditEventForm = ({event}) => {
   
     const navigate =useNavigate()
 
-    
+   
     const [formData, setFormData] = useState({
   
-      eventName: event.eventName,
-       eventVenue: event.eventVenue,
-        eventDates: event.eventDates, 
-        eventDescription: event.eventDescription,
-        shifts: event.shifts
+      eventName: "",
+       eventVenue:"",
+        eventDates: [], 
+        eventDescription: "",
+        shifts: [],
     })
 
     const [updateEventInfo, {isSuccess: isUpdateSuccess, isLoading: isUpdateLoading}] = useUpdateEventInfoMutation()
+
+   //reformat data for front rendering
+    useEffect(() => {
+      
+      if(event){
+
+        let initialListId =  0
+       let initialShiftListId =  0
+
+       const eventDatesWithListIdsAndDates = event.localEventDates.map(localEventDate => {
+
+        // const listId = initialListId++
+        initialListId++
+        const date = localEventDate.split(' ')[0]
+
+        return {
+          listId : initialListId, 
+          date
+        }
+        
+       })
+
+       
+       //shfitListIds && parentListIdForShift
+       const shiftsWithListIds = event.shifts.map(shift => {
+
+          if(!Array.isArray(eventDatesWithListIdsAndDates)){
+            throw new Error('Must be an arr for shiftsWithListIds')
+          }
+
+          const shiftStart = shift.localShiftStart.split(' ')[0]
+          const shiftEnd = shift.localShiftEnd.split(' ')[0]
+          initialShiftListId++
+
+          const parentEventObj = eventDatesWithListIdsAndDates.find(eventDateObj => eventDateObj.date.includes(shiftStart)
+          )
+        
+
+          return {
+          
+            shiftListId: initialShiftListId,
+            shiftStart,
+            shiftEnd,
+            shiftPositions: shift.shiftPositions, 
+            parentListIdForShift: parentEventObj.listId,
+          }
+       })
+
+        setFormData({
+
+          ...formData,
+          eventName: event.eventName,
+          eventVenue: event.eventVenue,
+          eventDescription: event.eventDescription,
+          eventDates: eventDatesWithListIdsAndDates,
+          shifts: shiftsWithListIds
+        })
+
+        setListId(initialListId)
+        setShiftListId(initialShiftListId)
+
+      }
+    }, []);
 
     useEffect(() => {
       
@@ -118,9 +182,6 @@ const EditEventForm = ({event}) => {
         //[]remove shifts of that event too - for bcknd
         console.log('updatedShiftTimes w/o removing:  ',formData.shifts);
         
-        //nu shiftObj can be mapped for AddEventDatesANdshiftTimes - only eventDateObj
-        // const updatedShiftTimes = formData.shifts.filter(shift => shift.shiftListId !== shiftObj.shiftListId)
-
         const updatedShiftTimes = formData.shifts.filter(shift => shift.parentListIdForShift !== eventDateObj.listId)
 
         setFormData({...formData,
@@ -135,8 +196,13 @@ const EditEventForm = ({event}) => {
 
     const renderEventDatesAndShifts = formData.eventDates.map((eventDate) => {
 
-      const correspondingShift = formData.shifts.find(shift => shift.parentListIdForShift === eventDate.listId)
-       
+      console.log('eventDate from renderEventDatesAndShifts: ', eventDate);
+
+      const correspondingShift = formData.shifts.find(shift => shift.parentListIdForShift === eventDate.listId);
+
+      //undefined correspondingShift 
+      console.log('correspondingShift: ', correspondingShift);
+    
       return (
 
   <AddEventDateAndShiftTime
@@ -211,7 +277,7 @@ const EditEventForm = ({event}) => {
         
         try {
             
-            const updatedEvent = await updateEventInfo(formDataForBack).unwrap()
+            const updatedEvent = await updateEventInfo({...formDataForBack, eventId}).unwrap()
 
 
             console.log('updatedEvent from front ', updatedEvent);
