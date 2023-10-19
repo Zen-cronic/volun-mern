@@ -57,15 +57,15 @@ const EventShiftSchema = new mongoose.Schema({
 EventShiftSchema.pre('validate', function(next){
    
     
-    if(!this.$parent().isNew
-    &&
-        !this.$parent().isModified('shifts')
-    )   {
+    // if(!this.$parent().isNew
+    // &&
+    //     !this.$parent().isModified('shifts')
+    // )   {
 
-        console.log('parent doc is NOT new, therefore 1) pre-VALIDATE not called');
-        return next()
+    //     console.log('parent doc is NOT new, therefore 1) pre-VALIDATE not called');
+    //     return next()
         
-    }
+    // }
     // console.log(options.w);
     console.log('1) pre-Validate for shiftStart and shiftEnd called');
 
@@ -98,15 +98,15 @@ EventShiftSchema.pre('validate', function(next){
 //pre for shiftDuration
 EventShiftSchema.pre('save', function(next){
 
-    if(!this.$parent().isNew
-    &&
-        !this.$parent().isModified('shifts')
-    ){
+    // if(!this.$parent().isNew
+    // &&
+    //     !this.$parent().isModified('shifts')
+    // ){
 
-        console.log('parent doc is NOT new, therefore 2) pre-SAVE not called');
-        return next()
+    //     console.log('parent doc is NOT new, therefore 2) pre-SAVE not called');
+    //     return next()
         
-    }
+    // }
     console.log('2) pre-Save for shift DURATION');
     this.shiftDuration = calculateShiftDuration(this.shiftStart, this.shiftEnd)
 
@@ -144,7 +144,7 @@ EventShiftSchema.pre('save', function(next){
 
     next()
 })
-
+//[] check if can be 0 on update from EditEventSchema
 //pre for shiftPositions 
 EventShiftSchema.pre('save', function(next){
 
@@ -244,15 +244,15 @@ const EventSchema = new mongoose.Schema({
 //pre-VAlidate for shiftDates + eventDates 
 EventSchema.pre('validate', function(next){
 
-  if(!this.isNew
-    &&
-        !this.isModified('shifts')
-    ){
+//   if(!this.isNew
+//     &&
+//         !this.isModified('shifts')
+//     ){
 
-        console.log('main doc is NOT new, therefore 4) pre-VALIDATE not called');
-        return next()
+//         console.log('main doc is NOT new, therefore 4) pre-VALIDATE not called');
+//         return next()
         
-  }
+//   }
 
     console.log('4) pre-VAlidate for shiftDates + eventDates validator');
     this.shifts.map(shift => {
@@ -277,15 +277,15 @@ EventSchema.pre('validate', function(next){
 EventSchema.pre('save', function(next){
 
 
-    if(!this.isNew
-        &&
-        !this.isModified('shifts')
-        ){
+    // if(!this.isNew
+    //     &&
+    //     !this.isModified('shifts')
+    //     ){
 
-        console.log('main doc is NOT new, therefore 5) pre-SAVE not called');
-        return next()
+    //     console.log('main doc is NOT new, therefore 5) pre-SAVE not called');
+    //     return next()
         
-    }
+    // }
 
     console.log('5) eventtSchema localDates  called');
 
@@ -310,16 +310,16 @@ EventSchema.pre('save', function(next){
 EventSchema.pre('save',function(next){
 
 
-    if(!this.isNew
-        &&
-        !this.isModified('shifts')
-        ){
+    // if(!this.isNew
+    //     &&
+    //     !this.isModified('shifts')
+    //     ){
 
         
-        console.log('main doc is NOT new NOR shifts isNOT modified, therefore 6) pre-SAVE not called');
-        return next()
+    //     console.log('main doc is NOT new NOR shifts isNOT modified, therefore 6) pre-SAVE not called');
+    //     return next()
         
-    }
+    // }
 
     console.log("FROM 6) this.isModified('shifts')", this.isModified('shifts'));
     console.log('6) pre-save hook for openPositions based on shiftPosi | called w each update in shiftPosi');
@@ -339,29 +339,27 @@ EventSchema.pre('save',function(next){
     next()
 })
 
-
+//pre-save hook for duplicate shift time
 EventSchema.pre('save', function(next){
 
-    if(!this.isNew
-        &&
-        !this.isModified('shifts')
-        ){
+    // if(!this.isNew
+    //     &&
+    //     !this.isModified('shifts')
+    //     ){
 
         
-        console.log('main doc is NOT new NOR shifts isNOT modified, therefore 7) pre-SAVE not called');
-        return next()
+    //     console.log('main doc is NOT new NOR shifts isNOT modified, therefore 7) pre-SAVE not called');
+    //     return next()
         
-    }
+    // }
+    console.log("7)pre-SAVE for duplicate shift time but from EventSchema");
 
     const bufferShiftsArr = this.shifts.slice()
     const sortedShiftsDurations = bufferShiftsArr.sort((a,b)=> {
 
         return a.shiftDuration - b.shiftDuration
     })
-
-    // console.log("sorted shifts w durations from 7) pre-Save E ", sortedShiftsDurations);
-    console.log("7)pre-SAVE for duplicate shift time but from EventSchema");
-
+ 
     for(let i = 0; i<sortedShiftsDurations.length -1; i++){
 
         const currentShift = sortedShiftsDurations[i]
@@ -375,6 +373,28 @@ EventSchema.pre('save', function(next){
     }
 
     
+    next()
+
+})
+
+// EventSchema.pre('updateOne',{document:true, query: false}, function(next){
+
+
+//     console.log('8-A) EventSchema pre-updateOne hook called as DocuMiddleware');
+
+//     next()
+// }),
+
+EventSchema.pre('updateOne',{document:false, query: true}, async function(next){
+
+    console.log('8-B) EventSchema pre-updateOne hook called as QueryMiddleware');
+
+
+    const docToUpate = await this.model.findOne(this.getQuery())
+    console.log('8-B) docToUpate: ', docToUpate);
+
+    // const updateInfo = await this.model.findOne(this.getUpdate())
+    // console.log('8-B) updateInfo: ', updateInfo);
     next()
 
 })

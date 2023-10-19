@@ -12,6 +12,16 @@ const filterEventsByDate = async(date)=>{
         throw new Error('date must be a string - filterEventsByDate')
     }
 
+ 
+
+    const filterDateRegex = /^\d{4}-\d{2}-\d{2}$/
+    const isDateValid = filterDateRegex.test(date)
+
+    if(!isDateValid){
+            
+            throw new Error('date must be in format yyyy-MM-dd - filterEventsByDate')
+    }
+
     const matchingEvents = await Event.find().lean().exec()
         .then((events) => (
 
@@ -55,7 +65,6 @@ const filterEventsByDate = async(date)=>{
 //filter by venue
 const filterEventsByVenue = async(venue)=> {
 
-   
     const eventsByVenuesIds = await Event.find({eventVenue: {$eq:venue }})
         .then(events => (
             events.map(event => (
@@ -211,9 +220,9 @@ const filteredTagsSort = (arr)=> {
    })
 
    console.log('sortedEntries from filterTagsSort: ');
-   sortedArr.map(entry => {
-       console.log(entry);
-   })
+//    sortedArr.map(entry => {
+//        console.log(entry);
+//    })
     return sortedArr
 }
 

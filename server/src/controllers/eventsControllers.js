@@ -290,11 +290,13 @@ const updateEventInfo = asyncHandler(async(req,res)=>{
 
     await Promise.all(shifts.map(async (returnedShift) => {
 
-        let existingShift =existingAllShifts.find(shift => shift._id.toString() === returnedShift?.shiftId)
+        const existingShift =existingAllShifts.find(shift => shift._id.toString() === returnedShift?.shiftId)
 
+        console.log('existingShift: ', existingShift);
         if(existingShift){
 
             console.log('retunredShiftObj: ',returnedShift);
+            console.log('returnedShiftObj shiftStart into Date: ',new Date(returnedShift.shiftStart))
             // existingShift = {...existingShift,
             //     shiftStart: returnedShift.shiftStart,
             //     shiftEnd: returnedShift.shiftEnd,
@@ -316,20 +318,22 @@ const updateEventInfo = asyncHandler(async(req,res)=>{
                 
             )
 
-            // console.log('res: ', res);
+            console.log('res: ', res);
 
            
         }
 
         else{
             existingEvent.shifts.push(returnedShift)
+
+            await existingEvent.save()
         }
     }))
 
     
     
 
-    const udpatedEvent = await existingEvent.save()
+    const udpatedEvent =existingEvent
 
     console.log('udpatedEvent: ', udpatedEvent);
     res.json({existingEvent})
@@ -401,7 +405,8 @@ const filterEvents =
 
 
             // if(!Object.keys(req.body).includes(FILTER_OPTIONS.VENUE)){
-            if(!objKeysIncludes(req.body,FILTER_OPTIONS.VENUE ) ){
+            if(!objKeysIncludes(req.body,FILTER_OPTIONS.VENUE ) 
+                ){
 
                 return next()
             }
@@ -416,11 +421,15 @@ const filterEvents =
         //date filter
         asyncHandler(async(req,res, next)=>{
 
-            if(!objKeysIncludes(req.body,FILTER_OPTIONS.DATE ) ){
+            if(!objKeysIncludes(req.body,FILTER_OPTIONS.DATE) 
+                 
+                ){
                 return next()
             }
 
+            
             const {date} = req.body
+            console.log('filterDate: ', date);
             res.locals.filteredDate = await filterEventsByDate(date)
 
             next()
@@ -429,7 +438,8 @@ const filterEvents =
         //isOpen filter
         asyncHandler(async(req,res, next)=>{
 
-            if(!objKeysIncludes(req.body, FILTER_OPTIONS.IS_OPEN) ){
+            if(!objKeysIncludes(req.body, FILTER_OPTIONS.IS_OPEN) 
+            ){
 
                 return next()
             }
@@ -443,7 +453,8 @@ const filterEvents =
         //isUpcomingShifts filter
         asyncHandler(async(req,res, next)=>{
 
-             if(!objKeysIncludes(req.body, FILTER_OPTIONS.IS_UPCOMING) ){
+             if(!objKeysIncludes(req.body, FILTER_OPTIONS.IS_UPCOMING) 
+            ){
 
             return next()
              }
@@ -468,6 +479,7 @@ const filterEvents =
             let filteredResultsByKey = {}
             let idsWithTags= []
 
+            console.log("value of req.body for filterEvent: ", {...req.body});
             Object.keys(req.body).map(((filterKey) => {
 
                 switch (filterKey) {

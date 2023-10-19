@@ -196,10 +196,14 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
 
            //transformResponse not needed for updateEventInfo
 
-           invalidatesTags: (result, err, arg) => (
+           invalidatesTags: (result, err, arg) => {
 
-            [{type: 'Event', id: arg.eventId}]
-           )
+            console.log('arg.eventId from updateEventInfo invalidatetags ', arg);
+            return   [{type: 'Event', id: arg.eventId}]
+           }
+
+          
+           
     
         })
 

@@ -107,6 +107,17 @@ const EditEventForm = ({event, eventId}) => {
         setShiftListId(initialShiftListId +1)
 
       }
+
+      // return () => {
+      //   setFormData({
+  
+      //     eventName: '',
+      //      eventVenue: '',
+      //       eventDates: [], 
+      //       eventDescription: '',
+      //       shifts: []
+      //   })
+      // }
     }, []);
 
     useEffect(() => {
@@ -288,7 +299,7 @@ const EditEventForm = ({event, eventId}) => {
         console.log('modified shifts for back: ', modifiedShifts);
         console.log('modified eventDatesOnly for back: ', modifiedEventDatesOnly);
 
-        const formDataForBack = {...formData, eventDates: modifiedEventDatesOnly, shifts: modifiedShifts}
+        const formDataForBack = {...formData, eventDates: modifiedEventDatesOnly, shifts: modifiedShifts, eventId}
         console.log('formData from handleSubmitForm: ', formDataForBack);
 
       
@@ -296,7 +307,7 @@ const EditEventForm = ({event, eventId}) => {
         
         try {
             
-            const updatedEvent = await updateEventInfo({...formDataForBack, eventId}).unwrap()
+            const updatedEvent = await updateEventInfo(formDataForBack).unwrap()
 
 
             console.log('updatedEvent from front ', updatedEvent);
@@ -406,7 +417,7 @@ const EditEventForm = ({event, eventId}) => {
           variant='warning' 
           onClick={handleFormSubmit}
           >
-          Submit Event</Button>
+          Edit Event</Button>
 
           <Row>
             <br></br>

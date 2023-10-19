@@ -10,6 +10,7 @@ const EditEvent = () => {
     
     const event = useSelector(state => selectEventById(state, eventId))
 
+    
     let content 
 
     if(event){

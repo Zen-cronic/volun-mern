@@ -79,20 +79,20 @@ const EventFilter = () => {
         <Form.Group className='my-1' >
 
             <Form.Label
-            //  htmlFor="dateFilter"
             >Date Filter</Form.Label>
-            {/* <Form.Control id='dateFilter'
-                type='text'
-                value={date}
-                as={DatePicker}
-                
-            /> */}
+
             <DatePicker className='mx-2'
                     
+                    isClearable={true}
                     showIcon={true}
                     selected={selectedDate} 
                     onChange={date => {
 
+                        if(!date) {
+                            setDateFilter('')
+                            setSelectedDate(date)
+                            return
+                        }
                         const formattedlocalDate = format(date, 'yyyy-MM-dd')
                         console.log('formattedlocalDate: ', formattedlocalDate);
 
@@ -103,8 +103,7 @@ const EventFilter = () => {
                     minDate={new Date()}
                     placeholderText="Select a date"
                     
-                    ariaDescribedBy="dateFilter"
-                    ariaLabelledBy="dateFilter"
+                
                     
                  />
     </Form.Group>
@@ -115,11 +114,18 @@ const EventFilter = () => {
 
     const handleFilterSubmit = async () => {
 
+        let filterKeysObj = {}
+
+        if(venue) filterKeysObj = {...filterKeysObj, venue}
+        if(isOpen) filterKeysObj = {...filterKeysObj, isOpen}
+        if(isUpcoming) filterKeysObj = {...filterKeysObj, isUpcoming}
+        if(date) filterKeysObj = {...filterKeysObj, date}
+
         try {
    
 
             const preferCacheValue = false
-            await filterEvents({venue, isOpen, isUpcoming, date}, preferCacheValue).unwrap()
+            await filterEvents(filterKeysObj, preferCacheValue).unwrap()
 
             navigate('/dash/events/filter')
 
