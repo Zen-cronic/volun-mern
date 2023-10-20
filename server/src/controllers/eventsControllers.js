@@ -65,7 +65,23 @@ const getAllEvents = asyncHandler(async(req,res)=>{
 })
 
 
+const getEventById = asyncHandler(async(req,res)=> {
 
+    const {eventId} = req.params
+    
+    if(requiredInputChecker(req.body)){
+        return res.status(400).json({message: "All fields required"})
+    }
+
+    const existingEvent = await Event.findById(eventId).lean().exec()
+
+    if(!existingEvent){
+        return res.status(400).json({message: "Event DNE"})
+    }
+
+    return res.json({existingEvent})
+
+})
 
 
 //search events
@@ -95,27 +111,6 @@ const searchEvents = asyncHandler(async(req,res)=>{
 
 
 
-})
-
- 
-
-
-
-//get events date - to see what type of date is returned from mongoDB
-const getAllEventsDates = asyncHandler(async(req,res)=> {
-
-
-    const allEventsDates = await Event.find()
-        .then(events => (
-
-            events.map(event => (
-                event.localEventDates
-            ))
-        ))
-       
-    res.json({allEventsDates})
-
-    
 })
 
 
@@ -235,6 +230,114 @@ const sortEvents = [
 ]
 
 //[] keep the _id of shifts as before
+// const updateEventInfo = asyncHandler(async(req,res)=>{
+
+//     const {eventId, eventName, eventVenue,
+//         eventDates, eventDescription, shifts} = req.body
+
+//     if(requiredInputChecker(req.body)){
+//         return res.status(400).json({message: "All fields required"})
+//     }
+
+//     const existingEvent = await Event.findById(eventId).exec()
+
+//     if(!existingEvent){
+//         return res.status(400).json({message: "Event DNE for PUT event info"})
+//     }
+
+//     //eventName canNOT be the same as an exisintgEvent - ltr more rigorous srh algo
+//     const duplicate = await Event.findOne({eventName}).lean().exec()
+
+//     if(duplicate && duplicate._id.toString() !== existingEvent.id){
+
+//         return res.status(409).json({message: "The renamed eventName already exists", duplicateEvent: duplicate})
+//     }
+
+ 
+//     // algorize this
+//     existingEvent.eventName = eventName
+//     existingEvent.eventVenue = eventVenue
+//     existingEvent.eventDates = eventDates
+//     existingEvent.eventDescription = eventDescription
+//     // existingEvent.shifts = shifts
+
+//     //NOT a pojo, use toObject() to access keys/vals
+//     // Object.keys(req.body).map((key) => {
+
+//     //     //updating shifts handled elsewhere
+//     //     if(key === 'shifts'){
+//     //         return null
+//     //     }
+//     //     const matchingEventKey = Object.keys(existingEvent.toObject()).find((eventKey)=> eventKey.includes(key))
+
+//     //     if(matchingEventKey !== undefined){
+
+//     //         existingEvent[matchingEventKey] = req.body[key]
+//     //     }
+
+
+
+//     // })
+
+//     const existingAllShifts  = existingEvent.shifts
+
+
+//     await Promise.all(shifts.map(async (returnedShift) => {
+
+//         const existingShift =existingAllShifts.find(shift => shift._id.toString() === returnedShift?.shiftId)
+
+//         console.log('existingShift found using returnedShfit from front: ', existingShift);
+//         if(existingShift){
+
+//             console.log('retunredShiftObj: ',returnedShift);
+//             console.log('returnedShiftObj shiftStart into Date: ',new Date(returnedShift.shiftStart))
+//             // existingShift = {...existingShift,
+//             //     shiftStart: returnedShift.shiftStart,
+//             //     shiftEnd: returnedShift.shiftEnd,
+//             //     shiftPositions: returnedShift.shiftPositions
+//             // }
+
+//             // existingEvent.shifts
+
+            
+//             //the save pre-hooks are NOT activated
+//            const res = await Event.updateOne(
+//                 {   _id: existingEvent._id,
+//                     "shifts._id": existingShift._id },
+
+//                 { $set: { "shifts.$.shiftStart": new Date(returnedShift.shiftStart),
+//                             "shifts.$.shiftEnd": new Date(returnedShift.shiftEnd),
+//                             "shifts.$.shiftPositions": parseInt(returnedShift.shiftPositions),
+                            
+//                     } }
+
+                
+//             )
+
+//             console.log('res: ', res);
+
+//         //    await existingEvent.save()
+//         }
+
+//         else{
+//             existingEvent.shifts.push(returnedShift)
+
+//             await existingEvent.save()
+//         }
+//     }))
+
+    
+    
+
+//     const udpatedEvent =existingEvent
+
+//     console.log('udpatedEvent: ', udpatedEvent);
+//     res.json({existingEvent})
+  
+
+// })
+
+//with save() only 
 const updateEventInfo = asyncHandler(async(req,res)=>{
 
     const {eventId, eventName, eventVenue,
@@ -259,81 +362,44 @@ const updateEventInfo = asyncHandler(async(req,res)=>{
     }
 
  
-    //algorize this
-    // existingEvent.eventName = eventName
-    // existingEvent.eventVenue = eventVenue
-    // existingEvent.eventDates = eventDates
-    // existingEvent.eventDescription = eventDescription
-    // existingEvent.shifts = shifts
-
-    
-    //NOT a pojo, use toObject() to access keys/vals
-    Object.keys(req.body).map((key) => {
-
-        //updating shifts handled elsewhere
-        if(key === 'shifts'){
-            return null
-        }
-        const matchingEventKey = Object.keys(existingEvent.toObject()).find((eventKey)=> eventKey.includes(key))
-
-        if(matchingEventKey !== undefined){
-
-            existingEvent[matchingEventKey] = req.body[key]
-        }
-
-
-
-    })
+    // algorize this
+    existingEvent.eventName = eventName
+    existingEvent.eventVenue = eventVenue
+    existingEvent.eventDates = eventDates
+    existingEvent.eventDescription = eventDescription
 
     const existingAllShifts  = existingEvent.shifts
 
 
-    await Promise.all(shifts.map(async (returnedShift) => {
+    shifts.map((returnedShift) => {
 
+        //shiftId included from front
         const existingShift =existingAllShifts.find(shift => shift._id.toString() === returnedShift?.shiftId)
 
-        console.log('existingShift: ', existingShift);
+        console.log('existingShift found using returnedShfit from front: ', existingShift);
         if(existingShift){
 
             console.log('retunredShiftObj: ',returnedShift);
-            console.log('returnedShiftObj shiftStart into Date: ',new Date(returnedShift.shiftStart))
-            // existingShift = {...existingShift,
-            //     shiftStart: returnedShift.shiftStart,
-            //     shiftEnd: returnedShift.shiftEnd,
-            //     shiftPositions: returnedShift.shiftPositions
-            // }
-
-            // existingEvent.shifts
-
-        
-           const res = await Event.updateOne(
-                {   _id: existingEvent._id,
-                    "shifts._id": existingShift._id },
-
-                { $set: { "shifts.$.shiftStart": new Date(returnedShift.shiftStart),
-                            "shifts.$.shiftEnd": new Date(returnedShift.shiftEnd),
-                            "shifts.$.shiftPositions": returnedShift.shiftPositions
-                    } },
-
-                
-            )
-
-            console.log('res: ', res);
-
+         
+            existingShift.shiftStart = new Date(returnedShift.shiftStart)
+            existingShift.shiftEnd = new Date(returnedShift.shiftEnd)
+            existingShift.shiftPositions = parseInt(returnedShift.shiftPositions)
+       
            
         }
 
         else{
             existingEvent.shifts.push(returnedShift)
 
-            await existingEvent.save()
+            // await existingEvent.save()
+            
         }
-    }))
+    })
 
     
     
 
-    const udpatedEvent =existingEvent
+    const udpatedEvent = await existingEvent.save()
 
     console.log('udpatedEvent: ', udpatedEvent);
     res.json({existingEvent})
@@ -341,24 +407,30 @@ const updateEventInfo = asyncHandler(async(req,res)=>{
 
 })
 
-const addShiftToEvent = asyncHandler(async(req,res)=> {
+const deleteEvent = asyncHandler(async(req,res)=>{
 
-    const {eventId, shiftStart, shiftEnd, shiftPositions}= req.body
+    const {eventId} =req.body
+
+ 
+
+    if(!eventId){
+        return res.status(400).json({message: "eventId required for delete"})
+    }
 
     const existingEvent = await Event.findById(eventId).exec()
 
     if(!existingEvent){
-        return res.status(400).json({message: "event DNE to add shift"})
+        return res.status(400).json({message: "Event DNE for DELETE event"})
     }
 
-    existingEvent.shifts.push({shiftStart, shiftEnd, shiftPositions})
+    const deletedEvent = await existingEvent.deleteOne()
 
-    const eventWithAddedShifts =await existingEvent.save()
+    const message = `Event: '${deletedEvent.eventName}' deleted`
 
-    
-    res.json({eventWithAddedShifts})
-
+    res.json({message})
 })
+
+
 
 const getSignedUpVolunteers = asyncHandler(async(req,res)=>{
 
@@ -575,14 +647,13 @@ module.exports = {
     createNewEvent,
     getAllEvents,
     updateEventInfo,
+    deleteEvent,
+    getEventById,
 
     searchEvents,
 
-    getAllEventsDates,
-
     sortEvents,
 
-    addShiftToEvent,
 
 
     getSignedUpVolunteers,

@@ -63,7 +63,7 @@ const getAllVolunteers = asyncHandler(async(req,res)=>{
 })
 
 //get one user - both volun or admin
-const getUser = asyncHandler(async(req,res)=> {
+const getUserById = asyncHandler(async(req,res)=> {
 
     const {id} = req.params
 
@@ -227,7 +227,7 @@ const cancelSignedUpShifts = asyncHandler(async(req,res)=> {
         return res.status(400).json({message: "All fields required"})
 
     }
-    const existingUser = await User.findById(volunId).select('-password').exec()
+    const existingUser = await User.findById(volunId).select({password: 0}).exec()
     const existingEvent = await Event.findById(eventId).exec()
 
     
@@ -827,7 +827,7 @@ module.exports = {
 
     updateVolunteeredShifts,
 
-    getUser,
+    getUserById,
 
 
     // sortVolunteers  //arr of asyncHanlders

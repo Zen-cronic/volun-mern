@@ -41,6 +41,41 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
         }),
 
 
+        getEventById: builder.query({
+
+
+            query: (eventId) => ({   
+
+                url: `/events/${eventId}`,
+                method: 'GET'
+            }),
+
+            transformResponse: (responseData) => {
+
+                const {existingEvent} = responseData
+
+                existingEvent.id = existingEvent._id
+
+                const serializedEvent = existingEvent
+
+                console.log('serializedEvent from getEventById slice: ', serializedEvent);
+                return eventsAdapter.setOne(eventsInitialState, serializedEvent)
+            },
+
+            providesTags: (result, err, arg) => {
+
+            
+                 return  [
+
+                        ...result?.ids.map(id => ({
+                            type: 'Event', id
+                        }))
+                    ]            
+                
+                
+            }
+        }),
+
        postFilteredEvents: builder.query({
 
         query: (filterOptions) => ({
@@ -185,7 +220,7 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
    
         }),
 
-        updateEventInfo: builder.mutation({
+        putUpdateEventInfo: builder.mutation({
 
             query: (updateEvent) => ({
 
@@ -205,6 +240,23 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
           
            
     
+        }),
+
+
+        deleteEvent: builder.mutation({
+
+            query: (eventId) => ({
+
+                url: '/events',
+                method: 'DELETE',
+                body: {eventId}
+            }),
+
+            invalidatesTags: (result, err, arg) => {
+
+                return   [{type: 'Event', id: arg.eventId}]
+               }
+
         })
 
     }),
@@ -229,6 +281,7 @@ export const {
     selectAll: selectAllEvents
 
 } = eventsAdapter.getSelectors(state => selectGetEventsData(state) ?? eventsInitialState)
+
 export const {
 
     useGetEventsQuery,
@@ -240,7 +293,9 @@ export const {
 
     usePostNewEventMutation,
 
-    useUpdateEventInfoMutation,
+    usePutUpdateEventInfoMutation,
+
+    useGetEventByIdQuery,
     
 
 } = eventsApiSlice

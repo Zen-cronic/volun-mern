@@ -91,7 +91,7 @@ export const volunteersApiSlice = apiSlice.injectEndpoints({
                  return  [
 
                         ...result?.ids.map(id => ({
-                            type: 'POST', id
+                            type: 'Volun', id
                         }))
                     ]            
                 

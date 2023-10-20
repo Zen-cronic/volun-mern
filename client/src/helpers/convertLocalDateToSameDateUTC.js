@@ -29,6 +29,7 @@ const convertLocalDateToSameDateUTC = (localDateString) => {
     const date = new Date(localDateString)
     date.setDate(numberDD)
 
+    // console.log('setDate for DatePickerForm: ', date);  //as expected
     //setDate return a number
   return date
 }

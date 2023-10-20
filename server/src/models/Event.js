@@ -389,8 +389,15 @@ EventSchema.pre('updateOne',{document:false, query: true}, async function(next){
 
     console.log('8-B) EventSchema pre-updateOne hook called as QueryMiddleware');
 
+            //getUpdate returns current update opeartions
+            //the $set obj with updatedAt field
+    const modifiedField = this.getUpdate().$set
+    
+    console.log('8-B) modifiedField: ', modifiedField);
 
+    this.updateOne()
     const docToUpate = await this.model.findOne(this.getQuery())
+    
     console.log('8-B) docToUpate: ', docToUpate);
 
     // const updateInfo = await this.model.findOne(this.getUpdate())

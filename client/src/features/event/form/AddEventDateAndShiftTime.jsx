@@ -34,13 +34,13 @@ const AddEventDateAndShiftTime = ({
         <Col>
 
         {/* {timePickerForm} */}
-        <TimePickerForm shift={shift} updateShift={updateShift} startOrEnd={'start'} />
+        <TimePickerForm shift={shift} updateShift={updateShift} startOrEnd={'start'} eventDate={eventDate} />
 
         </Col>
         <Col>
 
         {/* {timePickerForm} */}
-        <TimePickerForm shift={shift} updateShift={updateShift} startOrEnd={'end'} />
+        <TimePickerForm shift={shift} updateShift={updateShift} startOrEnd={'end'} eventDate={eventDate}/>
 
         </Col>
 

@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react'
 import AddEventDateAndShiftTime from './AddEventDateAndShiftTime'
 
 import { toast } from 'react-toastify'
-import { useNavigate, useParams} from 'react-router-dom'
+import { useNavigate} from 'react-router-dom'
 import isValidNumberInput from '../../../helpers/isValidNumberInput'
 import { Container, Row, Form, Stack, Col, FloatingLabel,Button, } from 'react-bootstrap'
-import { useUpdateEventInfoMutation } from '../eventsApiSlice'
+import { usePutUpdateEventInfoMutation } from '../eventsApiSlice'
 
 
 //event obj from back - localEventDates+T00:00
@@ -27,7 +27,7 @@ const EditEventForm = ({event, eventId}) => {
         shifts: [],
     })
 
-    const [updateEventInfo, {isSuccess: isUpdateSuccess, isLoading: isUpdateLoading}] = useUpdateEventInfoMutation()
+    const [updateEventInfo, {isSuccess: isUpdateSuccess, isLoading: isUpdateLoading}] = usePutUpdateEventInfoMutation()
 
    //reformat data for front rendering 
    //local dates format from back using date-fns-tz format(): yyyy-MM-dd HH:mm TZ
@@ -107,17 +107,6 @@ const EditEventForm = ({event, eventId}) => {
         setShiftListId(initialShiftListId +1)
 
       }
-
-      // return () => {
-      //   setFormData({
-  
-      //     eventName: '',
-      //      eventVenue: '',
-      //       eventDates: [], 
-      //       eventDescription: '',
-      //       shifts: []
-      //   })
-      // }
     }, []);
 
     useEffect(() => {
@@ -295,9 +284,9 @@ const EditEventForm = ({event, eventId}) => {
         })
         
    
-        console.log('------------------');
-        console.log('modified shifts for back: ', modifiedShifts);
-        console.log('modified eventDatesOnly for back: ', modifiedEventDatesOnly);
+        // console.log('------------------');
+        // console.log('modified shifts for back: ', modifiedShifts);
+        // console.log('modified eventDatesOnly for back: ', modifiedEventDatesOnly);
 
         const formDataForBack = {...formData, eventDates: modifiedEventDatesOnly, shifts: modifiedShifts, eventId}
         console.log('formData from handleSubmitForm: ', formDataForBack);

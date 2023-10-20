@@ -11,7 +11,7 @@ const router = express.Router()
 
 //for DashFooter user info w jwt-decode
 router.route('/:id')
-    .get(usersControllers.getUser)
+    .get(usersControllers.getUserById)
 
 
 
