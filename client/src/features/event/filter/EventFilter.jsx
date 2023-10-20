@@ -114,13 +114,40 @@ const EventFilter = () => {
 
     const handleFilterSubmit = async () => {
 
-        let filterKeysObj = {}
+        // let filterKeysObj = {}
 
-        if(venue) filterKeysObj = {...filterKeysObj, venue}
-        if(isOpen) filterKeysObj = {...filterKeysObj, isOpen}
-        if(isUpcoming) filterKeysObj = {...filterKeysObj, isUpcoming}
-        if(date) filterKeysObj = {...filterKeysObj, date}
+        // const filterKeysArr = [venue, isOpen, isUpcoming, date]
 
+        // filterKeysArr.map((filterKey) => {
+
+        //     if(filterKey){
+
+        //         let filterKeyStr = filterKey.toString()
+
+        //         if(typeof filterKey === 'boolean'){
+        //             console.log('filterKey is boolean: ', filterKey);
+        //             filterKeyStr = Object.keys({filterKey}).pop()
+        //         }
+        //         Object.assign(filterKeysObj, {[filterKeyStr]: filterKey})
+                
+        //     }
+
+        // })
+
+        //obj appch cuz js arr is non-associative
+        const filterKeysObj = {venue, isOpen, isUpcoming, date}
+
+        Object.entries(filterKeysObj).map(([propKey, propVal])=> {
+
+            //either true or empty string
+            if(!propVal){
+                delete filterKeysObj[propKey]
+            }
+        })
+
+        
+        console.log('filterKeysObj: ', filterKeysObj);
+        
         try {
    
 

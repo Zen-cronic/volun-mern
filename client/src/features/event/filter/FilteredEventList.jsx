@@ -3,6 +3,7 @@ import React from 'react'
 import EventExcerpt from '../EventExcerpt'
 import { useSelector } from 'react-redux'
 import { selectFilteredEvents } from '../eventsSlice'
+import EventListLayout from '../EventListLayout'
 
 //rmove async!
 const FilteredEventList = () => {
@@ -21,14 +22,14 @@ const FilteredEventList = () => {
 
         
             const eventId = event.eventId
-
-        //    return <EventExcerpt key={event.eventId} eventId={event.eventId}/>
-           return <EventExcerpt key={eventId} eventId={eventId}/>
+           return ( <tr key={eventId}>
+           <EventExcerpt key={eventId} eventId={eventId}/>
+              </tr>)
         
     })
 
     
-  return content
+  return ( <EventListLayout tableBodyContent={content}/>)
 }
 
 export default FilteredEventList

@@ -3,6 +3,7 @@ import { useGetEventsQuery } from './eventsApiSlice'
 import EventExcerpt from './EventExcerpt'
 import { Link } from 'react-router-dom'
 import {Table, Container} from 'react-bootstrap'
+import EventListLayout from './EventListLayout'
 
 const EventList = () => {
 
@@ -28,7 +29,7 @@ const EventList = () => {
         // console.log('all Events ids from useQUery:', ids);
         tableBodyContent = ids.map((eventId) => (
 
-          <tr>
+          <tr key={eventId}>
                 <EventExcerpt key={eventId} eventId={eventId}/>
           </tr>
             
@@ -42,24 +43,7 @@ const EventList = () => {
        <Link to={'/dash/events/new'}>Add new event</Link>
      </div>
 
-   <Container className='my-2 px-3'>
-       <Table striped bordered hover >
-
-           <thead >
-             <tr>
-               <th scope='col'>Event Name</th>
-               <th scope='col'>Venue</th>
-               <th scope='col'>Description</th>
-               <th scope='col'>When?</th>
-               
-             </tr>
-           </thead>
-
-           <tbody>
-             {tableBodyContent}
-           </tbody>
-       </Table>
-     </Container>
+      <EventListLayout tableBodyContent={tableBodyContent}/>
  </>
     )
   return content 
