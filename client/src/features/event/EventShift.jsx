@@ -1,14 +1,14 @@
 import React, {useState} from 'react'
 import useAuth from '../../hooks/useAuth';
-import { selectVolunteerById, useGetUserByIdQuery, useLazyPostCheckButtonsQuery, usePatchCancelShiftMutation, usePatchSignedUpShiftMutation } from '../volun/volunteersApiSlice';
-import { useSelector } from 'react-redux';
+import { useLazyPostCheckButtonsQuery, usePatchCancelShiftMutation, usePatchSignedUpShiftMutation } from '../volun/volunteersApiSlice';
 import { useEffect } from 'react';
+import { Button, Row , Col} from 'react-bootstrap';
+import convertShiftDisplayDateTime from '../../helpers/convertShiftDisplayDateTime';
 
 const EventShift = ({shift, eventId}) => {
 
   const {role, isVolunteer, volunId} = useAuth()
 
-  // const [reloadPage, setReloadPage] = useState(false)
 
   const shiftId = shift?._id
 
@@ -22,7 +22,6 @@ const EventShift = ({shift, eventId}) => {
 
   const [checkButton] = useLazyPostCheckButtonsQuery()
 
-  console.log('shiftId: ', shiftId);
 
   useEffect(() => {
     
@@ -94,28 +93,44 @@ const EventShift = ({shift, eventId}) => {
     }
   }
 
+  console.log('shift: ', shift);
+
+return (   
+  
 
 
-return (    <li key={shiftId}>
+  <>
+  <td>{convertShiftDisplayDateTime(shift?.localShiftStart)}</td>
+  <td>{convertShiftDisplayDateTime(shift?.localShiftEnd)}</td>
+  <td>{shift?.shiftDuration}</td>
+  <td>{shift?.shiftPositions}</td>
 
-  <p>Shift Start: {shift.localShiftStart}</p>
-  <p>Shift End: {shift.localShiftEnd}</p>
-  <p>open shift poistion: {shift.shiftPositions}</p>
-
-  <p className='permissionButtons'> 
+  <td className='permissionButtons'> 
 
     {
       (isVolunteer && role ==='VOLUNTEER') &&
-    <>
-    <button className='signUpButton' type='button' disabled={disableSignUpButton} onClick={handleSignUpShift}>Sign Up for shift!</button>
-      <button className='cancelSignUp' type='button' disabled={disableCancelButton} onClick={handleCancelShift}>Cancel shift</button>
+    
+    <Row className='my-2'>
+      <Col>
+      <Button className='signUpButton' type='button' disabled={disableSignUpButton} onClick={handleSignUpShift}>Sign Up for shift!</Button>
 
-    </>
+      </Col>
+
+      <Col>
+      <Button className='cancelSignUp' type='button' disabled={disableCancelButton} onClick={handleCancelShift}>Cancel shift</Button>
+
+      </Col>
+    </Row>
+   
+
+   
     }
    
  
-  </p>
-</li>)
+  </td>
+  </>
+
+)
 }
 
 export default EventShift

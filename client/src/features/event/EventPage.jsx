@@ -4,6 +4,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { selectEventById } from './eventsApiSlice'
 import useAuth from '../../hooks/useAuth'
 import EventShift from './EventShift'
+import { Container, Row, Col, Button, ListGroup } from 'react-bootstrap'
+import convertEventDisplayDate from '../../helpers/convertEventDisplayDate'
+import EventShiftTable from './EventShiftTable'
 
 
 const EventPage = () => {
@@ -42,53 +45,100 @@ const EventPage = () => {
   if(event){
 
     
-    const eventShifts = event.shifts.map((shift, idx)=> {
+  //   const eventShifts = event.shifts.map((shift, idx)=> {
 
-      return <EventShift shift={shift} key={idx} eventId={eventId}/>
+  //     return <EventShift shift={shift} key={idx} eventId={eventId}/>
 
-  })
+  // })
 
-    const eventDates = event.localEventDates.map((date,idx) => (
+    const eventDates = event.localEventDates.map((date,idx) => {
 
-      <li key={idx*100}>{date}</li>
+      const displayDate = convertEventDisplayDate(date.split(' ')[0])
 
-    ))
+      return (<ListGroup.Item as='li' className='w-25 border-2' key={idx}>{displayDate}</ListGroup.Item>)
+
+    })
+
+    const adminContent = (
+
+      (isAdmin && role==='ADMIN')
+
+      &&
+
+      <Row className='my-2'>
+
+        <Col>
+          <Button type='button'
+          onClick={handleEditEvent}
+          >Edit Event - add shift, etc</Button>
+        </Col>
+
+        <Col>
+        <Button type='button' onClick={handleViewSignedUpVolunteers}>See signedUPVolunteers/stats for admin</Button>
+
+        </Col>
+
+
+
+      </Row>
+    
+ 
+        
+    )
 
     content = (
-      <article>
-          <h1>{event.eventName}</h1>
-          <p className="excerpt">Event Description: {event.eventDescription}</p>
-          <p>Event VEnue: {event.eventVenue}</p>
-          <label>Event Dates: </label>
-          <ol key={event.id + 'a'}>
-            {eventDates}
-          </ol>
+      
+      <Container fluid className='py-2'
+       >
+     
+          <Row>
+            <Col>
+            <h1>{event.eventName}</h1>
+            </Col>
+           
+          </Row>
+          
+          <Row>
+            <Col>
+            <p className="excerpt">Event Description: {event.eventDescription}</p>
 
-          <label>Event Shifts: </label>
-          <ol key={event.id + 'b'}>
-            {eventShifts}
+            </Col>
+          </Row>
+        
+          <Row>
+             <Col>
+             <p>Event VEnue: {event.eventVenue}</p>
 
-          </ol>
-          {/* <Link to={`/events/${event.id}`}>View Event</Link> */}
+             </Col>
+
+          </Row>
+
+          <Row>
+
+            <Col>
+              <label>Event Dates: </label>
+              <ListGroup as='ol' numbered>
+                 
+                  {eventDates}
+              </ListGroup>
             
-            {/* only adm */}
+            </Col>
+          </Row>
 
-          {
-            (isAdmin && role==='ADMIN')
-              &&
-              <div>
-            <button type='button'
-                onClick={handleEditEvent}
-            >Edit Event - add shift, etc</button>
+          <Row>
+            <Col>
+              <label>Event Shifts: </label>
+              <EventShiftTable shifts={event.shifts} eventId={eventId}/>
+            </Col>
+          </Row>
+          
 
-          <button type='button' onClick={handleViewSignedUpVolunteers}>See signedUPVolunteers/stats for admin</button>
-
-          </div>
-          }
+         
+          {adminContent }
          
         
         
-      </article>
+      </Container>
 
 
   )
