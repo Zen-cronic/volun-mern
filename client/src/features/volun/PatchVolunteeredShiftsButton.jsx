@@ -1,5 +1,6 @@
 import React from 'react'
 import { usePatchVolunteeredShiftsMutation } from './volunteersApiSlice'
+import { Button } from 'react-bootstrap'
 
 const PatchVolunteeredShiftsButton = () => {
 
@@ -24,9 +25,9 @@ const PatchVolunteeredShiftsButton = () => {
 
     const button = (
 
-        <button type='button'
+        <Button type='button'
                 onClick={handleVolunteeredShifts}
-            > Update Volunteered Shifts </button>
+            > Update Volunteered Shifts </Button>
     )
   return button
 }

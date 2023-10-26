@@ -61,8 +61,8 @@ const SingleVolunteerPage = () => {
 
             const shiftId = shiftObj.shiftId
             const shiftDuration = shiftObj.shiftDuration
-            // console.log('shiftDuration from volunteeredSHifts: ', shiftDuration);
-           return ( 
+
+            return ( 
            
            <li key={shiftObj.shiftId}>
 

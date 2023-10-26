@@ -4,6 +4,7 @@ import { usePutUpdateVolunteerInfoMutation } from '../volunteersApiSlice'
 import { toast } from 'react-toastify'
 import useAuth from '../../../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
+import { useSendLogOutMutation } from '../../auth/authApiSlice'
 
 const UpdatePassword = () => {
 
@@ -14,7 +15,9 @@ const UpdatePassword = () => {
 
     const {volunId} = useAuth()
     const navigate = useNavigate()
-    const [updatePassword, {isSuccess: isUpdateSuccess, isLoading}] = usePutUpdateVolunteerInfoMutation()
+
+    const [updatePassword, {isSuccess: isUpdateSuccess, isLoading: isUpdateLoading}] = usePutUpdateVolunteerInfoMutation()
+    const [sendLogOut, {isSuccess: isLogOutSuccess, isError, error, isLoading: isLogOutLoading}] = useSendLogOutMutation()
 
     useEffect(() => {
        
@@ -24,12 +27,12 @@ const UpdatePassword = () => {
             setConfirmNewPassword('')
             toast.success('Password updated successfully')
 
-            navigate(`/dash/volunteers/${volunId}`)
-
+            // navigate(`/dash/volunteers/${volunId}`)
+            navigate('/login')
         }
     }, [isUpdateSuccess, navigate]);
 
-    const handleFormSubmit = async (e) => {
+    const handleFormSubmit = async(e) => {
 
         e.preventDefault()
 
@@ -39,9 +42,22 @@ const UpdatePassword = () => {
         }
 
         try {
-            const updatedVolunteer = await updatePassword({currentPassword, newPassword, volunId}).unwrap()
+              //  sequential promises
+               updatePassword({currentPassword, newPassword, volunId})
+                    .then(async (updatePasswordResult) => {
 
-            console.log('updatedVolunteer from UpdatePassword: ', updatedVolunteer);
+                      // throw new Error('Error updating password')
+                      const logOutData = await sendLogOut().unwrap()
+                      
+                      // console.log('updatedVolunteer from UpdatePassword: ', updatePasswordResult)
+                      console.log('logOutData from UpdatePassword: ', logOutData)
+                    })
+
+                    //also sequential promises
+              // const updatedVolunteer = await updatePassword({currentPassword, newPassword, volunId}).unwrap()
+              // console.log('awaited updatedVolunteer from UpdatePassword: ', updatedVolunteer)
+              // const logOutData = await sendLogOut().unwrap()
+              // console.log('awaited logOutData from UpdatePassword: ', logOutData);
 
         } catch (error) {
             toast.error('Error updating password')

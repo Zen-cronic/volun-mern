@@ -91,7 +91,9 @@ const updateVolunteer = asyncHandler(async(req,res)=>{
     //userId = sch id
     const {username, newPassword, volunId, currentPassword } = req.body
 
-    //password change, username change is optional
+    // console.log('required fields updateVolunteer: ', {...req.body});
+
+    //password change, username/info change is optional
     if(!volunId){
 
         return res.status(400).json({message: "db volunId field required"})
@@ -121,11 +123,6 @@ const updateVolunteer = asyncHandler(async(req,res)=>{
 
 
 
-    // if(password){
-
-    //     const newHashedPwd = await bcrypt.hash(password, 10)
-    //     existingUser.password = newHashedPwd
-    // }
 
     if(newPassword && currentPassword){
 
@@ -545,10 +542,9 @@ const updateVolunteeredShifts = asyncHandler(async(req, res)=>{
     ))
 
 
-    // const allVolunteers = await User.find().select({_id: 1, volunteeredShifts: 1, signedUpShifts: 1, username: 1}).select({password: 0}).exec()
     const allVolunteers = await User.find().select({password: 0}).exec()
 
-    await Promise.all(allVolunteers.map(async (volun)=> {
+     await Promise.all(allVolunteers.map(async(volun)=> {
         // allVolunteers.map(async (volun)=> {
     
            await Promise.all(volun.signedUpShifts.map(async (signedUpShift) => {
@@ -577,10 +573,10 @@ const updateVolunteeredShifts = asyncHandler(async(req, res)=>{
                 
                 if(!alreadyAddedShift){
     
-                    const event = await Event.findById(includedEvent.eventId)
-                    const signedUpShiftInfo = event.shifts.find(shift => shift._id.toString() === signedUpShift.toString())
+                    const event = await Event.findById(includedEvent?.eventId)
+                    const signedUpShiftInfo = event?.shifts.find(shift => shift._id.toString() === signedUpShift.toString())
         
-                    if(isBefore(signedUpShiftInfo.shiftEnd, nowDate)){
+                    if(isBefore(signedUpShiftInfo?.shiftEnd, nowDate)){
         
                         volun.volunteeredShifts.push({
         
@@ -597,6 +593,13 @@ const updateVolunteeredShifts = asyncHandler(async(req, res)=>{
             })
             )
     
+            // const totalHoursObj = volun.volunteeredShifts.reduce((prev, current)=> {
+            //     const accumulatedHours = prev.shiftDuration + current.shiftDuration
+            //     return {shiftDuration: accumulatedHours}
+            // }, {shiftDuration: 0})
+
+            // console.log(totalHoursObj.shiftDuration, " for ", volun.username);
+            // volun.totalVolunteeredHours = totalHoursObj.shiftDuration
             await volun.save()
         })
        )
@@ -618,132 +621,17 @@ const updateVolunteeredShifts = asyncHandler(async(req, res)=>{
 
         return {volunId: volun._id,
             totalVolunteeredHours: volun.totalVolunteeredHours}
-    })
+        })
 
-)
+    	)
+    
+    
     res.json({allEventsWithShifts, 
         // extractedPropVolunteers
         // allVolunteers,
-        volunWithTotalHours
+        // volunWithTotalHours
     })
 })
-
-
-// const sortVolunteersByHours = asyncHandler(async(req,res)=> {
-
-//     // const sortedVolunteers  = await User.find().sort({totalVolunteeredHours: -1}).
-//     // //_id  included by default
-//     // select({totalVolunteeredHours: 1, volunteeredShifts: 1})
-//     // .exec()
-
-//     // const mySortedVolunteers = await User.find().select({totalVolunteeredHours: 1, volunteeredShifts: 1}).exec()
-//     // .then(volunteers => sortOrder(volunteers, "totalVolunteeredHours", false))
-    
-//     //choose mi algo
-
-//     const sortedVolunteers = await User.find().select({totalVolunteeredHours: 1, volunteeredShifts: 1}).exec()
-//     .then(volunteers => sortOrder(volunteers, "totalVolunteeredHours", false))
-
-
-//     res.json({sortedVolunteers,
-//         //  mySortedVolunteers
-//         })
-
-    
-// })
-
-// //sort users az
-// const sortVolunteersAlphabetically = asyncHandler(async(req, res)=> {
-
-//     const allSortedVolun = await User.find({role: {$eq: ROLES.VOLUNTEER}}).select(['-password', '-__v']).exec()
-    
-    
-//     .then(voluns => (
-
-//         sortOrder(voluns, 'username', true)
-//         // sortOrder(voluns, SORT_OBJECT.AZ.sortIndex,true)
-//     ))
-    
-//     res.json({allSortedVolun})
-
-// })
-
-//combine volun sort 
-// const sortVolunteers = [
-    
-//     //sort az
-//     asyncHandler(async(req,res, next) => {
-
-
-//         const [[sortOption, optionVal]] = Object.entries(req.body)
-
-//         if(sortOption === 'hours'){
-
-//             return next()
-//         }
-
-
-//         if(sortOption === 'az'){
-//             //continue
-//         }
-
-//         const sortedVolunteers = await User.find({role: {$eq: ROLES.VOLUNTEER}}).select(['-password', '-__v']).exec()
-    
-    
-//         .then(voluns => (
-    
-//             sortOrder(voluns, 'username', true)
-//             // sortOrder(voluns, SORT_OBJECT.AZ.sortIndex,true)
-//         ))
-
-        
-//         .then(sortedVolunteers => sortedVolunteers.map(volun => ({volunId: volun._id, volunHours: volun.totalVolunteeredHours, volunName: volun.username,
-//             volunRole: volun.role })))
-        
-//         res.json({sortedVolunteers})
-
-//         // req.sortOption= sortOption
-    
-// }),
-
-//     //sort hours descending - last one DNC next
-//     asyncHandler(async(req,res)=> {
-
-//         // const sortedVolunteers = await User.find().select({totalVolunteeredHours: 1, volunteeredShifts: 1, username: 1}).exec()
-//         const sortedVolunteers = await User.find({role: {$eq: ROLES.VOLUNTEER}})
-//         .select({password: 0, __v: 0}).exec()
-//             .then(volunteers => sortOrder(volunteers, "totalVolunteeredHours", false))
-
-//             .then(sortedVolunteers => sortedVolunteers.map(volun => ({volunId: volun._id, volunHours: volun.totalVolunteeredHours, volunName: volun.username,
-//             volunRole: volun.role })))
-
-//         res.json({sortedVolunteers,
-//             //  mySortedVolunteers
-//             })
-
-//     })
-// ]
-
-
-const sortVolunteers = asyncHandler(async (req,res)=> {
-
-    const [[sortOption, orderBool]] = Object.entries(req.body)
-
-    if(typeof orderBool !== 'boolean'){
-
-        throw new Error('Sort val must be a boolean for either ascending or descending - voluns')
-    }
-
-    const sortedVolunteers = await sortVolunteersHelper(sortOption, orderBool)
-
-    //serilaized volunters
-        .then(volunteers => volunteers.map(volun => ({volunId: volun._id, volunHours: volun.totalVolunteeredHours, volunName: volun.username,
-        })))
-    
-    res.json({sortedVolunteers})
-
-})
-
 
 const getUpcomingSignedUpShifts = asyncHandler(async(req,res) => {
 
@@ -766,6 +654,8 @@ const getUpcomingSignedUpShifts = asyncHandler(async(req,res) => {
 
     const currentDate = new Date(Date.now())
 
+
+  
     const allEventsWithShifts = await Event.find().select({shifts: 1}).exec()
         .then(events => 
                 
@@ -783,23 +673,25 @@ const getUpcomingSignedUpShifts = asyncHandler(async(req,res) => {
 
     const upcomingShifts = []
 
+    //await nu needed - BUT need to await until the Promise for all is resolved before sending response
     await Promise.all(signedUpShifts.map(async(signedUpShift)=> {
 
+        // {eventId: , eventShifts: , | undefined}
         const includedEvent = allEventsWithShifts.find(event => {
 
-            const foundEvent = event.eventShifts.find(shift => (
+            const foundEvent = event.eventShifts.find(shiftId => (
 
-                shift.toString() === signedUpShift.toString()
+                shiftId.toString() === signedUpShift.toString()
             ))
 
             return foundEvent
         })
 
-        const event = await Event.findById(includedEvent.eventId)
+        const event = await Event.findById(includedEvent?.eventId)
 
-        const signedUpShiftInfo = event.shifts.find(shift => shift._id.toString() === signedUpShift.toString())
+        const signedUpShiftInfo = event?.shifts.find(shift => shift._id.toString() === signedUpShift.toString())
 
-        if(isAfter(signedUpShiftInfo.shiftStart, currentDate )){
+        if(isAfter(signedUpShiftInfo?.shiftStart, currentDate )){
 
     //  or  if(isBefore(signedUpShiftInfo.shiftEnd, nowDate)){
 
@@ -821,6 +713,28 @@ const getUpcomingSignedUpShifts = asyncHandler(async(req,res) => {
     
 
 })
+
+const sortVolunteers = asyncHandler(async (req,res)=> {
+
+    const [[sortOption, orderBool]] = Object.entries(req.body)
+
+    if(typeof orderBool !== 'boolean'){
+
+        throw new Error('Sort val must be a boolean for either ascending or descending - voluns')
+    }
+
+    const sortedVolunteers = await sortVolunteersHelper(sortOption, orderBool)
+
+    //serilaized volunters
+        .then(volunteers => volunteers.map(volun => ({volunId: volun._id, volunHours: volun.totalVolunteeredHours, volunName: volun.username,
+        })))
+    
+    res.json({sortedVolunteers})
+
+})
+
+
+
 module.exports = {
     createNewVolunteer,
     getAllVolunteers,

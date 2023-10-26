@@ -20,40 +20,6 @@ const EventShift = ({shift, eventId}) => {
   //canNOT use memoized selector for volunteer - /users isNOT memoized
   // const volunteer = useSelector(state => selectVolunteerById(state, volunId))
 
-  // if(volunteer){
-
-  //   const {signedUpShifts} = volunteer
-
-  //   console.log('selected volunteer from eventShift: ', volunteer)
-    
-  //   const alreadySignedUp = signedUpShifts.find(id => id.toString() === shiftId.toString())
-
-  //   if(alreadySignedUp){
-  //     setDisableSignUp(true)
-  //   }
-  // }
-
-
-  //infinite rerendering
-  // const {data: user, isSuccess: isVolunteerDataSuccess, isLoading, isError, error} = useGetUserByIdQuery(volunId)
-
-  // if(isVolunteerDataSuccess){
-  
-      
-  //   const {entities} = user
-  //   const volunteer = entities[volunId]
-
-  //   const {signedUpShifts} = volunteer
-
-  //   console.log('selected volunteer from eventShift: ', volunteer)
-
-  //   const alreadySignedUp = signedUpShifts.find(id => id.toString() === shiftId.toString())
-
-  //   if(alreadySignedUp){
-  //     setDisableSignUp(true)
-  //   }
-  // }
-
   const [checkButton] = useLazyPostCheckButtonsQuery()
 
   console.log('shiftId: ', shiftId);
@@ -64,10 +30,6 @@ const EventShift = ({shift, eventId}) => {
 
       //try Promise.all for both buttons
       try {
-        // const updatableData = await checkButton({eventId, shiftId, volunId, buttonType: 'signup'}).unwrap()
-        // const cancelableData = await checkButton({eventId, shiftId, volunId, buttonType: 'cancel'}).unwrap()
-
-        // await Promise.all([updatableData, cancelableData])
 
         const [updatableData, cancelableData] = await Promise.all([
          checkButton({eventId, shiftId, volunId, buttonType: 'signup'}).unwrap(), 
@@ -101,6 +63,7 @@ const EventShift = ({shift, eventId}) => {
 
       console.log('return data from updateSignUPShift from front: ', data)
 
+      //modal 
       window.location.reload(true)
       // if(isSignUpSuccess){
       //   console.log('signedUP');
@@ -132,21 +95,7 @@ const EventShift = ({shift, eventId}) => {
   }
 
 
-  // const handleViewSignedUpVolunteers = async() => {
 
-  //   // try {
-  //   //   const data = await getSignedUpVolunteers({eventId}).unwrap()
-
-  //   //   console.log('untransformed data for getSignedupVolkun from front: ', data);
-  //   // } catch (error) {
-  //   //   console.log('getSIgnedUPVolun front error: ', error);
-  //   // }
-
-  //     navigate('/dash/events/')
-  // }
-
-
-  // const volunId = 
 return (    <li key={shiftId}>
 
   <p>Shift Start: {shift.localShiftStart}</p>

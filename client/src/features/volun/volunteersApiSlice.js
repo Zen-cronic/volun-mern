@@ -1,6 +1,7 @@
 import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 import { apiSlice } from "../../app/api/apiSlice";
 import { setSearchedVolunteers, setSortedVolunteers } from "./volunteersSlice";
+import { logOut } from "../auth/authSlice";
 
 
 export const volunteersAdapter = createEntityAdapter()
@@ -224,7 +225,7 @@ export const volunteersApiSlice = apiSlice.injectEndpoints({
 
         putUpdateVolunteerInfo: builder.mutation({
 
-            query: ({updateVolunteerInfo}) => ({
+            query: (updateVolunteerInfo) => ({
 
                 url: '/users',
                 method: 'PUT',
@@ -232,11 +233,36 @@ export const volunteersApiSlice = apiSlice.injectEndpoints({
 
             }),
 
-            invalidatesTags: (result, error, arg) => ([
+            // async onQueryStarted(arg, {queryFulfilled, dispatch}){
 
-                {type: 'Volun', id: arg.volunId}
+            //     if(!arg.newPassword || !arg.currentPassword){
 
-            ])
+            //         return null
+            //     }
+
+            //     try {
+            //         const {data} = await queryFulfilled
+
+            //         const {updatedVolunteer} = data
+
+            //         console.log('updatedVolunteer from putUpdateVolunteerInfo volunSlice: ', updatedVolunteer);
+
+            //         dispatch(logOut())
+
+            //     } catch (error) {
+            //         console.error('onQueryStarted putUpdateVolunteerInfo error: ', error);
+            //     }
+            // },
+
+            invalidatesTags: (result, error, arg) => {
+             
+                // console.log('arg from putUpdateVolunteerInfo: ', arg);
+                return  ([
+
+                    {type: 'Volun', id: arg.volunId}
+    
+                ])
+            }
 
         }),
 

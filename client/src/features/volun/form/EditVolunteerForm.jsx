@@ -81,7 +81,7 @@ const EditVolunteerForm = ({volunteer}) => {
 
         <br></br>
         
-        <Row>
+        <Row className='my-2'>
             <Col>
                 <Button 
             type='submit' 
