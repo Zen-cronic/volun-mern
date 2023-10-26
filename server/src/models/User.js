@@ -75,8 +75,6 @@ const userSchema = new mongoose.Schema({
 
 userSchema.methods.matchPassword = async function( inputPwd){
 
-//    const hashedInputPwd =await bcrypt.hash(inputPwd, 10)
-//    console.log("hashedInputPwd: ", hashedInputPwd);
     const isValidPwd = await bcrypt.compare( inputPwd, this.password )
 
     return isValidPwd
@@ -84,32 +82,24 @@ userSchema.methods.matchPassword = async function( inputPwd){
 
 
 
-// userSchema.pre('save', async function(next){
+userSchema.pre('save', async function(next){
 
-//     console.log('pre-SAVE for password encryption');
-//     if(!this.isModified('password')){
-//        return next()
-//         // next()
-//     }
+    // console.log('pre-SAVE for password encryption');
+    if(!this.isModified('password')){
+       return next()
+        // next()
+    }
 
-//     if(this.isModified('password')){
-
-//         const salt =await bcrypt.genSalt(10)
-//         const hashedPwd =await bcrypt.hash(this.password, salt)
-//         this.password = hashedPwd
-    
-//         console.log("hashedPwd: ", hashedPwd);
-//         console.log('password IS modified');
-//     }
    
-// })
+    const salt =await bcrypt.genSalt(10)
+    const hashedPwd =await bcrypt.hash(this.password, salt)
+    this.password = hashedPwd
 
+    console.log('password IS modified');
+    
+   
+})
 
-//pre hook for signedUp and volunEvents
-// userSchema.pre('save', async function(next){
-
-
-// })
 
 module.exports = mongoose.model('users', userSchema)
 

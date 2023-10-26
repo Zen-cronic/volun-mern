@@ -245,7 +245,8 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
 
         deleteEvent: builder.mutation({
 
-            query: (eventId) => ({
+            //{} for accessing arg.eventId
+            query: ({eventId}) => ({
 
                 url: '/events',
                 method: 'DELETE',

@@ -87,17 +87,19 @@ const getUserById = asyncHandler(async(req,res)=> {
 //update volunteer e.g. username, and password with PUT
 const updateVolunteer = asyncHandler(async(req,res)=>{
 
-    const {username, password, id } = req.body
+    //volunId = db id
+    //userId = sch id
+    const {username, newPassword, volunId, currentPassword } = req.body
 
-    //password change is optional
-    if(requiredInputChecker({username, id})){
+    //password change, username change is optional
+    if(!volunId){
 
-        return res.status(400).json({message: "All fields required"})
+        return res.status(400).json({message: "db volunId field required"})
 
     }
 
     // const existingUser = await User.findOne({userId}).exec()
-    const existingUser = await User.findById(id).exec()
+    const existingUser = await User.findById(volunId).exec()
 
     if(!existingUser){
 
@@ -111,7 +113,7 @@ const updateVolunteer = asyncHandler(async(req,res)=>{
     //  existingUser._id
 
     //using _id from req.body
-        id
+        volunId
      ){
 
         return res.status(400).json({message: "Username already exists for change"})
@@ -119,20 +121,30 @@ const updateVolunteer = asyncHandler(async(req,res)=>{
 
 
 
-    if(password){
+    // if(password){
 
-        const newHashedPwd = await bcrypt.hash(password, 10)
-        existingUser.password = newHashedPwd
+    //     const newHashedPwd = await bcrypt.hash(password, 10)
+    //     existingUser.password = newHashedPwd
+    // }
+
+    if(newPassword && currentPassword){
+
+        const isValidPwd = await existingUser.matchPassword(currentPassword)
+
+        if(!isValidPwd){
+
+            return res.status(400).json({message: "Please type in the current password correctly"})
+        }
+
+        existingUser.password = newPassword
     }
 
-    existingUser.username = username
+    existingUser.username = username || existingUser.username
 
     const updatedVolunteer =  await existingUser.save()
 
-    //NOt this
-    // const updatedVolunteer =  await existingUser.updateOne()
 
-    res.json({updatedVolunteer})
+    res.json({updatedVolunteer, message: 'volun info updated'})
 
 
 })

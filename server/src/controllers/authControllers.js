@@ -19,18 +19,17 @@ const login = asyncHandler(async(req, res) => {
     const existingUser = await UserModel.findOne({userId})
 
 
-    if(!existingUser){
+    // if(!existingUser){
 
-        return res.status(400).json({message: "id not registered"})
+    //     return res.status(400).json({message: "id not registered"})
 
-    }
+    // }
 
 
-    // const isValidPwd = await bcrypt.compare(password, existingUser.password)
     const isValidPwd = await existingUser.matchPassword(password)
 
-    if(!isValidPwd){
-        return res.status(400).json({message: "Wrong password"})
+    if(!isValidPwd || !existingUser){
+        return res.status(400).json({message: "Incorrect user id or password"})
 
     }
 

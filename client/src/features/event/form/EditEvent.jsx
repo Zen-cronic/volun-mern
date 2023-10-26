@@ -2,7 +2,7 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import EditEventForm from './EditEventForm'
 import { useSelector } from 'react-redux'
-import { selectEventById, useGetEventByIdQuery } from '../eventsApiSlice'
+import { selectEventById} from '../eventsApiSlice'
 
 const EditEvent = () => {
 
@@ -25,23 +25,7 @@ const EditEvent = () => {
         content = <p>Event loading...</p>
     }
 
-    // if(isSuccess){
-
-    //     const {entities} = event
-
-    //     const eventObj = entities[eventId]
-
-    //     content = (<EditEventForm event={eventObj} eventId={eventId}/>)
-    // }
-
-    // else if(isLoading){
-    //     content = <p>Event loading...</p>
-    // }
-
-    // else if(isError){
-
-    //     content = <p>Error: {error}</p>
-    // }
+ 
   return content
 }
 

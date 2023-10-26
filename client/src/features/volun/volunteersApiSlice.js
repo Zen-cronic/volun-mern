@@ -214,23 +214,32 @@ export const volunteersApiSlice = apiSlice.injectEndpoints({
                 return volunteersAdapter.setOne(volunteersInitialState, serializedVolunteer)
             },
 
-            // providesTags: (result, err, arg)=> (
 
-            //     result
-            //     ?
-            //     [{type:'Volun', id: result.ids.map(id => id)}]
-            //     :
-            //     [{type:'Volun', id: 'List'}]
-
-                
-
-            // )
 
             invalidatesTags: (
 
                 [{ type: 'Volun', id: "LIST" }]
             )
-        })
+        }),
+
+        putUpdateVolunteerInfo: builder.mutation({
+
+            query: ({updateVolunteerInfo}) => ({
+
+                url: '/users',
+                method: 'PUT',
+                body: {...updateVolunteerInfo}
+
+            }),
+
+            invalidatesTags: (result, error, arg) => ([
+
+                {type: 'Volun', id: arg.volunId}
+
+            ])
+
+        }),
+
     })
 })
 
@@ -268,5 +277,7 @@ export const {
     useLazyPostCheckButtonsQuery,
 
     usePostNewVolunteerMutation,
+
+    usePutUpdateVolunteerInfoMutation,
 
 } = volunteersApiSlice

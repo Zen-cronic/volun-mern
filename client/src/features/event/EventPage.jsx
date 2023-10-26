@@ -12,7 +12,7 @@ const EventPage = () => {
 
   const navigate = useNavigate()
 
-  const {role, isAdmin, volunId} = useAuth()
+  const {role, isAdmin} = useAuth()
 
   // const {data: user, isSuccess: isUserDataSuccess, isLoading, isError, error} = useGetUserByIdQuery(volunId)
 

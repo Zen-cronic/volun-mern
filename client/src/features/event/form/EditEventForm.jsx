@@ -303,7 +303,7 @@ const EditEventForm = ({event, eventId}) => {
 
 
         } catch (err) {
-          toast.error('Error updating new event')
+          toast.error('Error updating event')
           console.error('error from updatedEventInfo: ',err);
         }
     }

@@ -1,9 +1,9 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
-import { useParams } from 'react-router'
+import { useParams, useNavigate } from 'react-router-dom'
 import {  useGetUpcomingSignedUpShiftsQuery, useGetUserByIdQuery } from './volunteersApiSlice'
 import EventExcerpt from '../event/EventExcerpt'
 import EventShift from '../event/EventShift'
+import { Button } from 'react-bootstrap'
 
 //only volun
 const SingleVolunteerPage = () => {
@@ -16,8 +16,14 @@ const SingleVolunteerPage = () => {
 
     const {data: upcomingShiftsData, isSuccess: isUpcomingShiftsSuccess} = useGetUpcomingSignedUpShiftsQuery(volunId)
 
-    console.log('volunteer data via useGetUserById singleVpage: ', user);
+    const navigate = useNavigate()
    
+    const handleEditEvent = () => {
+
+        navigate(`/dash/volunteers/${volunId}/edit`)
+     
+      }
+    
     let content 
 
     if(isUserDataSuccess && isUpcomingShiftsSuccess){
@@ -73,13 +79,14 @@ const SingleVolunteerPage = () => {
                 <p>totalVolunteeredHours: {volunteer.totalVolunteeredHours}</p>
                 <ol>Volunteered Shifts: {volunteeredShiftsArr} </ol>
                 <ol>Your upcoming signedUPshifts: {upcomingShiftsArr}</ol>
+                <Button type='button'
+                onClick={handleEditEvent}
+            >Edit Your info</Button>
             </article>
         )
     }
 
-    // else {
-    //     content = (<p>/users NOT prefetched or called from a single volun login</p>)
-    // }
+
 
     else if(isLoading){
 

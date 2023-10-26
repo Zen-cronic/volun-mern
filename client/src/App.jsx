@@ -27,6 +27,8 @@ import RoleBasedRoute from './features/auth/RoleBasedRoute'
 import EditEvent from './features/event/form/EditEvent'
 
 import 'react-toastify/dist/ReactToastify.css'
+import EditVolunteer from './features/volun/form/EditVolunteer'
+import UpdatePassword from './features/volun/form/UpdatePassword'
 
 
 const App = () => {
@@ -93,7 +95,12 @@ const App = () => {
 
                     <Route element={<RoleBasedRoute allowedRole={"VOLUNTEER"}/>}>
 
-                        <Route path=':volunId' element={<SingleVolunteerPage/>}/>
+                        <Route path=':volunId'  >
+                            <Route index={true} element={<SingleVolunteerPage/>}/>
+                            <Route path='edit' element={<EditVolunteer/>}/>
+                            <Route path='pwd' element={<UpdatePassword/>}/>
+                        </Route>
+                       
                     </Route>
 
                   </Route>
