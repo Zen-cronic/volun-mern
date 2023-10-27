@@ -308,6 +308,7 @@ const EditEventForm = ({event, eventId}) => {
         }
     }
     
+    //make use
     const createdAt = new Date(event.createdAt).toLocaleString('en-US', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
     const updatedAt = new Date(event.updatedAt).toLocaleString('en-US', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
   return (

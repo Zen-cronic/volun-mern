@@ -7,7 +7,7 @@ const Layout = () => {
 
     const {volunId, role}= useAuth()
 
-    const displayPublicHeader = !volunId && !role
+    const displayPublicHeader = !volunId  && !role
 
     return (
     

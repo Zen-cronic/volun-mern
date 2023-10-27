@@ -7,10 +7,15 @@ import useAuth from '../../hooks/useAuth'
 const EventShiftTable = ({shifts, eventId}) => {
 
 
-    //conditional table
+    //conditional table col
     const {isVolunteer ,role} = useAuth()
     
-    const tableBodyContent = shifts.map((shift, idx) => (
+    if(!Array.isArray(shifts)){
+        console.log('shifts for EventShiftTable is not an array');
+        return null
+    }
+    
+    const tableBodyContent = shifts.map((shift) => (
 
              (
                 <tr key={shift.shiftId}>
@@ -31,16 +36,10 @@ const EventShiftTable = ({shifts, eventId}) => {
             <th scope='col'>Shift Duration</th>
             <th scope='col'>Open Positions</th>
 
-            {/* {(isVolunteer && role==='VOLUNTEER') ? <th scope='col'>SignUp/Cancel</th>
+            {(isVolunteer && role==='VOLUNTEER') ? <th scope='col'>SignUp/Cancel</th>
                 : null
-            } */}
+            }
 
-            {(isVolunteer && role === 'VOLUNTEER') ? (
-  <th scope='col' style={{ display: 'none'}}>
-    <span className='visually-hidden'>SignUp/Cancel</span>
-  </th>
-) : null}
-        
           </tr>
         </thead>
 

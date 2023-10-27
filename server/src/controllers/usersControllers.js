@@ -345,12 +345,12 @@ const checkUpdatableAndCancelableShifts = [
         const currentDate = new Date(Date.now())
 
 
-        // if(isAfter(currentDate, existingShift.shiftStart)){
+        if(isAfter(currentDate, existingShift?.shiftStart)){
     
             
-        //     return res.json({disable: true, message: "sign Up / cancel disabled for shift as it's past the sign up date"})
+            return res.json({disable: true, message: "sign Up / cancel disabled for shift as it's past the sign up date"})
     
-        // }
+        }
     
         if(buttonType === 'cancel'){
 
@@ -371,14 +371,14 @@ const checkUpdatableAndCancelableShifts = [
         if(!existingShift.shiftPositions
         ){
   
-            return res.status(400).json({disable: true, message: "All shift positons filled up! Try other shifts"})
+            return res.json({disable: true, message: "All shift positons filled up! Try other shifts"})
     
         }
 
     
         
     
-        res.json({disable: false, message: "Can sign up for shift"})
+        return res.json({disable: false, message: "Can sign up for shift"})
 
     }),
 
@@ -388,7 +388,8 @@ const checkUpdatableAndCancelableShifts = [
 
         if(!existingUser.signedUpShifts.includes(existingShift._id)){
         
-            return res.status(400).json({message: "Cannot canel event - you haven't signed up for this"})
+            // return res.status(400).json({message: "Cannot canel event - you haven't signed up for this"})
+            return res.json({message: "Cannot canel event - you haven't signed up for this", disable: true})
     
         }    
 
@@ -400,10 +401,10 @@ const checkUpdatableAndCancelableShifts = [
     
         if(differenceHours <= 1){
     
-           return res.status(400).json({message: "Canel option disbled cuz less than 1 hour till event"})
+           return res.json({message: "Canel option disbled cuz less than 1 hour till event", disable: true})
         }
     
-        res.json({disable: false, message: "Can cancel shift"})
+        return res.json({disable: false, message: "Can cancel shift"})
 
         })
     ]

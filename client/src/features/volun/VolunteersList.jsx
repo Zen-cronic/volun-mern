@@ -1,6 +1,7 @@
 import React from 'react'
 import { useGetAllVolunteersQuery } from './volunteersApiSlice'
 import SingleVolunteerExcerpt from './SingleVolunteerExcerpt'
+import VolunteersListLayout from './VolunteersListLayout'
 
 const VolunteersList = () => {
 
@@ -10,24 +11,33 @@ const VolunteersList = () => {
         refetchOnMountOrArgChange: true
     })
 
-    let content
+    let tableBodyContent
 
-    if (isLoading) content = <p>Loading...</p>
+    if (isLoading) tableBodyContent = <p>Loading...</p>
 
     if (isError) {
-        content = <p className="errmsg">{error?.data?.message}</p>
+        tableBodyContent = <p className="errmsg">{error?.data?.message}</p>
     }
 
     if(isVolunSuccess){
 
         const {ids} = volunteers
-        console.log('all volunteers mongo ids from useQUery:', ids);
-        content = ids.map((volunId) => (
 
-            // <EventExcerpt key={eventId} eventId={eventId}/>
-            <SingleVolunteerExcerpt key={volunId} volunId={volunId}/>
-        ))
+        tableBodyContent = ids.map((volunId) => (
+
+            <tr key={volunId}>
+                  <SingleVolunteerExcerpt key={volunId} volunId={volunId}/>
+            </tr>
+              
+          ))
     }
+
+    const content = (
+
+        <VolunteersListLayout tableBodyContent={tableBodyContent}/>
+
+      )
+      
   return content
 }
 

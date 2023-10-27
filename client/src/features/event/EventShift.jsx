@@ -1,9 +1,14 @@
-import React, {useState} from 'react'
+import React, {useRef, useState} from 'react'
 import useAuth from '../../hooks/useAuth';
 import { useLazyPostCheckButtonsQuery, usePatchCancelShiftMutation, usePatchSignedUpShiftMutation } from '../volun/volunteersApiSlice';
 import { useEffect } from 'react';
-import { Button, Row , Col} from 'react-bootstrap';
+import { Button, Row , Col, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import convertShiftDisplayDateTime from '../../helpers/convertShiftDisplayDateTime';
+import {toast} from 'react-toastify'
+
+
+import 'react-toastify/dist/ReactToastify.css'
+
 
 const EventShift = ({shift, eventId}) => {
 
@@ -13,9 +18,12 @@ const EventShift = ({shift, eventId}) => {
   const shiftId = shift?._id
 
   const [disableSignUpButton, setDisableSignUpButton] = useState(false)
-  const [disableCancelButton, setDisableCancelButton] = useState(false);
+  const [disableCancelButton, setDisableCancelButton] = useState(false)
   const [signUpShift,] = usePatchSignedUpShiftMutation()
   const [cancelShift,] =usePatchCancelShiftMutation()
+
+  const [signUpMessage, setSignUpMessage] =useState("")
+  const [cancelMessage, setCancelMessage] =useState("")
 
   //canNOT use memoized selector for volunteer - /users isNOT memoized
   // const volunteer = useSelector(state => selectVolunteerById(state, volunId))
@@ -38,11 +46,14 @@ const EventShift = ({shift, eventId}) => {
         console.log('return updatabledata from checkButton from front: ', updatableData);
         console.log('return cancelableData from checkButton from front: ', cancelableData);
 
-        const {disable: disableUpdate, message} = updatableData
-        const {disable: disableCancel, message: cancelMessage} = cancelableData
+        const {disable: disableUpdate, message: signUpMsg} = updatableData
+        const {disable: disableCancel, message: cancelMsg} = cancelableData
   
         setDisableSignUpButton(disableUpdate)
         setDisableCancelButton(disableCancel)
+
+        setSignUpMessage(signUpMsg)
+        setCancelMessage(cancelMsg)
   
       } catch (error) {
         console.log('disableSignUpButton error: ', error);
@@ -55,6 +66,12 @@ const EventShift = ({shift, eventId}) => {
   
   
   const handleSignUpShift = async () => {
+
+    
+    if(disableSignUpButton){
+
+      return
+    }
 
     try {
       
@@ -78,6 +95,11 @@ const EventShift = ({shift, eventId}) => {
 
   const handleCancelShift = async()=>{
 
+    if(disableCancelButton){
+     
+      return
+      
+    }
     try {
       
       const data = await cancelShift({eventId, shiftId, volunId}).unwrap()
@@ -93,7 +115,7 @@ const EventShift = ({shift, eventId}) => {
     }
   }
 
-  console.log('shift: ', shift);
+  
 
 return (   
   
@@ -111,14 +133,24 @@ return (
       (isVolunteer && role ==='VOLUNTEER') &&
     
     <Row className='my-2'>
-      <Col>
-      <Button className='signUpButton' type='button' disabled={disableSignUpButton} onClick={handleSignUpShift}>Sign Up for shift!</Button>
+      <Col className='py-1'>
+        <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{signUpMessage}</Tooltip>}>
+          <span className="d-inline-block">
+            <Button name='signUpButton ' type='button' disabled={disableSignUpButton} onClick={handleSignUpShift} >Sign Up for shift!</Button>
+
+        </span>
+        </OverlayTrigger>
+
 
       </Col>
 
-      <Col>
-      <Button className='cancelSignUp' type='button' disabled={disableCancelButton} onClick={handleCancelShift}>Cancel shift</Button>
+      <Col className='py-1'>
+      <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{cancelMessage}</Tooltip>}>
+          <span className="d-inline-block">
+            <Button name='cancelButton ' type='button' disabled={disableCancelButton} onClick={handleCancelShift} >Cancel!</Button>
 
+        </span>
+        </OverlayTrigger>
       </Col>
     </Row>
    
