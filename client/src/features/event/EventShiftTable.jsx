@@ -20,7 +20,6 @@ const EventShiftTable = ({shifts, eventId}) => {
              (
                 <tr key={shift.shiftId}>
                     <EventShift shift={shift} key={shift.shiftId} eventId={eventId} />
-
                 </tr>
             )
     ))
@@ -35,11 +34,9 @@ const EventShiftTable = ({shifts, eventId}) => {
             <th scope='col'>Shift End</th>
             <th scope='col'>Shift Duration</th>
             <th scope='col'>Open Positions</th>
-
             {(isVolunteer && role==='VOLUNTEER') ? <th scope='col'>SignUp/Cancel</th>
                 : null
             }
-
           </tr>
         </thead>
 

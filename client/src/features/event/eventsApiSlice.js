@@ -279,7 +279,9 @@ export const {
 
     selectById: selectEventById,
     selectIds: selectEventsIds,
-    selectAll: selectAllEvents
+    selectAll: selectAllEvents,
+    selectEntities: selectEventsEntities,
+    
 
 } = eventsAdapter.getSelectors(state => selectGetEventsData(state) ?? eventsInitialState)
 
