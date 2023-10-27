@@ -1,82 +1,94 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
-import { selectEventById, useGetSignedUpVolunteersQuery } from './eventsApiSlice'
-import { useSelector } from 'react-redux'
-import EventShift from './EventShift'
-import SingleVolunteerExcerpt from '../volun/SingleVolunteerExcerpt'
+import React from "react";
+import { useParams } from "react-router-dom";
+import {
+  selectEventById,
+  useGetSignedUpVolunteersQuery,
+} from "./eventsApiSlice";
+import { useSelector } from "react-redux";
+import SingleVolunteerExcerpt from "../volun/SingleVolunteerExcerpt";
+import { Col, Row } from "react-bootstrap";
+import EventShiftTable from "./EventShiftTable";
+import VolunteersListLayout from "../volun/VolunteersListLayout";
 
 //call EnvetShift for each shift PLUS the stats
 const EventStats = () => {
+  const { eventId } = useParams();
+  const event = useSelector((state) => selectEventById(state, eventId));
 
-    const {eventId} = useParams()
-    const event =  useSelector(state => (selectEventById(state, eventId)))
+  const {
+    data: signedUpVolunteers,
+    isSuccess,
+    isLoading,
+    isError,
+    error,
+  } = useGetSignedUpVolunteersQuery(eventId);
 
-    const {data: signedUpVolunteers, isSuccess, isLoading, isError, error } = useGetSignedUpVolunteersQuery(eventId)
+  let content;
 
+  if (isSuccess && event) {
+    const { shiftVolunteers, totalUniqueVolunteers } = signedUpVolunteers;
 
-    let content 
+    const shiftsVolunteerContent = shiftVolunteers?.map((shiftVolunObj) => {
+      const { shiftId, volunteerIds } = shiftVolunObj;
 
-   if(isSuccess && event){
-        // console.log('data from useGetSIngedUPV query: ', signedUpVolunteers);
+      const shiftInfo = event.shifts.find((shift) => {
+        return shift._id.toString() === shiftId;
+      });
 
-        const {shiftVolunteers, totalUniqueVolunteers} = signedUpVolunteers
-     
-        
+      const shifts = [shiftInfo];
 
-       const eventShifts = event.shifts.map((shift, idx)=> {
+      const volunteersTableBodyContent = volunteerIds.map((volunId) => (
+        <tr key={volunId}>
+          <SingleVolunteerExcerpt key={volunId} volunId={volunId} />
+        </tr>
+      ));
 
-           const foundShift =  shiftVolunteers.find(shiftVolunObj => shiftVolunObj.shiftId === shift._id.toString())
+      return (
+        <li key={shiftId}>
+          <Row>
+            <Col>
+              <label>Shift: </label>
+              <EventShiftTable shifts={shifts} eventId={eventId} />
+            </Col>
 
-        //    console.log('foundShift: ', foundShift);
+            <Col>
+              <label>Volunteers: </label>
+              <VolunteersListLayout
+                tableBodyContent={volunteersTableBodyContent}
+              />
+            </Col>
 
-        //    govern EventShift and following with 1 unique key
-           return (
-               
-            
-                <>
-                    <EventShift shift={shift} key={idx} eventId={eventId}/>
-                    
-                    
-                        <label>SignedUP volunteer for event: </label>
-                        {foundShift.volunteerIds.length 
-                        ? 
-                        foundShift.volunteerIds.map(volunId => (
-                       
-                            (<SingleVolunteerExcerpt key={volunId} volunId={volunId}/>)
-                        ))
-                        :
-                        <p>No volunteers signed up</p>
-                        }
-                        <br></br>
-                    
-                </>
-           )
-      
-        })
+            <Col lg={2}>
+              <label>Total Volunteers: {volunteerIds.length}</label>
+            </Col>
+          </Row>
 
-    const allVolunteersForEvent = totalUniqueVolunteers.uniqueVolunteersIds.map(volunId => 
-            
-            (<SingleVolunteerExcerpt volunId={volunId} key={volunId}/>))
+          <br></br>
+        </li>
+      );
+    });
 
-    const totalVolunteersCount = totalUniqueVolunteers.count
-        
-       content =  <>
-                <ol> {eventShifts} </ol>
-                <div>
-                    <p>ALl volunteers signed up</p>
-                    <ol>{allVolunteersForEvent}</ol>
-                </div>
+    const allVolunteersForEvent = totalUniqueVolunteers.uniqueVolunteersIds.map(
+      (volunId) => <SingleVolunteerExcerpt volunId={volunId} key={volunId} />
+    );
 
-                <label>Total Volunteers: {totalVolunteersCount}</label>
-                
-       </>
+    const totalVolunteersCount = totalUniqueVolunteers.count;
 
+    content = (
+      <>
+        <ol> {shiftsVolunteerContent} </ol>
+        <div>
+          <p>ALl volunteers signed up</p>
+          <ol>{allVolunteersForEvent}</ol>
+        </div>
 
-   }
+        <label>Total Volunteers: {totalVolunteersCount}</label>
+      </>
+    );
+  } else if (isLoading) content = <div>Loading...</div>;
+  else if (isError) content = <div>Error: {error}</div>;
 
-  return (
-    content
-  )
-}
+  return content;
+};
 
-export default EventStats
+export default EventStats;

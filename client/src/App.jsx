@@ -15,7 +15,6 @@ import VolunteerHeader from './features/volun/VolunteerHeader'
 import VolunteersList from './features/volun/VolunteersList'
 import DashLayout from './components/DashLayout'
 import Welcome from './features/auth/Welcome'
-import EventStats from './features/event/EventStats'
 import SearchedVolunList from './features/volun/search/SearchedVolunList'
 import SortedVolunList from './features/volun/sort/SortedVolunList'
 import SingleVolunteerPage from './features/volun/SingleVolunteerPage'
@@ -25,10 +24,12 @@ import PersistLogin from './features/auth/PersistLogin'
 import Register from './features/auth/Register'
 import RoleBasedRoute from './features/auth/RoleBasedRoute'
 import EditEvent from './features/event/form/EditEvent'
-
-import 'react-toastify/dist/ReactToastify.css'
 import EditVolunteer from './features/volun/form/EditVolunteer'
 import UpdatePassword from './features/volun/form/UpdatePassword'
+import EventStats from './features/event/EventStats'
+
+import 'react-toastify/dist/ReactToastify.css'
+
 
 
 const App = () => {
@@ -118,7 +119,6 @@ const App = () => {
 
         
           </Route>
-        {/* </Route> */}
       </Route>
     </Routes>
   )
