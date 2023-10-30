@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { eventsAdapter } from "./eventsApiSlice";
 
 
 
@@ -25,7 +24,7 @@ export const eventsSlice = createSlice({
 
             const {sortedIdsWithTags} = action.payload
 
-            console.log('sortedIdsWithTags in setFiltereEvents reducer', sortedIdsWithTags);
+            // console.log('sortedIdsWithTags in setFiltereEvents reducer', sortedIdsWithTags);
 
             state.filteredEvents = sortedIdsWithTags
         },

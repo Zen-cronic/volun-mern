@@ -1,35 +1,57 @@
-import React from 'react'
+import React from "react";
 // import { useLazyPostFilteredEventsQuery } from './eventsApiSlice'
-import EventExcerpt from '../EventExcerpt'
-import { useSelector } from 'react-redux'
-import { selectFilteredEvents } from '../eventsSlice'
-import EventListLayout from '../EventListLayout'
+import EventExcerpt from "../EventExcerpt";
+import { useSelector } from "react-redux";
+import { selectFilteredEvents } from "../eventsSlice";
+import EventListLayout from "../EventListLayout";
+import { Container, Table } from "react-bootstrap";
+import checkIsFilteredEventsPage from "./checkIsFilteredEventsPage";
 
 //rmove async!
 const FilteredEventList = () => {
+  const filteredEvents = useSelector(selectFilteredEvents);
 
-    
-    const filteredEvents = useSelector(selectFilteredEvents)
+  console.log("filteredEvents from eventSlice w selector: ", filteredEvents);
 
-    console.log("filteredEvents from eventSlice w selector: ", filteredEvents);
-    let content
+  if(!checkIsFilteredEventsPage(window.location.pathname)){
 
-    // if(!filteredEvents){
-    //     return null
-    // }
+    return null
+  }
+  // checkIsFilteredEventsPage(window.location.href)
 
-    content = filteredEvents.map((event) => {
+  const tableBodyContent = filteredEvents.map((event) => {
+   
+    const {eventId, filterTags} = event
 
+    return (
+
+      <tr key={eventId}>
+       
+        <EventExcerpt key={eventId} eventId={eventId} filterTags={filterTags}/>
         
-            const eventId = event.eventId
-           return ( <tr key={eventId}>
-           <EventExcerpt key={eventId} eventId={eventId}/>
-              </tr>)
-        
-    })
+      </tr>
+    );
+  });
 
-    
-  return ( <EventListLayout tableBodyContent={content}/>)
-}
+  const content = (
+    <Container className="my-2 px-3">
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th scope="col">Event Name</th>
+            <th scope="col">Venue</th>
+            <th scope="col">Description</th>
+            <th scope="col">When?</th>
+            <th scope="col">Filter categories</th>
+          </tr>
+        </thead>
 
-export default FilteredEventList
+        <tbody>{tableBodyContent}</tbody>
+      </Table>
+    </Container>
+  );
+
+  return content;
+};
+
+export default FilteredEventList;

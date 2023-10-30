@@ -13,7 +13,7 @@ const EventListLayout = ({tableBodyContent}) => {
                <th scope='col'>Event Name</th>
                <th scope='col'>Venue</th>
                <th scope='col'>Description</th>
-               <th scope='col'>When?</th>     
+               <th scope='col'>When?</th>
              </tr>
            </thead>
 

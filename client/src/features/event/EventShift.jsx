@@ -126,12 +126,9 @@ return (
   <td>{convertShiftDisplayDateTime(shift?.localShiftEnd)}</td>
   <td>{shift?.shiftDuration}</td>
   <td>{shift?.shiftPositions}</td>
-
-  <td className='permissionButtons'> 
-
-    {
-      (isVolunteer && role ==='VOLUNTEER') &&
+  {(isVolunteer && role ==='VOLUNTEER') &&
     
+    <td>
     <Row className='my-2'>
       <Col className='py-1'>
         <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{signUpMessage}</Tooltip>}>
@@ -155,12 +152,13 @@ return (
     </Row>
    
 
+    </td>
+    
    
     }
    
- 
-  </td>
-  </>
+ </>
+
 
 )
 }

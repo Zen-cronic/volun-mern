@@ -110,12 +110,7 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
                 console.error('filterEvents error: ',error);
             }
         },
-        // providesTags: (result, err, arg) => (
-        
-        // //result no longer has ids & entities if transformResponse is NOT used
-        //     // [result.ids.map(id => ({type:'Event', id}))]
-        //     [result.map(id => ({type:'Event', id}))]
-        // )
+  
 
 
 
@@ -229,7 +224,6 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
                 body: {...updateEvent}
             }),
 
-           //transformResponse not needed for updateEventInfo
 
            invalidatesTags: (result, err, arg) => {
 

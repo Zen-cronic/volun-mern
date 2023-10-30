@@ -6,7 +6,7 @@ import {
 } from "./eventsApiSlice";
 import { useSelector } from "react-redux";
 import SingleVolunteerExcerpt from "../volun/SingleVolunteerExcerpt";
-import { Col, Row } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import EventShiftTable from "./EventShiftTable";
 import VolunteersListLayout from "../volun/VolunteersListLayout";
 
@@ -59,7 +59,12 @@ const EventStats = () => {
             </Col>
 
             <Col lg={2}>
-              <label>Total Volunteers: {volunteerIds.length}</label>
+              <label 
+              className="total_volunteers_label"
+               
+              >
+                Total Volunteers: {volunteerIds.length}
+              </label>
             </Col>
           </Row>
 
@@ -68,25 +73,46 @@ const EventStats = () => {
       );
     });
 
-    const allVolunteersForEvent = totalUniqueVolunteers.uniqueVolunteersIds.map(
-      (volunId) => <SingleVolunteerExcerpt volunId={volunId} key={volunId} />
+    const allVolunteersTableBodyContent =
+      totalUniqueVolunteers.uniqueVolunteersIds.map((volunId) => (
+        <tr key={volunId}>
+          <SingleVolunteerExcerpt key={volunId} volunId={volunId} />
+        </tr>
+      ));
+
+    const allVolunteersContent = (
+      <VolunteersListLayout tableBodyContent={allVolunteersTableBodyContent} />
     );
 
     const totalVolunteersCount = totalUniqueVolunteers.count;
 
     content = (
-      <>
-        <ol> {shiftsVolunteerContent} </ol>
-        <div>
-          <p>ALl volunteers signed up</p>
-          <ol>{allVolunteersForEvent}</ol>
-        </div>
+      <Container fluid className="py-2">
+        <Row>
+          <Col>
+            <ol> {shiftsVolunteerContent} </ol>
+          </Col>
+        </Row>
 
-        <label>Total Volunteers: {totalVolunteersCount}</label>
-      </>
+        <Row>
+          <Col>
+            <label htmlFor="table_labels">ALl volunteers signed up</label>
+            <ol>{allVolunteersContent}</ol>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
+            <label className="total_volunteers_label">Total unique Volunteers for {event.eventName}: {totalVolunteersCount}</label>
+          </Col>
+        </Row>
+      </Container>
     );
-  } else if (isLoading) content = <div>Loading...</div>;
-  else if (isError) content = <div>Error: {error}</div>;
+  } else if (isLoading && !event) {
+    content = <div>Loading...</div>;
+  } else if (isError && !event) {
+    content = <div>Error: {error}</div>;
+  }
 
   return content;
 };

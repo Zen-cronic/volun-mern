@@ -5,19 +5,19 @@ import { useSelector } from "react-redux";
 import { selectEventById } from './eventsApiSlice';
 import { Button } from 'react-bootstrap'; 
 import {FaShareAlt} from 'react-icons/fa'
+import checkIsFilteredEventsPage from './filter/checkIsFilteredEventsPage';
 //chges aft createEA 
 //send only the id, and look for each Event using the id and render it 
 
-const EventExcerpt = ({ eventId }) => {
+//regex for filtered page - conditional col in table
+const EventExcerpt = ({ eventId, filterTags }) => {
 
     const event = useSelector(state => (selectEventById(state, eventId)))
     
-    // console.log('each event entity for eventExcerpt: ', event);
-
     const navigate = useNavigate()
 
-   
 
+   
     let content 
 
     if(!event){
@@ -44,6 +44,7 @@ const EventExcerpt = ({ eventId }) => {
                         Details
                     </Button>
                 </td>
+                {filterTags ? <td><label>{filterTags}</label></td> : null}
             </>
         )
     }
