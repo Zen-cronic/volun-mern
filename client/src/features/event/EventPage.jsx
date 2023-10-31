@@ -53,7 +53,7 @@ const EventPage = () => {
 
     const eventDates = event.localEventDates.map((date,idx) => {
 
-      const displayDate = convertEventDisplayDate(date.split(' ')[0])
+      const displayDate = convertEventDisplayDate(date.split(' ')[0].concat('T00:00'))
 
       return (<ListGroup.Item as='li' className='w-25 border-2' key={idx}>{displayDate}</ListGroup.Item>)
 

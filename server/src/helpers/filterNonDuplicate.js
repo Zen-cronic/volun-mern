@@ -1,5 +1,5 @@
 
-
+//only for string and number
 const filterNonDuplicate = (arr) =>{
 
   
@@ -8,7 +8,7 @@ const filterNonDuplicate = (arr) =>{
         throw new Error('arr param must be an arr')
     }
     
-    let resultArr = []
+    const resultArr = []
     
     arr.map(elem => {
 

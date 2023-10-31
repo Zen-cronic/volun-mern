@@ -2,7 +2,8 @@ const { default: mongoose } = require("mongoose");
 const calculateShiftDuration = require("../helpers/model-helpers/calculateShiftDuration");
 const { includedTimeInDate, sameDateShift, shiftStartIsBefore, validateShiftTime } = require("../helpers/model-helpers/shiftDateValidators");
 const convertLocalDateString = require("../helpers/convertLocalDateString");
-const {isEqual} = require('date-fns')
+const {isEqual} = require('date-fns');
+const filterNonDuplicate = require("../helpers/filterNonDuplicate");
 
 const EventShiftSchema = new mongoose.Schema({
 
@@ -272,6 +273,34 @@ EventSchema.pre('validate', function(next){
     next() 
 })
 
+//hook for removing duplicate eventDates obj and localEventDates str from arr
+EventSchema.pre('validate', function(next){
+
+
+    console.log('9) pre-VALIDATE for removing duplicate eventDates obj and localEventDates str from arr');
+
+    const nonDupLocalEventDates = filterNonDuplicate(this.localEventDates.slice())
+    this.localEventDates = nonDupLocalEventDates
+
+    const bufferEventDates = this.eventDates.slice()
+    const nonDupEventDates = []
+
+    bufferEventDates.map(bufferDate=> {
+
+        const duplicateDate = nonDupEventDates.find(date => isEqual(date, bufferDate))
+
+        if(!duplicateDate){
+            nonDupEventDates.push(bufferDate)
+        }
+
+    })
+
+    this.eventDates = nonDupEventDates
+
+    next()
+
+
+})
 //create localEventDates based on eventDates[] and check conversion using getDate()
 
 EventSchema.pre('save', function(next){
@@ -309,17 +338,6 @@ EventSchema.pre('save', function(next){
 //pre-save hook for openPositions based on shiftPosi 
 EventSchema.pre('save',function(next){
 
-
-    // if(!this.isNew
-    //     &&
-    //     !this.isModified('shifts')
-    //     ){
-
-        
-    //     console.log('main doc is NOT new NOR shifts isNOT modified, therefore 6) pre-SAVE not called');
-    //     return next()
-        
-    // }
 
     console.log("FROM 6) this.isModified('shifts')", this.isModified('shifts'));
     console.log('6) pre-save hook for openPositions based on shiftPosi | called w each update in shiftPosi');
@@ -377,32 +395,27 @@ EventSchema.pre('save', function(next){
 
 })
 
-// EventSchema.pre('updateOne',{document:true, query: false}, function(next){
 
+// EventSchema.pre('updateOne',{document:false, query: true}, async function(next){
 
-//     console.log('8-A) EventSchema pre-updateOne hook called as DocuMiddleware');
+//     console.log('8-B) EventSchema pre-updateOne hook called as QueryMiddleware');
 
+//             //getUpdate returns current update opeartions
+//             //the $set obj with updatedAt field
+//     const modifiedField = this.getUpdate().$set
+    
+//     console.log('8-B) modifiedField: ', modifiedField);
+
+//     this.updateOne()
+//     const docToUpate = await this.model.findOne(this.getQuery())
+    
+//     console.log('8-B) docToUpate: ', docToUpate);
+
+//     // const updateInfo = await this.model.findOne(this.getUpdate())
+//     // console.log('8-B) updateInfo: ', updateInfo);
 //     next()
-// }),
 
-EventSchema.pre('updateOne',{document:false, query: true}, async function(next){
+// })
 
-    console.log('8-B) EventSchema pre-updateOne hook called as QueryMiddleware');
 
-            //getUpdate returns current update opeartions
-            //the $set obj with updatedAt field
-    const modifiedField = this.getUpdate().$set
-    
-    console.log('8-B) modifiedField: ', modifiedField);
-
-    this.updateOne()
-    const docToUpate = await this.model.findOne(this.getQuery())
-    
-    console.log('8-B) docToUpate: ', docToUpate);
-
-    // const updateInfo = await this.model.findOne(this.getUpdate())
-    // console.log('8-B) updateInfo: ', updateInfo);
-    next()
-
-})
 module.exports = mongoose.model('events', EventSchema);
