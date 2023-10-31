@@ -6,6 +6,7 @@ import { selectEventById } from './eventsApiSlice';
 import { Button } from 'react-bootstrap'; 
 import {FaShareAlt} from 'react-icons/fa'
 import checkIsFilteredEventsPage from './filter/checkIsFilteredEventsPage';
+import FilterTagsDisplay from './filter/FilterTagsDisplay';
 //chges aft createEA 
 //send only the id, and look for each Event using the id and render it 
 
@@ -44,7 +45,7 @@ const EventExcerpt = ({ eventId, filterTags }) => {
                         Details
                     </Button>
                 </td>
-                {filterTags ? <td><label>{filterTags}</label></td> : null}
+                <FilterTagsDisplay filterTags={filterTags} />
             </>
         )
     }

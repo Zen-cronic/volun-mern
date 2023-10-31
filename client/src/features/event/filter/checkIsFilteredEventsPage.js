@@ -1,3 +1,5 @@
+//how function in production?
+
 const checkIsFilteredEventsPage = (pathname) => {
 
    const devBaseUrl = import.meta.env.BASE_URL;
@@ -8,10 +10,10 @@ const checkIsFilteredEventsPage = (pathname) => {
   const isFilteredEventsPage = filteredEventsPageRegex.test(pathname);
 
   if (isFilteredEventsPage) {
-    console.log("at filtered events page");
+    // console.log("at filtered events page");
     return true;
   } else {
-    console.log("NOT at filtered events page");
+    // console.log("NOT at filtered events page");
     return false;
   }
 };

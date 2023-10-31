@@ -630,9 +630,8 @@ const filterEvents =
 
             const sortedIdsWithTags = filteredTagsSort(idsWithTags)
 
-            console.log('idsWIthTags: ',idsWithTags);
+            // console.log('idsWIthTags: ',idsWithTags);
             console.log('sortedIdsWithTags: ',sortedIdsWithTags);
-            // console.log"arr idsWithTags: ", idsWithTags);
 
             res.status(200).json({filteredResultsByKey, 
                 filteredAllIds,
