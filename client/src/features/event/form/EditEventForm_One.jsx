@@ -16,7 +16,7 @@ import {
 import { usePutUpdateEventInfoMutation } from "../eventsApiSlice";
 
 //event obj from back - localEventDates+T00:00
-const EditEventForm_Two = ({ event, eventId }) => {
+const EditEventForm_One = ({ event, eventId }) => {
   const [listId, setListId] = useState(1);
   const [shiftListId, setShiftListId] = useState(1 * 100);
 
@@ -47,31 +47,40 @@ const EditEventForm_Two = ({ event, eventId }) => {
       //use event.shifts.map(shift => shift.localShiftStart.split(' ')[0]) to get arr of dates and concat T00:00
 
       //try as fork
-      const dupEventDatesWithListIdsAndDates = event.shifts.map((shift) => {
-        initialListId++;
-        const date = shift.localShiftStart.split(" ")[0].concat("T00:00");
+      // const dupEventDatesWithListIdsAndDates = event.shifts.map((shift) => {
 
-        return {
-          listId: initialListId,
-          date,
-        };
-      });
+      //   initialListId++;
+      //   const date = shift.localShiftStart.split(" ")[0].concat("T00:00");
 
-      //verified
-      // console.log(
-      //   "dupEventDatesWithListIdsAndDates: ",
-      //   dupEventDatesWithListIdsAndDates
-      // );
+      //   return {
+      //     listId: initialListId,
+      //     date,
+      //   };
 
-      if (!Array.isArray(dupEventDatesWithListIdsAndDates)) {
-        throw new Error("Must be an arr for shiftsWithListIds");
-      }
+      // })
+      const eventDatesWithListIdsAndDates = event.localEventDates.map(
+        (localEventDate) => {
+          // const listId = initialListId++
+          initialListId++;
+          const date = localEventDate.split(" ")[0].concat("T00:00");
 
-      const correspondingEventsArr = [];
+          return {
+            listId: initialListId,
+            date,
+            //shiftCount: 0
+          };
+        }
+      );
+
+      let correspondingEventsArr = [];
+
+      let shiftCountOnSameDate = 0;
 
       //shfitListIds && parentListIdForShift
       const shiftsWithListIds = event.shifts.map((shift) => {
-      
+        if (!Array.isArray(eventDatesWithListIdsAndDates)) {
+          throw new Error("Must be an arr for shiftsWithListIds");
+        }
 
         const splitLocalShiftStart = shift.localShiftStart.split(" ");
         const splitLocalShiftEnd = shift.localShiftEnd.split(" ");
@@ -86,34 +95,49 @@ const EditEventForm_Two = ({ event, eventId }) => {
         initialShiftListId++;
 
         //eventDateObj.date = date + T00:00
-
-        //src of err - correspondingEvent.listId would be the same for same date shifts if used find
-        let correspondingEvent = dupEventDatesWithListIdsAndDates.find(
+        const correspondingEvent = eventDatesWithListIdsAndDates.find(
           (eventDateObj) => eventDateObj.date.includes(shiftStartDate)
         );
 
         const foundCorrespondingEvent = correspondingEventsArr.find(
           (eventDateObj) =>
-            eventDateObj.date === correspondingEvent.date 
-            &&
+            eventDateObj.date === correspondingEvent.date &&
             eventDateObj.listId === correspondingEvent.listId
         );
 
-        if (foundCorrespondingEvent) {
-
-          correspondingEvent = dupEventDatesWithListIdsAndDates
-            .filter(
-              (eventDateObj) =>
-                eventDateObj.listId !== foundCorrespondingEvent.listId
-            )
-            .find((eventDateObj) => eventDateObj.date.includes(shiftStartDate));
-        }
-
-        else{
+        //if corrsepoidngEvents alreday in arr, DO NOT add to arr
+        if (!foundCorrespondingEvent) {
           correspondingEventsArr.push(correspondingEvent);
 
+          //incremented to 1 - only when NOT foundCorrespondingEvent
+          shiftCountOnSameDate++;
+          // return
         }
 
+        //duplicate eventDateObj exists in correspondingEventsArr
+        //what if more than 2 shifts in same date?
+        else {
+          //incremented to 2 - only when foundCorrespondingEvent
+          shiftCountOnSameDate++;
+
+          if (foundCorrespondingEvent && shiftCountOnSameDate > 1) {
+            initialListId++;
+            eventDatesWithListIdsAndDates.push({
+              listId: initialListId,
+              date: foundCorrespondingEvent.date,
+            });
+
+            shiftCountOnSameDate = 0;
+          }
+        }
+
+        console.log("foundCorrespondingEvent: ", foundCorrespondingEvent);
+
+        //verified - BUT cannot handle alt shifts in same date
+        console.log(
+          "eventDatesWithLIstIDsandDates after adding each shift to shifsWIthListIDs",
+          eventDatesWithListIdsAndDates
+        );
 
         return {
           //to keep shiftId unchanged when sending submitting to back
@@ -132,7 +156,7 @@ const EditEventForm_Two = ({ event, eventId }) => {
         eventName: event.eventName,
         eventVenue: event.eventVenue,
         eventDescription: event.eventDescription,
-        eventDates: dupEventDatesWithListIdsAndDates,
+        eventDates: eventDatesWithListIdsAndDates,
         shifts: shiftsWithListIds,
       });
 
@@ -242,9 +266,6 @@ const EditEventForm_Two = ({ event, eventId }) => {
       eventDates: updatedEventDates,
       shifts: updatedShiftTimes,
     });
-
-    console.log("updatedEventDates after removing:  ", updatedEventDates);
-    console.log("updatedShiftTimes after removing:  ", updatedShiftTimes);
   };
 
   //base this on shifts to display same date shifts
@@ -480,4 +501,4 @@ const EditEventForm_Two = ({ event, eventId }) => {
   );
 };
 
-export default EditEventForm_Two;
+export default EditEventForm_One;

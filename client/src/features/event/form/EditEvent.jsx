@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import EditEventForm from './EditEventForm'
 import { useSelector } from 'react-redux'
 import { selectEventById} from '../eventsApiSlice'
-import EditEventForm_Two from './EditEventForm_Two'
+
 
 const EditEvent = () => {
 
@@ -20,7 +20,7 @@ const EditEvent = () => {
     if(event){
 
         // content = (<EditEventForm event={event} eventId={eventId}/>)
-        content = (<EditEventForm_Two event={event} eventId={eventId}/>)
+        content = (<EditEventForm event={event} eventId={eventId}/>)
     }
 
     else {
