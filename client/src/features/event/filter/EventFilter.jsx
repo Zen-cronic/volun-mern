@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState} from 'react'
 import { useLazyPostFilteredEventsQuery } from '../eventsApiSlice';
 import { useNavigate } from 'react-router';
 import { Button, Form, } from 'react-bootstrap';

@@ -203,16 +203,16 @@ const filteredTagsSort = (arr)=> {
         throw new Error('Must be an array for sorting filtered tags')
     }
 
-    const sortIndex= 'filterTags'
+    const SORT_INDEX= 'filterTags'
    const sortedArr = [...arr].sort((a,b) => {
 
 
-        if(a[sortIndex].length < b[sortIndex].length){
+        if(a[SORT_INDEX].length < b[SORT_INDEX].length){
         
 
             return 1;
 
-         }else if(a[sortIndex].length > b[sortIndex].length){
+         }else if(a[SORT_INDEX].length > b[SORT_INDEX].length){
                 return -1;
           }
           return 0;

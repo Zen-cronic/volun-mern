@@ -4,8 +4,9 @@ import { useDispatch } from 'react-redux';
 import { setCredentials } from './authSlice';
 import { useNavigate } from 'react-router';
 import usePersist from '../../hooks/usePersist';
-import { Form, Button, Row, Col } from 'react-bootstrap';
+import { Form, Button, } from 'react-bootstrap';
 import AuthFormContainer from './AuthFormContainer';
+import { toast } from 'react-toastify';
 const Login =() => {
 
     const [userId, setUserId] = useState('');
@@ -38,17 +39,19 @@ const Login =() => {
       try {
         const {accessToken} = await login({userId, password}).unwrap()
 
-        console.log(accessToken, " accessToken from Login compo - /auth route");
+        // console.log(accessToken, " accessToken from Login compo - /auth route");
         
        const data = dispatch( setCredentials({accessToken}))
 
-       console.log("setCredentials data: ", data);
+      //  console.log("setCredentials data: ", data);
 
        //store role in authHook
 
 
       } catch (error) {
-        console.error("Login error: ", error)
+
+        toast.error(error?.data?.message)
+        // console.error("Login error: ", error)
       }
     }
 

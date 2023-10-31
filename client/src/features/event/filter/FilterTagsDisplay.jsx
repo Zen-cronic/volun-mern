@@ -10,20 +10,24 @@ const FilterTagsDisplay = ({ filterTags }) => {
 
   //dir-vertical className=" col-md-5 mx-auto"
   const content = (
-    <Stack gap={2}  direction="horizontal" className="mx-auto w-75 ">
-      {filterTags.map((tag, index) => (
-        <Badge pill bg="success">
-          {tag}
-        </Badge>
-      ))}
-    </Stack>
+    <td>
+      <Stack gap={2} direction="horizontal" className="d-flex flex-wrap">
+        {filterTags.map((filterTagObj, filterTagObjIndex) =>
+          Object.entries(filterTagObj).map(([key, value], tagIndex ) => (
+            
+              <Badge pill bg="success" key={tagIndex + filterTagObjIndex}>
+                {(value === true || String(value) === 'true')? key : `${key}: ${value}`}
+              </Badge>
+            
+          ))
+        )}
+      </Stack>
+    </td>
+    
+   
   );
 
-  return (
-    <td>
-      {content}
-    </td>
-  );
+  return content;
 };
 
 export default FilterTagsDisplay;
