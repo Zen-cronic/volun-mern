@@ -5,10 +5,7 @@
 const toLowerNoSpace = (word) => {
 
 
-    // if(typeof word !== 'string'){
-
-    //     throw new Error('Word is NOT a string')
-    // }
+  
     const convertedWord = word.toLowerCase().replace(/\s+/g, '')
 
     return convertedWord

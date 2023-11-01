@@ -2,17 +2,17 @@
 import { useNavigate } from 'react-router-dom';
 import React from "react";
 import { useSelector } from "react-redux";
-import { selectEventById } from './eventsApiSlice';
+import { selectEventById } from '../eventsApiSlice';
 import { Button } from 'react-bootstrap'; 
 import {FaShareAlt} from 'react-icons/fa'
-import FilterTagsDisplay from './filter/FilterTagsDisplay';
+import HighlightSearchResults from './HighlightSearchResults';
 
 
 
 //regex for filtered page - conditional col in table
 
 
-const EventExcerpt = ({ eventId, filterTags }) => {
+const SearchedEventExcerpt = ({ eventId, searchTerm }) => {
 
     const event = useSelector(state => (selectEventById(state, eventId)))
     
@@ -30,12 +30,18 @@ const EventExcerpt = ({ eventId, filterTags }) => {
     else{
 
         const handleViewEvent = () => (navigate(`/dash/events/${event.id}`)) 
+
+        if(!searchTerm){
+            console.warn("searchTerm is null");
+        }
+
         content = (
 
             <>
-                <td>{event.eventName}</td>
+                <td><HighlightSearchResults text={event.eventName} highlight={searchTerm}/></td>
                 <td>{event.eventVenue}</td>
-                <td>{event.eventDescription}</td>
+                <td><HighlightSearchResults text={event.eventDescription} highlight={searchTerm}/></td>
+
                 <td>
                     <Button 
                         type='button'
@@ -46,7 +52,7 @@ const EventExcerpt = ({ eventId, filterTags }) => {
                         Details
                     </Button>
                 </td>
-                <FilterTagsDisplay filterTags={filterTags} />
+                
             </>
         )
     }
@@ -54,4 +60,4 @@ const EventExcerpt = ({ eventId, filterTags }) => {
 }
 
 
-export default EventExcerpt
+export default SearchedEventExcerpt

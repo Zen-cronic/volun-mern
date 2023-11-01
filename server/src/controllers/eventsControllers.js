@@ -90,14 +90,22 @@ const searchEvents = asyncHandler(async (req, res) => {
   const matchingEvents = allEvents
     .filter(
       (event) =>
-        includesSearchTerm(event.eventName, q) ||
-        includesSearchTerm(event.eventDescription, q)
+      {
+        try {
+          return (
+            includesSearchTerm(event.eventName, q) ||
+            includesSearchTerm(event.eventDescription, q)
+          );
+        } catch (error) {
+          console.error('an error from searchEvents:', error.message);
+          return false; // Exclude this event from the results
+        }
+      }
     )
     //only "eventId" needed to look for each event in front
     .map((event) => ({
       eventId: event._id,
-      eventName: event.eventName,
-      eventDescription: event.eventDescription,
+   
     }));
 
   res.json({ searchTerm: q, matchingEvents });
