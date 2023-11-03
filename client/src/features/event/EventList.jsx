@@ -1,52 +1,58 @@
-import React from 'react'
-import { useGetEventsQuery } from './eventsApiSlice'
-import EventExcerpt from './EventExcerpt'
-import { Link } from 'react-router-dom'
-import {Table, Container} from 'react-bootstrap'
-import EventListLayout from './EventListLayout'
+import React from "react";
+import { useGetEventsQuery } from "./eventsApiSlice";
+import EventExcerpt from "./EventExcerpt";
+import EventListLayout from "./EventListLayout";
+import { Button, Container } from "react-bootstrap";
+import LinkContainer from "react-router-bootstrap/LinkContainer";
+import useAuth from "../../hooks/useAuth";
 
 const EventList = () => {
+  const { role, isAdmin } = useAuth();
+  const {
+    data: events,
+    isSuccess: isEventsSuccess,
+    isLoading,
+    isError,
+    error,
+  } = useGetEventsQuery("eventsList", {
+    //15min
+    pollingInterval: 900000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+  });
 
-    const {data: events, isSuccess: isEventsSuccess, isLoading, isError, error } = useGetEventsQuery('eventsList', {
+  let tableBodyContent;
 
-      //15min
-        pollingInterval:900000,
-        refetchOnFocus: true,
-        refetchOnMountOrArgChange: true,
-    })
+  if (isLoading) tableBodyContent = <p>Loading...</p>;
 
-    let tableBodyContent
+  if (isError) {
+    tableBodyContent = <p className="errmsg">{error?.data?.message}</p>;
+  }
 
-    if (isLoading) tableBodyContent = <p>Loading...</p>
+  if (isEventsSuccess) {
+    const { ids } = events;
+    // console.log('all Events ids from useQUery:', ids);
+    tableBodyContent = ids.map((eventId) => (
+      <tr key={eventId}>
+        <EventExcerpt key={eventId} eventId={eventId} />
+      </tr>
+    ));
+  }
 
-    if (isError) {
-        tableBodyContent = <p className="errmsg">{error?.data?.message}</p>
-    }
+  const content = (
+    <>
+      {role === "ADMIN" && isAdmin ? (
+        <Container className="my-2">
+          <LinkContainer to={"/dash/events/new"}>
+            <Button variant="warning">Add New Event</Button>
+          </LinkContainer>
+        </Container>
+      ) : null}
 
-    if(isEventsSuccess){
+      <EventListLayout tableBodyContent={tableBodyContent} />
+    </>
+  );
+  return content;
+};
 
-        const {ids} = events
-        // console.log('all Events ids from useQUery:', ids);
-        tableBodyContent = ids.map((eventId) => (
-
-          <tr key={eventId}>
-                <EventExcerpt key={eventId} eventId={eventId}/>
-          </tr>
-            
-        ))
-    }
-
-    const content = (
-
-      <>
-      <div>
-       <Link to={'/dash/events/new'}>Add new event</Link>
-     </div>
-
-      <EventListLayout tableBodyContent={tableBodyContent}/>
- </>
-    )
-  return content 
-}
-
-export default EventList
+export default EventList;

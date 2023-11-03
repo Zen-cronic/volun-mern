@@ -3,11 +3,9 @@ import React from "react";
 import EventExcerpt from "../EventExcerpt";
 import { useSelector } from "react-redux";
 import { selectFilteredEvents } from "../eventsSlice";
-import EventListLayout from "../EventListLayout";
 import { Container, Table } from "react-bootstrap";
 import checkIsFilteredEventsPage from "./checkIsFilteredEventsPage";
 
-//rmove async!
 const FilteredEventList = () => {
   const filteredEvents = useSelector(selectFilteredEvents);
 

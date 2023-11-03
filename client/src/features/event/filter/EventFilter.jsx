@@ -5,8 +5,9 @@ import { Button, Form, } from 'react-bootstrap';
 import DatePicker from "react-datepicker";
 import format from 'date-fns/format';
 import "react-datepicker/dist/react-datepicker.css";
+import findingQueryTypes from '../../../config/findingQueryTypes';
 
-const EventFilter = () => {
+const EventFilter = ({setVal}) => {
 
 
     const [isOpen, setIsOpenFilter] = useState(false);
@@ -16,13 +17,14 @@ const EventFilter = () => {
     const [date, setDateFilter] = useState("");
 
 
-    const [filterEvents] = useLazyPostFilteredEventsQuery()
+    const [filterEvents, {isLoading}] = useLazyPostFilteredEventsQuery()
     const navigate = useNavigate()
 
     const onVenueFilterChange = (e) => setVenueFilter( e.target.value)
     const onIsOpenFilterChange = (e) => setIsOpenFilter(prev => !prev)
     const onIsUpcomingFilterChange = (e) => setIsUpcomingFilter(prev => !prev)
   
+    const canFilter = [isOpen, isUpcoming, venue, date].some(Boolean)  && !isLoading
 
     const venueOptionsSelect = (
 
@@ -112,8 +114,12 @@ const EventFilter = () => {
        
     )
 
+
     const handleFilterSubmit = async () => {
 
+        if(!canFilter){
+            return 
+        }
         // let filterKeysObj = {}
 
         // const filterKeysArr = [venue, isOpen, isUpcoming, date]
@@ -155,7 +161,11 @@ const EventFilter = () => {
             await filterEvents(filterKeysObj, preferCacheValue).unwrap()
 
             navigate('/dash/events/filter')
-
+            setVal((prev) => ({
+                ...prev,
+                findingQueryType: findingQueryTypes.FILTER,
+                findingQueryVal: filterKeysObj,
+              }));
         } catch (error) {
             console.log("Events Filter error: ", error);
         }
