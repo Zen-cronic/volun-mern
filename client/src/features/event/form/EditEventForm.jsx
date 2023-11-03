@@ -12,8 +12,11 @@ import {
   Col,
   FloatingLabel,
   Button,
+  Modal,
 } from "react-bootstrap";
 import { usePutUpdateEventInfoMutation } from "../eventsApiSlice";
+import ConfirmationEventModal from "./ConfirmationEventModal";
+import DeleteEvent from "../DeleteEvent";
 
 //event obj from back - localEventDates+T00:00
 const EditEventForm = ({ event, eventId }) => {
@@ -34,6 +37,10 @@ const EditEventForm = ({ event, eventId }) => {
     updateEventInfo,
     { isSuccess: isUpdateSuccess, isLoading: isUpdateLoading },
   ] = usePutUpdateEventInfoMutation();
+
+  const [showModal, setShowModal] = useState(false);
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
 
   //reformat data for front rendering
   //local dates format from back using date-fns-tz format(): yyyy-MM-dd HH:mm TZ
@@ -65,11 +72,8 @@ const EditEventForm = ({ event, eventId }) => {
         throw new Error("Must be an arr for shiftsWithListIds");
       }
 
-
       //shfitListIds && parentListIdForShift
       const shiftsWithListIds = event.shifts.map((shift, shiftIndex) => {
-      
-
         const splitLocalShiftStart = shift.localShiftStart.split(" ");
         const splitLocalShiftEnd = shift.localShiftEnd.split(" ");
 
@@ -89,11 +93,10 @@ const EditEventForm = ({ event, eventId }) => {
         //   (eventDateObj) => eventDateObj.date.includes(shiftStartDate)
         // );
         const correspondingEvent = dupEventDatesWithListIdsAndDates.find(
-          (eventDateObj, eventIndex) => (eventDateObj.date.includes(shiftStartDate) && eventIndex === shiftIndex)
+          (eventDateObj, eventIndex) =>
+            eventDateObj.date.includes(shiftStartDate) &&
+            eventIndex === shiftIndex
         );
-
-
-      
 
         return {
           //to keep shiftId unchanged when sending submitting to back
@@ -226,10 +229,8 @@ const EditEventForm = ({ event, eventId }) => {
     console.log("updatedShiftTimes after removing:  ", updatedShiftTimes);
   };
 
-
-    //base this on shifts to display same date shifts
+  //base this on shifts to display same date shifts
   const renderEventDatesAndShifts = formData.shifts.map((shift) => {
-    
     //shift.shiftStart and shiftEnd here are jsut HH:mm
 
     const correspondingEvent = formData.eventDates.find(
@@ -317,6 +318,15 @@ const EditEventForm = ({ event, eventId }) => {
     }
   };
 
+  // const updateEventConfirmationData = Object.values(formData).map(
+  //   (value, index) => {
+  //     if (typeof value === "object" && value !== null) {
+  //       value = JSON.stringify(value);
+  //     }
+  //     return <p key={index}>{value}</p>;
+  //   }
+  // );
+
   //make use
   const createdAt = new Date(event.createdAt).toLocaleString("en-US", {
     day: "numeric",
@@ -334,6 +344,7 @@ const EditEventForm = ({ event, eventId }) => {
     minute: "numeric",
     second: "numeric",
   });
+
   return (
     <Container>
       <Stack gap={3}>
@@ -418,14 +429,44 @@ const EditEventForm = ({ event, eventId }) => {
             </Col>
           </Row>
 
-          <br></br>
-          <Button type="submit" variant="warning" onClick={handleFormSubmit}>
+<Row>
+<br></br>
+</Row>
+         
+         <Row>
+          <Col>
+          <Button type="button" variant="warning" onClick={handleShowModal}>
             Edit Event
           </Button>
+
+          <ConfirmationEventModal
+            handleCloseModal={handleCloseModal}
+            handleFormSubmit={handleFormSubmit}
+            title={"Update event?"}
+            showModal={showModal}
+            confirmButtonText={"Update Event"}
+          >
+            <p>Confirm to update your event:</p>
+          </ConfirmationEventModal>
+
+          </Col>
+         </Row>
+         
+          <Row>
+            <br></br>
+          </Row>
+
+          <Row>
+            <Col>
+              <DeleteEvent eventId={eventId} />
+            </Col>
+          </Row>
 
           <Row>
             <br></br>
           </Row>
+
+          
         </Form>
       </Stack>
     </Container>

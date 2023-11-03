@@ -76,7 +76,7 @@ EventShiftSchema.pre('validate', function(next){
     }
 
     if(!(includedTimeInDate(this.shiftStart) && includedTimeInDate(this.shiftEnd))){
-        throw new Error('T00:00 must be included in shiftStart and shiftEnd')
+        throw new Error('THH:mm must be included in shiftStart and shiftEnd')
     }
 
 

@@ -9,7 +9,7 @@ const Welcome = () => {
 
     const {role, volunId} = useAuth()
     const content = (
-        <section  className='min-vh-100 position-relative'>
+        <section >
 
             <p>{today}</p>
 

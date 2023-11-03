@@ -30,6 +30,7 @@ import EventStats from "./features/event/EventStats";
 
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
+import ViewportLayout from "./components/ViewportLayout";
 
 const App = () => {
   return (
@@ -46,50 +47,52 @@ const App = () => {
             <Route path="/dash" element={<DashLayout />}>
               <Route element={<PrefetchVolunteers />}>
                 <Route index={true} element={<Welcome />} />
-                <Route path="events" element={<EventHeader />}>
-                  <Route index={true} element={<EventList />} />
+                  <Route path="events" element={<EventHeader />}>
+                    <Route index={true} element={<EventList />} />
 
-                  <Route path=":eventId">
-                    <Route index element={<EventPage />} />
+                    <Route path=":eventId">
+                      <Route index element={<EventPage />} />
 
-                    <Route element={<RoleBasedRoute allowedRole={"ADMIN"} />}>
-                      <Route path="edit" element={<EditEvent />} />
-                      <Route path="stats" element={<EventStats />} />
+                      <Route element={<RoleBasedRoute allowedRole={"ADMIN"} />}>
+                        <Route path="edit" element={<EditEvent />} />
+                        <Route path="stats" element={<EventStats />} />
+                      </Route>
                     </Route>
+
+                    <Route path="new" element={<NewEventForm />} />
+                    <Route path="filter" element={<FilteredEventList />} />
+
+                    <Route path="sort" element={<SortedEventsList />} />
+
+                    <Route path="search" element={<SearchedEventsList />} />
                   </Route>
 
-                  <Route path="new" element={<NewEventForm />} />
-                  <Route path="filter" element={<FilteredEventList />} />
+                  {/* prefetchVOluns here */}
+                  {/* RoleBaseRoute for admin only */}
+                  {/* <Route element={<RoleBaseRoute allowedRole={"ADMIN"}/>}> */}
+                  <Route path="volunteers" element={<VolunteerHeader />}>
+                    <Route element={<RoleBasedRoute allowedRole={"ADMIN"} />}>
+                      {/* <Route element={<PrefetchVolunteers/>}> */}
+                      <Route index={true} element={<VolunteersList />} />
 
-                  <Route path="sort" element={<SortedEventsList />} />
+                      <Route path="search" element={<SearchedVolunList />} />
 
-                  <Route path="search" element={<SearchedEventsList />} />
-                </Route>
+                      <Route path="sort" element={<SortedVolunList />} />
+                      {/* </Route> */}
+                    </Route>
 
-                {/* prefetchVOluns here */}
-                {/* RoleBaseRoute for admin only */}
-                {/* <Route element={<RoleBaseRoute allowedRole={"ADMIN"}/>}> */}
-                <Route path="volunteers" element={<VolunteerHeader />}>
-                  <Route element={<RoleBasedRoute allowedRole={"ADMIN"} />}>
-                    {/* <Route element={<PrefetchVolunteers/>}> */}
-                    <Route index={true} element={<VolunteersList />} />
-
-                    <Route path="search" element={<SearchedVolunList />} />
-
-                    <Route path="sort" element={<SortedVolunList />} />
-                    {/* </Route> */}
-                  </Route>
-
-                  <Route element={<RoleBasedRoute allowedRole={"VOLUNTEER"} />}>
-                    <Route path=":volunId">
-                      <Route index={true} element={<SingleVolunteerPage />} />
-                      <Route path="edit" element={<EditVolunteer />} />
-                      <Route path="pwd" element={<UpdatePassword />} />
+                    <Route
+                      element={<RoleBasedRoute allowedRole={"VOLUNTEER"} />}
+                    >
+                      <Route path=":volunId">
+                        <Route index={true} element={<SingleVolunteerPage />} />
+                        <Route path="edit" element={<EditVolunteer />} />
+                        <Route path="pwd" element={<UpdatePassword />} />
+                      </Route>
                     </Route>
                   </Route>
                 </Route>
               </Route>
-            </Route>
           </Route>
         </Route>
       </Route>

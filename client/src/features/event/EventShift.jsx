@@ -158,7 +158,7 @@ const EventShift = ({ shift, eventId }) => {
                     Sign Up for shift!
                   </Button>
 
-                  <Modal show={showSignUpModal}>
+                  <Modal show={showSignUpModal} onHide={handleCloseSignUpModal}>
                     <Modal.Header closeButton>
                       <Modal.Title>Sign up?</Modal.Title>
                     </Modal.Header>
@@ -198,7 +198,7 @@ const EventShift = ({ shift, eventId }) => {
                     Cancel!
                   </Button>
 
-                  <Modal show={showCancelModal}>
+                  <Modal show={showCancelModal} onHide={handleCloseCancelModal}>
                     <Modal.Header closeButton>
                       <Modal.Title>Cancel Shift?</Modal.Title>
                     </Modal.Header>

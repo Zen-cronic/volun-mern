@@ -37,7 +37,6 @@ const EventHeader = () => {
   return (
     <>
       {eventHeaderContent}
-      
        <Link to={'/dash/events'}>Back to Events List</Link>
       
       <Outlet/>

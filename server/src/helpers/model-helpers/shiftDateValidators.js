@@ -12,14 +12,15 @@ const includedTimeInDate = (dateObj) => {
 
     // }
     if(!dateObjChecker(dateObj)){
-        return null
+        return false
     }
 
 
     //meaning ...T00:...
+    //getUTC vs get
     if(
-        dateObj.getUTCHours() === 0 &&
-     dateObj.getUTCMinutes() ===0){
+        dateObj.getHours() === 0 &&
+     dateObj.getMinutes() ===0){
         return false
     }
 
