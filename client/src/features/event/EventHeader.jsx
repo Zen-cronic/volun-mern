@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import React from "react";
+import { Outlet } from "react-router-dom";
 import EventFilter from "./filter/EventFilter";
 import EventSort from "./sort/EventSort";
 import EventSearchBar from "./search/EventSearchBar";
@@ -22,7 +22,7 @@ const EventHeader = () => {
       <Stack gap={2} direction="horizontal" className="d-flex flex-wrap">
 
         {findingQuery.findingQueryType === findingQueryTypes.FILTER ? (
-          
+
           Object.entries(findingQuery.findingQueryVal).map(
             ([key, val], index) => (
               <Badge bg="success" key={index}>
@@ -68,7 +68,6 @@ const EventHeader = () => {
         <LinkContainer to={"/dash/events"}>
           <Button variant="primary">Back to Events List</Button>
         </LinkContainer>
-        {/* <Link ></Link> */}
       </Container>
 
       <Outlet />

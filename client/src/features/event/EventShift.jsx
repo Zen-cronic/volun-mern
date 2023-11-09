@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import {
-  useLazyPostCheckButtonsQuery,
   usePatchCancelShiftMutation,
   usePatchSignedUpShiftMutation,
 } from "../volun/volunteersApiSlice";
-import { useEffect } from "react";
 import {
   Button,
   Row,
@@ -17,20 +15,22 @@ import {
 import convertShiftDisplayDateTime from "../../helpers/convertShiftDisplayDateTime";
 
 import "react-toastify/dist/ReactToastify.css";
+import useDisableButtonsHook from "../../hooks/useDisableButtonsHook";
 
 const EventShift = ({ shift, eventId }) => {
   const { role, isVolunteer, volunId } = useAuth();
 
   const shiftId = shift?._id;
 
-  const [disableSignUpButton, setDisableSignUpButton] = useState(false);
-  const [disableCancelButton, setDisableCancelButton] = useState(false);
-
-  const [signUpMessage, setSignUpMessage] = useState("");
-  const [cancelMessage, setCancelMessage] = useState("");
-
-  const [signUpShift] = usePatchSignedUpShiftMutation();
-  const [cancelShift] = usePatchCancelShiftMutation();
+  const {
+    disableCancelButton,
+    setDisableCancelButton,
+    disableSignUpButton,
+    setDisableSignUpButton,
+    signUpMessage,
+    cancelMessage,
+    
+  } = useDisableButtonsHook(shiftId, eventId, volunId, role, isVolunteer);
 
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -41,59 +41,9 @@ const EventShift = ({ shift, eventId }) => {
   const handleShowCancelModal = () => setShowCancelModal(true);
   const handleCloseCancelModal = () => setShowCancelModal(false);
 
-  //canNOT use memoized selector for volunteer - /users isNOT memoized
+  const [signUpShift] = usePatchSignedUpShiftMutation();
+  const [cancelShift] = usePatchCancelShiftMutation();
 
-  const [checkButton] = useLazyPostCheckButtonsQuery();
-
-  useEffect(
-    () => {
-      const disableButtons = async () => {
-        //try Promise.all for both buttons
-        try {
-          const [updatableData, cancelableData] = await Promise.all([
-            checkButton({
-              eventId,
-              shiftId,
-              volunId,
-              buttonType: "signup",
-            }).unwrap(),
-            checkButton({
-              eventId,
-              shiftId,
-              volunId,
-              buttonType: "cancel",
-            }).unwrap(),
-          ]);
-
-          console.log(
-            "return updatabledata from checkButton from front: ",
-            updatableData
-          );
-          console.log(
-            "return cancelableData from checkButton from front: ",
-            cancelableData
-          );
-
-          const { disable: disableUpdate, message: signUpMsg } = updatableData;
-          const { disable: disableCancel, message: cancelMsg } = cancelableData;
-
-          setDisableSignUpButton(disableUpdate);
-          setDisableCancelButton(disableCancel);
-
-          setSignUpMessage(signUpMsg);
-          setCancelMessage(cancelMsg);
-        } catch (error) {
-          console.log("disableSignUpButton error: ", error);
-        }
-      };
-
-      if (isVolunteer && role === "VOLUNTEER") {
-        disableButtons();
-      }
-    },
-    // [disableSignUpButton, disableCancelButton, signUpMessage, cancelMessage]
-    [disableSignUpButton, disableCancelButton]
-  );
 
   const handleSignUpShift = async () => {
     if (disableSignUpButton) {

@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import React from "react";
+import { Outlet} from "react-router-dom";
 import VolunSearchBar from "./search/VolunSearchBar";
-import { Link } from "react-router-dom";
 import VolunSort from "./sort/VolunSort";
 import useAuth from "../../hooks/useAuth";
 import PatchVolunteeredShiftsButton from "./PatchVolunteeredShiftsButton";
 import { Container, Row, Col, Badge, Stack, Button } from "react-bootstrap";
-import findingQueryTypes from "../../config/findingQueryTypes";
 import capitalizeFirstLetter from "../../helpers/capitalizeFirstLetter";
 import { LinkContainer } from "react-router-bootstrap";
 import useFindingQueryDisplayHook from "../../hooks/useFindingQueryDisplayHook";
