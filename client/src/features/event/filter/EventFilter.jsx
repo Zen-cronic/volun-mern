@@ -174,7 +174,7 @@ const EventFilter = ({setFindingQuery}) => {
 
    const filterSubmitButton = (
 
-    <Button onClick={handleFilterSubmit}>Search With Filter</Button>
+    <Button onClick={handleFilterSubmit} >Search With Filter</Button>
    )
 
 

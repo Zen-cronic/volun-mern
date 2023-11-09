@@ -10,12 +10,13 @@ const VolunSort = ({setFindingQuery}) => {
 
   
   const [sortOption, setSortOption] = useState('');
-  const [sortVolunteers] = useLazyPostSortedVolunteersQuery()
+  const [sortVolunteers, {isLoading}] = useLazyPostSortedVolunteersQuery()
 
   const navigate = useNavigate()
 
   const onSortOptionsChange = (e) => setSortOption(e.target.value)
 
+  const canSort = Boolean(sortOption) && !isLoading
   const sortOptionsSelect = (
 
       <Form.Select value={sortOption} name='sortSelect' onChange={onSortOptionsChange}>
@@ -31,6 +32,9 @@ const VolunSort = ({setFindingQuery}) => {
 
   const handleVolunSortSubmit = async( ) => {
 
+    if(!canSort){
+      return
+    }
     try {
 
       //needs a differnetly ordered arr with each new sort option
@@ -41,7 +45,7 @@ const VolunSort = ({setFindingQuery}) => {
 
       navigate('/dash/volunteers/sort')
 
-      setFindingQueryDisplay({
+      setFindingQuery({
         findingQueryType: findingQueryTypes.SORT,
         findingQueryVal: sortOption
       })

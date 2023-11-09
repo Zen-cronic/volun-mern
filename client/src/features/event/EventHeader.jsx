@@ -6,33 +6,13 @@ import EventSearchBar from "./search/EventSearchBar";
 import { Container, Row, Col, Stack, Badge, Button } from "react-bootstrap";
 import findingQueryTypes from "../../config/findingQueryTypes";
 import capitalizeFirstLetter from "../../helpers/capitalizeFirstLetter";
-import LinkContainer from "react-router-bootstrap/LinkContainer";
+import { LinkContainer } from "react-router-bootstrap";
+import useFindingQueryDisplayHook from "../../hooks/useFindingQueryDisplayHook";
 
 const EventHeader = () => {
-  const [findingQuery, setFindingQuery] = useState({
-    findingQueryType: "",
-    findingQueryVal: "",
-  });
-
-  const location = useLocation();
-  const [showFindingQuery, setShowFindingQuery] = useState(false);
-
-  // const [showFindingQuery, setShowFindingQuery] = useState(Object.values(findingQueryTypes).some(queryType =>  ( window.location.pathname.includes(`/${queryType}`)))
-  // )
-
-  useEffect(() => {
-    const displayQuery = Object.values(findingQueryTypes).some((queryType) =>
-      location.pathname.includes(`/${queryType}`)
-    );
-
-    // if(!showFindingQuery){
-    //   setVal( {findingQueryType: "",
-    //   findingQueryVal: "",})
-
-    // }
-
-    setShowFindingQuery(displayQuery);
-  }, [location]);
+  
+  const { findingQuery, showFindingQuery, setFindingQuery } =
+    useFindingQueryDisplayHook();
 
   //nu need both showFindingQuery && val.findingQueryType
   const findingQueryDisplay = showFindingQuery ? (
@@ -42,11 +22,9 @@ const EventHeader = () => {
       <Stack gap={2} direction="horizontal" className="d-flex flex-wrap">
 
         {findingQuery.findingQueryType === findingQueryTypes.FILTER ? (
-
+          
           Object.entries(findingQuery.findingQueryVal).map(
-
             ([key, val], index) => (
-
               <Badge bg="success" key={index}>
                 {val === true || String(val) === "true"
                   ? key
@@ -60,12 +38,12 @@ const EventHeader = () => {
       </Stack>
     </>
   ) : null;
-  
+
   const eventHeaderContent = (
     <Container className="my-2">
       <Row>
         <Col xs={6} lg={4}>
-          {<EventSearchBar  setFindingQuery={setFindingQuery} />}
+          {<EventSearchBar setFindingQuery={setFindingQuery} />}
         </Col>
 
         <Col xs={6} lg={4}>

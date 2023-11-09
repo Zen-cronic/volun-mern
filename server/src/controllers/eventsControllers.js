@@ -116,18 +116,14 @@ const sortEvents = [
   asyncHandler(async (req, res, next) => {
     //only 1 sort option at a time
     const [[sortOption, orderBool]] = Object.entries(req.body);
-
-    if (typeof orderBool !== "boolean") {
-      throw new Error(
-        "Sort val must be a boolean for either ascending or descending"
-      );
-    }
+ 
 
     //sort by aplhabetically, or open positions
     if (sortOption === SORT_OBJECT.SOONEST.sortOption) {
       console.log("next() to handle sort event dates");
       return next();
     }
+
     const sortedEvents = await sortEventsHelper(sortOption, orderBool)
       //serizlisation
       .then((events) =>

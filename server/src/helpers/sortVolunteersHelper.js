@@ -6,8 +6,13 @@ const sortOrder = require("./sortOrder");
 const sortVolunteersHelper = async(sortOption,orderBool) => {
 
 
-   const {sortIndex} = Object.values(SORT_OBJECT).find(opt => (opt.sortOption === sortOption))
+   const sortOptionObj = Object.values(SORT_OBJECT).find(opt => (opt.sortOption === sortOption))
   
+   if(!sortOptionObj){
+    throw new Error('sortOptionObj must be found to get its sortIndex - volunteerrsHelper')
+   }
+
+   const {sortIndex} = sortOptionObj
    //want descending order
    if(sortOption === SORT_OBJECT.HOURS.sortOption){
     orderBool = false
