@@ -37,12 +37,6 @@ const sameDateShift = (shiftStart, shiftEnd) => {
     if(!areDateObjs)
         return null
 
-    // console.log('UTC date of shiftStart: ', shiftStart.getUTCDate());
-    // console.log('UTC date of shiftEnd: ', shiftEnd.getUTCDate());
-
-    // console.log('date of shiftStart: ', shiftStart.getDate());
-    // console.log('date of shiftEnd: ', shiftEnd.getDate());
-
     if(shiftStart.getDate() !== shiftEnd.getDate() ){
         return false
     }

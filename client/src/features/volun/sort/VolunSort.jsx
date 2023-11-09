@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { useLazyPostSortedVolunteersQuery } from '../volunteersApiSlice';
 import { useNavigate } from 'react-router';
 import { Button, Form } from 'react-bootstrap';
+import findingQueryTypes from '../../../config/findingQueryTypes';
 
 
-const VolunSort = () => {
+const VolunSort = ({setFindingQuery}) => {
 
   
   const [sortOption, setSortOption] = useState('');
@@ -39,6 +40,11 @@ const VolunSort = () => {
       console.log("unwrapped data from sortVolunteers front: ", data);
 
       navigate('/dash/volunteers/sort')
+
+      setFindingQueryDisplay({
+        findingQueryType: findingQueryTypes.SORT,
+        findingQueryVal: sortOption
+      })
 
     } catch (error) {
       console.error('handleVolunSort submit error: ', error);

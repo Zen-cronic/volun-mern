@@ -1,3 +1,5 @@
+//wrap calling code of this fx in trycatch
+
 const dateObjChecker = (checked) => {
 
     if(!(checked instanceof Date)){

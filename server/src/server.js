@@ -12,8 +12,7 @@ const app = express()
 
 connectDB()
 
-// Handle options credentials check - before CORS!
-// and fetch cookies credentials requirement
+// Handle options credentials check - before cors
 app.use(credentials);
 
 app.use(express.json())

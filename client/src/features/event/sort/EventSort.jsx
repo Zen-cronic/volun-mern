@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 import { Button, Form } from 'react-bootstrap';
 import findingQueryTypes from '../../../config/findingQueryTypes';
 
-const EventSort = ({setVal}) => {
+const EventSort = ({setFindingQuery}) => {
 
     const [sortOption, setSortOption] = useState('');
     const [sortEvents] = useLazyPostSortedEventsQuery()
@@ -35,12 +35,12 @@ const EventSort = ({setVal}) => {
             const {data} = await sortEvents(sortOption, preferCacheValue)
             navigate('/dash/events/sort')
 
-            // setVal(sortOption)
-            setVal((prev) => ({
+            setFindingQuery((prev) => ({
                 ...prev,
                 findingQueryType: findingQueryTypes.SORT,
                 findingQueryVal: sortOption,
               }));
+              
             console.log("Sorted events data: ", data);
         } catch (error) {
             console.log("Sort error: ", error);

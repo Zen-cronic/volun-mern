@@ -7,7 +7,7 @@ import format from 'date-fns/format';
 import "react-datepicker/dist/react-datepicker.css";
 import findingQueryTypes from '../../../config/findingQueryTypes';
 
-const EventFilter = ({setVal}) => {
+const EventFilter = ({setFindingQuery}) => {
 
 
     const [isOpen, setIsOpenFilter] = useState(false);
@@ -161,7 +161,7 @@ const EventFilter = ({setVal}) => {
             await filterEvents(filterKeysObj, preferCacheValue).unwrap()
 
             navigate('/dash/events/filter')
-            setVal((prev) => ({
+            setFindingQuery((prev) => ({
                 ...prev,
                 findingQueryType: findingQueryTypes.FILTER,
                 findingQueryVal: filterKeysObj,

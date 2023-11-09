@@ -7,7 +7,7 @@ import {
 import { Button, Form } from "react-bootstrap";
 import findingQueryTypes from "../../../config/findingQueryTypes";
 
-const EventSearchBar = ({ val, setVal }) => {
+const EventSearchBar = ({  setFindingQuery }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [searchQuery, setSearchQuery] = useState(
@@ -34,7 +34,7 @@ const EventSearchBar = ({ val, setVal }) => {
       // setVal({})
 
       // const findingQuery = findingQueryTypes.SEARCH
-      setVal((prev) => ({
+      setFindingQuery((prev) => ({
         ...prev,
         findingQueryType: findingQueryTypes.SEARCH,
         findingQueryVal: searchQuery,

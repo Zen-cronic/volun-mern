@@ -40,6 +40,9 @@ const createNewVolunteer = asyncHandler(async(req,res)=>{
     await newVolunteer.save()
 
     //data.newVolunteer in front from queryFulfilled or unwrap()
+
+        // return res.send({user>})
+        //omit password
     res.json({newVolunteer})
 })
 
