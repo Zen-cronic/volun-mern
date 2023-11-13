@@ -1,0 +1,19 @@
+{
+    "buildpacks": [
+        {
+            "url": "heroku/nodejs"
+        }
+    ],
+    "environments": {
+        "test": {
+            "env": {
+                "APP_BASE": "server"
+            }
+        },
+        "production": {
+            "env": {
+                "APP_BASE": "server"
+            }
+        }
+    }
+}
