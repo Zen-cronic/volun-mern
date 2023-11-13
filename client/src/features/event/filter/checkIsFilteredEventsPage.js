@@ -8,7 +8,7 @@ const checkIsFilteredEventsPage = (pathname) => {
   //   `^${devBaseUrl}dash/events/filter$`
   // );
   const filteredEventsPageRegex = new RegExp(
-    `^$/dash/events/filter$`
+    `^/dash/events/filter$`
   );
 
   const isFilteredEventsPage = filteredEventsPageRegex.test(pathname);
