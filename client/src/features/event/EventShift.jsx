@@ -13,12 +13,11 @@ import {
   Modal,
 } from "react-bootstrap";
 import convertShiftDisplayDateTime from "../../helpers/convertShiftDisplayDateTime";
-
-import "react-toastify/dist/ReactToastify.css";
 import useDisableButtonsHook from "../../hooks/useDisableButtonsHook";
 import useModal from "../../hooks/useModal";
 
 const EventShift = ({ shift, eventId }) => {
+  
   const { role, isVolunteer, volunId } = useAuth();
 
   const shiftId = shift?._id;
@@ -30,15 +29,13 @@ const EventShift = ({ shift, eventId }) => {
     setDisableSignUpButton,
     signUpMessage,
     cancelMessage,
-
   } = useDisableButtonsHook(shiftId, eventId, volunId, role, isVolunteer);
 
-  const signUpModal = useModal()
-  const cancelModal = useModal()
+  const signUpModal = useModal();
+  const cancelModal = useModal();
 
   const [signUpShift] = usePatchSignedUpShiftMutation();
   const [cancelShift] = usePatchCancelShiftMutation();
-
 
   const handleSignUpShift = async () => {
     if (disableSignUpButton) {
@@ -52,8 +49,7 @@ const EventShift = ({ shift, eventId }) => {
 
       setDisableSignUpButton(true);
       // setShowSignUpModal(false);
-      signUpModal.showModal()
-
+      signUpModal.showModal();
     } catch (error) {
       console.log("updateSignUPShift from front Error: ", error);
     }
@@ -68,11 +64,10 @@ const EventShift = ({ shift, eventId }) => {
       const data = await cancelShift({ eventId, shiftId, volunId }).unwrap();
       console.log("return data from cancelShift from front: ", data);
 
-
       setDisableCancelButton(true);
       // setShowCancelModal(false);
 
-      cancelModal.showModal()
+      cancelModal.showModal();
     } catch (error) {
       console.log("cancelShift from front Error: ", error);
     }
@@ -103,7 +98,10 @@ const EventShift = ({ shift, eventId }) => {
                     Sign Up for shift!
                   </Button>
 
-                  <Modal show={signUpModal.isDisplayed} onHide={signUpModal.hideModal}>
+                  <Modal
+                    show={signUpModal.isDisplayed}
+                    onHide={signUpModal.hideModal}
+                  >
                     <Modal.Header closeButton>
                       <Modal.Title>Sign up?</Modal.Title>
                     </Modal.Header>
@@ -143,7 +141,10 @@ const EventShift = ({ shift, eventId }) => {
                     Cancel!
                   </Button>
 
-                  <Modal show={cancelModal.isDisplayed} onHide={cancelModal.hideModal}>
+                  <Modal
+                    show={cancelModal.isDisplayed}
+                    onHide={cancelModal.hideModal}
+                  >
                     <Modal.Header closeButton>
                       <Modal.Title>Cancel Shift?</Modal.Title>
                     </Modal.Header>

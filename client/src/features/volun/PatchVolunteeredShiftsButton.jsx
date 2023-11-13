@@ -32,8 +32,6 @@ const PatchVolunteeredShiftsButton = () => {
     try {
       const data = await updateVolunteeredShifts().unwrap();
 
-      // window.location.reload(true)
-      // setIsPatched(true);
       setShowModal(false);
 
       // console.log(

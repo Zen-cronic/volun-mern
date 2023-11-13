@@ -80,8 +80,7 @@ const EventFilter = ({setFindingQuery}) => {
         
         <Form.Group className='my-1' >
 
-            <Form.Label
-            >Date Filter</Form.Label>
+            <Form.Label>Date Filter</Form.Label>
 
             <DatePicker className='mx-2'
                     

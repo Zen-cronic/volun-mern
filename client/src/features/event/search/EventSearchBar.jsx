@@ -53,6 +53,7 @@ const EventSearchBar = ({  setFindingQuery }) => {
         type="text"
         value={searchQuery ?? ""}
         onChange={(e) => setSearchQuery(e.target.value)}
+        placeholder="search for events"
       />
 
       <Button type="submit">Search</Button>

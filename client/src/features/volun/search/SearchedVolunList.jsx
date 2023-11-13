@@ -2,6 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { selectSearchedVolunteers } from '../volunteersSlice'
 import SingleVolunteerExcerpt from '../SingleVolunteerExcerpt'
+import VolunteersListLayout from '../VolunteersListLayout'
 
 const SearchedVolunList = () => {
 
@@ -12,11 +13,13 @@ const SearchedVolunList = () => {
     const content = volunteers.map(volun => {
 
         const volunId = volun.volunId
-        return <SingleVolunteerExcerpt key={volunId} volunId={volunId}/>
+        return (<tr key={volunId}>
+        <SingleVolunteerExcerpt key={volunId} volunId={volunId} />
+      </tr>)
 })
 
 
-  return content
+  return (<VolunteersListLayout tableBodyContent={content}/>)
 }
 
 export default SearchedVolunList
