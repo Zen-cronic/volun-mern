@@ -1,4 +1,4 @@
-//how function in production?
+//how function in production? - don't use baseUrl
 
 const checkIsFilteredEventsPage = (pathname) => {
 
