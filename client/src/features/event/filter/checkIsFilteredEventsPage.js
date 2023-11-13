@@ -2,9 +2,13 @@
 
 const checkIsFilteredEventsPage = (pathname) => {
 
-   const devBaseUrl = import.meta.env.BASE_URL;
+
+  //  const devBaseUrl = import.meta.env.BASE_URL;
+  // const filteredEventsPageRegex = new RegExp(
+  //   `^${devBaseUrl}dash/events/filter$`
+  // );
   const filteredEventsPageRegex = new RegExp(
-    `^${devBaseUrl}dash/events/filter$`
+    `^$/dash/events/filter$`
   );
 
   const isFilteredEventsPage = filteredEventsPageRegex.test(pathname);
