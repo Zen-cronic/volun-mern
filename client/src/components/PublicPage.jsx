@@ -1,26 +1,30 @@
-import { Link } from "react-router-dom";
+import { Badge, Button, Card, Container } from "react-bootstrap";
 
 const PublicPage = () => {
   const content = (
-    <section className="public">
-      <header>
-        <h1>
-          Welcome to <span className="nowrap">Volunteers!</span>
-        </h1>
-      </header>
-      <main>
-        <p>For all students across ...</p>
-
-        <br />
-      </main>
-      <footer>
-        <Link to="/login">Volunteer Login</Link>
-
-        {/* volun sign up */}
-        {/* <Link to="/login">Volunteer Login</Link> */}
-      </footer>
-    </section>
+    <Container className="d-flex justify-content-center py-4">
+      <Card
+        className="p-3 d-flex flex-column align-items-center justify-content-center bg-light w-75 "
+        style={{ height: "50vh" }}
+      >
+        <h1 className="text-center mb-4">Welcome to VolunteersHub!</h1>
+        <p className="text-center mb-4">
+          This space is for student volunteers at ...
+        </p>
+        <div className="d-flex">
+          <Button variant="primary" href="/login" className=" me-3">
+            Sign In
+          </Button>
+          <Badge className="me-3" bg="info" pill>
+            or
+          </Badge>
+          <Button variant="secondary" href="/register">
+            Register
+          </Button>
+        </div>
+      </Card>
+    </Container>
   );
-  return <>{content}</>;
+  return content
 };
 export default PublicPage;
