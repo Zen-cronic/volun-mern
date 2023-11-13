@@ -1,26 +1,29 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { selectSortedVolunteers } from '../volunteersSlice'
-import SingleVolunteerExcerpt from '../SingleVolunteerExcerpt'
+import React from "react";
+import { useSelector } from "react-redux";
+import { selectSortedVolunteers } from "../volunteersSlice";
+import SingleVolunteerExcerpt from "../SingleVolunteerExcerpt";
+import VolunteersListLayout from "../VolunteersListLayout";
 
 const SortedVolunList = () => {
+  const sortedVolunteers = useSelector(selectSortedVolunteers);
 
-  const sortedVolunteers = useSelector(selectSortedVolunteers)
+  let content;
 
-  let content 
-  if(sortedVolunteers.length){
-    content = sortedVolunteers.map(volun => {
-
-      const volunId = volun.volunId 
+  if (sortedVolunteers.length) {
+    content = sortedVolunteers.map((volun) => {
+      const volunId = volun.volunId;
       // const volunId =  volun._id
-      return <SingleVolunteerExcerpt key={volunId} volunId={volunId}/>
-    })
+      return (
+        <tr key={volunId}>
+          <SingleVolunteerExcerpt key={volunId} volunId={volunId} />
+        </tr>
+      );
+    });
   }
+  // } else {
+  //   content = <p>No voluns for sort</p>;
+  // }
+  return (<VolunteersListLayout tableBodyContent={content}/>)
+};
 
-  else{
-    content = (<p>No voluns for sort</p>)
-  }
-  return content
-}
-
-export default SortedVolunList
+export default SortedVolunList;
