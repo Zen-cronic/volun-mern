@@ -1,36 +1,33 @@
+const express = require("express");
+const eventsControllers = require("../controllers/eventsControllers");
+const { ROLES } = require("../config/roles");
+const verifyRole = require("../middleware/verifyRole");
 
-const express = require('express');
-const eventsControllers = require('../controllers/eventsControllers');
+const router = express.Router();
 
-const router = express.Router()
+router
+  .route("/")
+  .get(eventsControllers.getAllEvents)
 
+  .post(verifyRole(ROLES.ADMIN), eventsControllers.createNewEvent)
+  .put(verifyRole(ROLES.ADMIN), eventsControllers.updateEventInfo)
+  .delete(verifyRole(ROLES.ADMIN), eventsControllers.deleteEvent);
 
-router.route('/')
-    .post(eventsControllers.createNewEvent)
-    .get(eventsControllers.getAllEvents)
-    .put(eventsControllers.updateEventInfo)
-    .delete(eventsControllers.deleteEvent)
-
-    //delete ltr
+//delete ltr
 
 // event/refresh - taskscheduling
 
-router.route('/:eventId')
-    .get(eventsControllers.getEventById)
+router.route("/:eventId").get(eventsControllers.getEventById);
 
 //only admin
-router.route('/volunteers')
-    .post(eventsControllers.getSignedUpVolunteers)
-    
-router.route('/search')
-    .post( eventsControllers.searchEvents)
+router.route("/volunteers").post(verifyRole(ROLES.ADMIN),eventsControllers.getSignedUpVolunteers);
+
+router.route("/search").post(verifyRole(ROLES.ADMIN),eventsControllers.searchEvents);
 
 //combined sort
-router.route('/sort')
-    .post(eventsControllers.sortEvents)
+router.route("/sort").post(verifyRole(ROLES.ADMIN),eventsControllers.sortEvents);
 
 //combined filter
-router.route("/filter")
-    .post(eventsControllers.filterEvents)
+router.route("/filter").post(verifyRole(ROLES.ADMIN),eventsControllers.filterEvents);
 
-module.exports =router;
+module.exports = router;

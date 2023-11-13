@@ -28,8 +28,7 @@ router.route('/')
      usersControllers.getAllVolunteers)
     .post(usersControllers.createNewVolunteer)
   
-    //ROLE.V
-    .put(usersControllers.updateVolunteer)
+    .put(verifyRole(ROLES.VOLUNTEER),usersControllers.updateVolunteer)
     
     //sign up for events
     .patch(verifyRole(ROLES.VOLUNTEER),usersControllers.updateSignedUpShifts)
@@ -56,7 +55,8 @@ router.route('/sort')
 router.route('/volunteered')
     .patch(usersControllers.updateVolunteeredShifts)
 
+    //ROLE.V
 router.route('/check-buttons')
-    .post(usersControllers.checkUpdatableAndCancelableShifts)
+    .post(verifyRole(ROLES.VOLUNTEER),usersControllers.checkUpdatableAndCancelableShifts)
 
 module.exports =router;
