@@ -258,8 +258,11 @@ EventSchema.pre('validate', function(next){
     console.log('4) pre-VAlidate for shiftDates + eventDates validator');
     this.shifts.map(shift => {
 
+        
         if(!(this.eventDates.some(date => (date.getDate() ===  shift.shiftStart.getDate())))   ){
 
+            console.log('--- Error dates: ---');
+            console.log('shiftInfo: ', shift._id, " | ", shift.shiftStart );
             throw new Error('shift Dates must be on at least one of the eventDates')
         }
     })
