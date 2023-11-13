@@ -22,12 +22,8 @@ router.route("/:eventId").get(eventsControllers.getEventById);
 //only admin
 router.route("/volunteers").post(verifyRole(ROLES.ADMIN),eventsControllers.getSignedUpVolunteers);
 
-router.route("/search").post(verifyRole(ROLES.ADMIN),eventsControllers.searchEvents);
-
-//combined sort
-router.route("/sort").post(verifyRole(ROLES.ADMIN),eventsControllers.sortEvents);
-
-//combined filter
-router.route("/filter").post(verifyRole(ROLES.ADMIN),eventsControllers.filterEvents);
+router.route("/search").post(eventsControllers.searchEvents);
+router.route("/sort").post(eventsControllers.sortEvents);
+router.route("/filter").post(eventsControllers.filterEvents);
 
 module.exports = router;
