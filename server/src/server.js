@@ -9,6 +9,7 @@ const verifyJWT = require('./middleware/verifyJWT')
 const helmet = require('helmet')
 
 const app = express()
+const port = process.env.PORT || 3700
 
 connectDB()
 
@@ -29,4 +30,4 @@ app.use(verifyJWT)
 app.use('/users', require('./routes/usersRoutes'))
 app.use('/events', require('./routes/eventsRoutes'))
 
-app.listen(process.env.PORT, ()=> console.log(`PORT listening on ${process.env.PORT}`))
+app.listen(port, ()=> console.log(`PORT listening on ${process.env.PORT}`))

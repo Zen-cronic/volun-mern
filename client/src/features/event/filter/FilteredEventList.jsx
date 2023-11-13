@@ -11,7 +11,10 @@ const FilteredEventList = () => {
 
   console.log("filteredEvents from eventSlice w selector: ", filteredEvents);
 
-  if(!checkIsFilteredEventsPage(window.location.pathname)){
+  const currentPath = window.location.pathname
+  console.log('currentPath: ', currentPath);
+  
+  if(!checkIsFilteredEventsPage(currentPath)){
 
     return null
   }
