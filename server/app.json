@@ -7,12 +7,12 @@
     "environments": {
         "test": {
             "env": {
-                "APP_BASE": "server"
+                "APP_BASE": "."
             }
         },
         "production": {
             "env": {
-                "APP_BASE": "server"
+                "APP_BASE": "."
             }
         }
     }
