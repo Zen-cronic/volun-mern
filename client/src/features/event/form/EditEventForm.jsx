@@ -314,7 +314,8 @@ const EditEventForm = ({ event, eventId }) => {
       console.log("updatedEvent from front ", updatedEvent);
     } catch (err) {
 
-      toast.error(err?.message);
+      // toast.error(err?.message);
+      toast.error(err?.data?.message)
       console.error("error from updatedEventInfo: ", err);
     }
   };
