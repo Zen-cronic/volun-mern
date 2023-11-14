@@ -139,7 +139,7 @@ const Register = () => {
 
         <Button 
         type='submit'
-        variant='secondary'
+        variant='primary'
           className='mt-3'
         
         >Register</Button>

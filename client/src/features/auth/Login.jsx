@@ -91,7 +91,7 @@ const Login =() => {
           
           <Button 
           type='submit'
-          variant='secondary'
+          variant='primary'
           className='mt-3'
           >Sign In
           </Button>

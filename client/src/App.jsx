@@ -30,7 +30,6 @@ import EventStats from "./features/event/EventStats";
 
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
-import ViewportLayout from "./components/ViewportLayout";
 
 const App = () => {
   return (

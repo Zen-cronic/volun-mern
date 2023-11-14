@@ -27,3 +27,6 @@ Volunteer:
 1. Sign up for a shift (if applicable)
 2. Cancel a shift (if applicable)
 3. Update your own info (e.g., password)
+
+
+[]architecture diagram for role based routes, jwt auth
