@@ -84,7 +84,7 @@ EventShiftSchema.pre("validate", function (next) {
     throw new Error("shift times must be full hours :00 or half :30 only");
   }
 
-  //nu need - YES need for same date but "after" time
+  //nu need - YES nemed for same date but "after" time
   if (!shiftStartIsBefore(this.shiftStart, this.shiftEnd)) {
     throw new Error("shift start time must be BEFORE shift end");
   }

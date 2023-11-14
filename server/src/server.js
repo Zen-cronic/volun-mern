@@ -6,7 +6,8 @@ const corsOptions = require('./config/corsOptions')
 const connectDB = require('./config/db')
 const credentials = require('./middleware/credentials')
 const verifyJWT = require('./middleware/verifyJWT')
-const helmet = require('helmet')
+const helmet = require('helmet');
+const { errorHandler } = require('./middleware/errorHandlerMiddleware');
 
 const app = express()
 const port = process.env.PORT || 3700
@@ -30,4 +31,5 @@ app.use(verifyJWT)
 app.use('/users', require('./routes/usersRoutes'))
 app.use('/events', require('./routes/eventsRoutes'))
 
+app.use(errorHandler)
 app.listen(port, ()=> console.log(`PORT listening on ${process.env.PORT}`))
