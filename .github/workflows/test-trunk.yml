@@ -1,0 +1,31 @@
+
+name: CI trunk
+
+on: 
+    push:
+        branches:
+            - trunk
+
+
+jobs:
+    build: 
+        runs-on: ubuntu-latest
+
+        steps: 
+            - uses: actions/checkout@v2
+
+            - name : Install server dependencies
+              run : npm ci
+              working-directory: server
+
+            - name: Run server tests
+              run: npm test
+              working-directory: server
+
+            - name : Install client dependencies
+              run : npm ci
+              working-directory: client
+
+            # - name: Run client tests
+            #   run: npm test
+            #   working-directory: client
