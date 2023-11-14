@@ -313,19 +313,13 @@ const EditEventForm = ({ event, eventId }) => {
 
       console.log("updatedEvent from front ", updatedEvent);
     } catch (err) {
-      toast.error("Error updating event");
+
+      toast.error(err?.message);
       console.error("error from updatedEventInfo: ", err);
     }
   };
 
-  // const updateEventConfirmationData = Object.values(formData).map(
-  //   (value, index) => {
-  //     if (typeof value === "object" && value !== null) {
-  //       value = JSON.stringify(value);
-  //     }
-  //     return <p key={index}>{value}</p>;
-  //   }
-  // );
+
 
   //make use
   const createdAt = new Date(event.createdAt).toLocaleString("en-US", {
