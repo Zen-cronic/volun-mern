@@ -7,3 +7,20 @@ label.total_volunteers_label{
   padding: 4px;
 
 }
+
+.button-grp-margin {
+  margin: 10px;
+}
+
+/* 992px expand:lg */
+@media screen and (max-width: 992px) {
+  
+  .header-nav{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+
+}

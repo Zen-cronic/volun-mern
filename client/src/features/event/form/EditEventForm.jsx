@@ -12,7 +12,6 @@ import {
   Col,
   FloatingLabel,
   Button,
-  Modal,
 } from "react-bootstrap";
 import { usePutUpdateEventInfoMutation } from "../eventsApiSlice";
 import ConfirmationEventModal from "./ConfirmationEventModal";
@@ -136,13 +135,11 @@ const EditEventForm = ({ event, eventId }) => {
 
       toast.success("Event updated successfully");
 
-
       navigate("/dash/events");
     }
 
-    if(error){
-      toast.error(error?.data?.message)
-      console.warn("error from udpateEventInfo: ", error);
+    if (error) {
+      toast.error(error?.data?.message);
     }
   }, [isUpdateSuccess, error, navigate]);
 
@@ -314,25 +311,19 @@ const EditEventForm = ({ event, eventId }) => {
     };
     console.log("formData from handleSubmitForm: ", formDataForBack);
 
-    // await updateEventInfo(formDataForBack)
-    //   .unwrap()
-    //   .then((result) => {
-    //     console.log("updatedEvent: ", result);
-    //     toast.success("Event updated successfully");
-    //   })
-    //   .catch((error) => {
-    //     console.warn("error occured: ", error);
-    //     toast.error(error?.data?.message);
-    //   });
+    if (!isUpdateLoading) {
+      try {
+        const updatedEvent = await updateEventInfo(formDataForBack).unwrap();
+        console.log("updatedEvent: ", updatedEvent);
 
-    
-    
-    if(!isUpdateLoading){
+      } catch (error) {
 
-      await updateEventInfo(formDataForBack)
-      handleCloseModal()
+        console.warn("error occured: ", error);
+        
+      } finally {
+        handleCloseModal();
+      }
     }
-
   };
 
   //make use

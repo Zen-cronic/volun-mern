@@ -39,13 +39,9 @@ const Login =() => {
       try {
         const {accessToken} = await login({userId, password}).unwrap()
 
-        // console.log(accessToken, " accessToken from Login compo - /auth route");
         
-       const data = dispatch( setCredentials({accessToken}))
+        dispatch( setCredentials({accessToken}))
 
-      //  console.log("setCredentials data: ", data);
-
-       //store role in authHook
 
 
       } catch (error) {

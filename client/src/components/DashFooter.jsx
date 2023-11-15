@@ -1,20 +1,14 @@
 import React from 'react'
 import useAuth from '../hooks/useAuth'
 import { useGetUserByIdQuery } from '../features/volun/volunteersApiSlice'
-import { Col, Container, Row } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap'
+import { Button, Col, Container, Row } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 const DashFooter = () => {
 
-    const {volunId, role, isAdmin, isVolunteer} = useAuth()
+    const {volunId, role} = useAuth()
 
     console.log('volunID from DashFooter w useAuth: ', volunId);
-
-    //canNOT use memoized cuz /users is NOT called for a volunteer 
-    //when admin logged in, the input result arr DNC the adm's info 
-
-    // const volunteer = useSelector(state => selectVolunteerById(state, volunId))
 
     const {data: user, isSuccess, isLoading, isError, error} = useGetUserByIdQuery(volunId)
 
@@ -43,22 +37,22 @@ const DashFooter = () => {
     
     content = (
 
-      <footer className='bg-secondary text-white position-relative bottom-0 w-100  h-auto border-top'>
-        <Container >
+      <footer className='bg-secondary text-white position-relative bottom-0 w-100  h-auto'>
+        <Container className=' pt-4' >
           <Row className='py-2'>
             <Col>
                 
-                  <Link to={'/dash'}> Home </Link>
+                <Button as={Link} to='/dash' variant='warning' >
+                Home
+                </Button>
                
             </Col>
 
 
             <Col>
-              <section>
-               <article>Hey! {username} | Status : {role}</article>
-                <p>isAdmin: {isAdmin.toString()} </p>
-                <p>isVolunteer: {isVolunteer.toString()}</p>
-              </section>
+               <p>Hey! {username} | Status : {role}</p>
+                {/* <p>isAdmin: {isAdmin.toString()} </p>
+                <p>isVolunteer: {isVolunteer.toString()}</p> */}
             </Col>
             <Col>
                 <p> Copyright &copy; KZH 2023</p>

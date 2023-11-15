@@ -1,4 +1,5 @@
 import { Badge, Button, Card, Container } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const PublicPage = () => {
   const content = (
@@ -12,13 +13,13 @@ const PublicPage = () => {
           This space is for student volunteers at ...
         </p>
         <div className="d-flex">
-          <Button variant="primary" href="/login" className=" me-3">
+          <Button as={Link} variant="primary" to="/login" className=" me-3">
             Sign In
           </Button>
           <Badge className="me-3" bg="info" pill>
             or
           </Badge>
-          <Button variant="secondary" href="/register">
+          <Button as={Link} variant="secondary" to="/register">
             Register
           </Button>
         </div>
