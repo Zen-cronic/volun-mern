@@ -181,6 +181,15 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
         body: { ...updateEvent },
       }),
 
+      // transformErrorResponse: (errResData) => {
+
+      //   // const {error} = errResData
+      //   console.log('error from transformErrorResponse: ', errResData);
+
+      //   errResData.data.sampleProp = 'Im an ERROR'
+      //   return errResData
+      // },
+
       invalidatesTags: (result, err, arg) => {
         console.log("arg.eventId from updateEventInfo invalidatetags ", arg);
         return [{ type: "Event", id: arg.eventId }];
