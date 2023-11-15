@@ -140,10 +140,10 @@ const EditEventForm = ({ event, eventId }) => {
       navigate("/dash/events");
     }
 
-    // if(error){
-    //   toast.error(error?.data?.message)
-    //   console.warn("error from udpateEventInfo: ", error);
-    // }
+    if(error){
+      toast.error(error?.data?.message)
+      console.warn("error from udpateEventInfo: ", error);
+    }
   }, [isUpdateSuccess, error, navigate]);
 
   //onClick addEventDateAndSHift, both eventDates and shifts changes
@@ -325,19 +325,7 @@ const EditEventForm = ({ event, eventId }) => {
     //     toast.error(error?.data?.message);
     //   });
 
-    // try {
-      
-    //   const updatedEvent = await updateEventInfo(formDataForBack)
-      
-    //     console.log("updatedEvent: ", updatedEvent);
-    //     toast.success("Event updated successfully");
-    // } catch (error) {
-    //   console.warn("error occured: ", error);
-    //   toast.error(error?.data?.message);
-    // }
-    // finally{
-    //   handleCloseModal()
-    // }
+    
     
     if(!isUpdateLoading){
 
