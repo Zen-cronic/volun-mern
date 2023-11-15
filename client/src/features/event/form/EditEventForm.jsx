@@ -12,7 +12,6 @@ import {
   Col,
   FloatingLabel,
   Button,
-  Modal,
 } from "react-bootstrap";
 import { usePutUpdateEventInfoMutation } from "../eventsApiSlice";
 import ConfirmationEventModal from "./ConfirmationEventModal";
@@ -35,7 +34,7 @@ const EditEventForm = ({ event, eventId }) => {
 
   const [
     updateEventInfo,
-    { isSuccess: isUpdateSuccess, isLoading: isUpdateLoading },
+    { isSuccess: isUpdateSuccess, isLoading: isUpdateLoading, error },
   ] = usePutUpdateEventInfoMutation();
 
   const [showModal, setShowModal] = useState(false);
@@ -138,7 +137,11 @@ const EditEventForm = ({ event, eventId }) => {
 
       navigate("/dash/events");
     }
-  }, [isUpdateSuccess, navigate]);
+
+    if (error) {
+      toast.error(error?.data?.message);
+    }
+  }, [isUpdateSuccess, error, navigate]);
 
   //onClick addEventDateAndSHift, both eventDates and shifts changes
   const addEventDateAndShift = () => {
@@ -308,19 +311,20 @@ const EditEventForm = ({ event, eventId }) => {
     };
     console.log("formData from handleSubmitForm: ", formDataForBack);
 
-    try {
-      const updatedEvent = await updateEventInfo(formDataForBack).unwrap();
+    if (!isUpdateLoading) {
+      try {
+        const updatedEvent = await updateEventInfo(formDataForBack).unwrap();
+        console.log("updatedEvent: ", updatedEvent);
 
-      console.log("updatedEvent from front ", updatedEvent);
-    } catch (err) {
+      } catch (error) {
 
-      // toast.error(err?.message);
-      toast.error(err?.data?.message)
-      console.error("error from updatedEventInfo: ", err);
+        console.warn("error occured: ", error);
+        
+      } finally {
+        handleCloseModal();
+      }
     }
   };
-
-
 
   //make use
   const createdAt = new Date(event.createdAt).toLocaleString("en-US", {
@@ -424,29 +428,28 @@ const EditEventForm = ({ event, eventId }) => {
             </Col>
           </Row>
 
-<Row>
-<br></br>
-</Row>
-         
-         <Row>
-          <Col>
-          <Button type="button" variant="warning" onClick={handleShowModal}>
-            Edit Event
-          </Button>
+          <Row>
+            <br></br>
+          </Row>
 
-          <ConfirmationEventModal
-            handleCloseModal={handleCloseModal}
-            handleFormSubmit={handleFormSubmit}
-            title={"Update event?"}
-            showModal={showModal}
-            confirmButtonText={"Update Event"}
-          >
-            <p>Confirm to update your event:</p>
-          </ConfirmationEventModal>
+          <Row>
+            <Col>
+              <Button type="button" variant="warning" onClick={handleShowModal}>
+                Edit Event
+              </Button>
 
-          </Col>
-         </Row>
-         
+              <ConfirmationEventModal
+                handleCloseModal={handleCloseModal}
+                handleFormSubmit={handleFormSubmit}
+                title={"Update event?"}
+                showModal={showModal}
+                confirmButtonText={"Update Event"}
+              >
+                <p>Confirm to update your event:</p>
+              </ConfirmationEventModal>
+            </Col>
+          </Row>
+
           <Row>
             <br></br>
           </Row>
@@ -460,8 +463,6 @@ const EditEventForm = ({ event, eventId }) => {
           <Row>
             <br></br>
           </Row>
-
-          
         </Form>
       </Stack>
     </Container>

@@ -1,34 +1,53 @@
-import { Link } from 'react-router-dom'
-import useAuth from '../../hooks/useAuth'
-import { LinkContainer } from 'react-router-bootstrap'
+import { Link } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
+import { Button, ButtonGroup, Container } from "react-bootstrap";
 
 const Welcome = () => {
+  const date = new Date();
+  const today = new Intl.DateTimeFormat("en-US", {
+    dateStyle: "full",
+    timeStyle: "long",
+  }).format(date);
 
-    const date = new Date()
-    const today = new Intl.DateTimeFormat('en-US', { dateStyle: 'full', timeStyle: 'long' }).format(date)
+  const { role, volunId } = useAuth();
+  const content = (
+    <Container className="my-3 d-flex flex-column align-items-center justify-content-center">
+      <h1>Welcome to VolunteersHub!</h1>
 
-    const {role, volunId} = useAuth()
-    const content = (
-        <section >
+      <p>{today}</p>
 
-            <p>{today}</p>
+      <ButtonGroup vertical>
+        <Button
+          as={Link}
+          to="/dash/events"
+          variant="primary"
+          className="button-grp-margin"
+        >
+          View All Events
+        </Button>
+        {role === "ADMIN" && (
+          <Button
+            as={Link}
+            to="/dash/volunteers"
+            variant="primary"
+            className="button-grp-margin"
+          >
+            View Volunteers List
+          </Button>
+        )}
+        {role === "VOLUNTEER" && (
+          <Button
+            as={Link}
+            to={`/dash/volunteers/${volunId}`}
+            className="button-grp-margin"
+          >
+            See your volun info
+          </Button>
+        )}
+      </ButtonGroup>
+    </Container>
+  );
 
-            <h1>Welcom to VolunteersHub!</h1>
-
-            <p><Link to="/dash/events">View techevents</Link></p>
-
-
-            
-            <p><Link to="/dash/volunteers">View User Settings</Link></p>
-
-            {/* <p><Link to="/dash/volunteers/`${volunId}`">View User Settings</Link></p> */}
-            <p><Link to={`/dash/volunteers/${volunId}`}>See your volun info</Link></p>
-
-
-            
-        </section>
-    )
-
-    return content
-}
-export default Welcome
+  return content;
+};
+export default Welcome;
