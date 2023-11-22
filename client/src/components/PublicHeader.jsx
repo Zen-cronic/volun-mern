@@ -1,7 +1,6 @@
 import React from 'react'
 import { Container, Nav, Navbar } from 'react-bootstrap'
 import { FaRegistered, FaSignInAlt } from 'react-icons/fa'
-import { Outlet } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 
 const PublicHeader = () => {
@@ -10,7 +9,7 @@ const PublicHeader = () => {
     const headerContent = (
 
         <header>
-            <Navbar bg="dark" variant="dark" collapseOnSelect expand='lg'>
+            <Navbar bg="dark" variant="dark" collapseOnSelect expand='lg' className=' py-3'>
                 <Container>
                     <Navbar.Brand href='/'>Home</Navbar.Brand>
                     <Navbar.Toggle aria-controls='basic-navbar-nav'/>

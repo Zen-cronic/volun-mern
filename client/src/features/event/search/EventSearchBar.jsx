@@ -6,8 +6,12 @@ import {
 } from "../eventsApiSlice";
 import { Button, Form } from "react-bootstrap";
 import findingQueryTypes from "../../../config/findingQueryTypes";
+import useAuth from "../../../hooks/useAuth";
 
 const EventSearchBar = ({  setFindingQuery }) => {
+
+  const {role, volunId} = useAuth()
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [searchQuery, setSearchQuery] = useState(
@@ -29,18 +33,20 @@ const EventSearchBar = ({  setFindingQuery }) => {
       const preferCacheValue = false;
       const { data } = await searchEvent(searchQuery, preferCacheValue);
 
-      navigate("/dash/events/search?q=" + encodedSearchQuery);
-      // setVal(searchQuery)
-      // setVal({})
+      if(!role && !volunId){
+        navigate("/events/search?q=" + encodedSearchQuery)
+      }
+      else{
+        navigate("/dash/events/search?q=" + encodedSearchQuery);
 
-      // const findingQuery = findingQueryTypes.SEARCH
+      }
+     
       setFindingQuery((prev) => ({
         ...prev,
         findingQueryType: findingQueryTypes.SEARCH,
         findingQueryVal: searchQuery,
       }));
-      // {findingQuery: searchQuery})
-      // setVal()
+    
 
       console.log("Searched events data: ", data);
     } catch (error) {

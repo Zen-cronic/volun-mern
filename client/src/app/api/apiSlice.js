@@ -1,7 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { setCredentials } from '../../features/auth/authSlice';
 
-const apiBaseUrl =import.meta.env.VITE_API_PROD_URL || import.meta.env.VITE_API_DEV_URL
+const apiBaseUrl =(import.meta.env.VITE_API_PROD_URL) || ( import.meta.env.VITE_API_DEV_URL)
+
 const baseQuery = fetchBaseQuery({
 
     baseUrl: apiBaseUrl,
@@ -21,7 +22,15 @@ const baseQuery = fetchBaseQuery({
 
 const baseQueryWithRefreshAuth = async (args, api, extraOptions) => {
 
+    const publicEndpoints = ['/events/search','/events/sort']
+
+    if (publicEndpoints.includes(args.endpoint) ) {
+
+        return baseQuery(args, api, extraOptions);
+    }
+
     let originalResult = await baseQuery(args, api, extraOptions)
+
 
     //forbidden from verifyJWT
     if(originalResult?.error?.status === 403){

@@ -15,7 +15,7 @@ const DashHeader = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav"></Navbar.Toggle>
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto header-nav">
-              <LinkContainer to={"/dash/home"}>
+              <LinkContainer to={"/dash"}>
                 <Nav.Link><FaHome/> Home</Nav.Link>
               </LinkContainer>
               <Logout />

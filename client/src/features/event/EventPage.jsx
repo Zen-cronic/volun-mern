@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { selectEventById } from "./eventsApiSlice";
 import useAuth from "../../hooks/useAuth";
-import EventShift from "./EventShift";
 import { Container, Row, Col, Button, ListGroup } from "react-bootstrap";
 import convertEventDisplayDate from "../../helpers/convertEventDisplayDate";
 import EventShiftTable from "./EventShiftTable";
@@ -45,7 +44,7 @@ const EventPage = () => {
     });
 
     const adminContent =
-      isAdmin && role === "ADMIN" ? (
+      (isAdmin && role === "ADMIN") ? (
         <Row className="my-2">
           <Col>
             <Button type="button" onClick={handleEditEvent}>

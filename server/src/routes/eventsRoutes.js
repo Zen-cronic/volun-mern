@@ -5,15 +5,16 @@ const verifyRole = require("../middleware/verifyRole");
 
 const router = express.Router();
 
+
 router
   .route("/")
+  
   .get(eventsControllers.getAllEvents)
 
   .post(verifyRole(ROLES.ADMIN), eventsControllers.createNewEvent)
   .put(verifyRole(ROLES.ADMIN), eventsControllers.updateEventInfo)
   .delete(verifyRole(ROLES.ADMIN), eventsControllers.deleteEvent);
 
-//delete ltr
 
 // event/refresh - taskscheduling
 

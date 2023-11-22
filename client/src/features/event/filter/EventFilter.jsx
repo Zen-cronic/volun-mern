@@ -6,6 +6,7 @@ import DatePicker from "react-datepicker";
 import format from 'date-fns/format';
 import "react-datepicker/dist/react-datepicker.css";
 import findingQueryTypes from '../../../config/findingQueryTypes';
+import { toast } from 'react-toastify';
 
 const EventFilter = ({setFindingQuery}) => {
 
@@ -119,25 +120,6 @@ const EventFilter = ({setFindingQuery}) => {
         if(!canFilter){
             return 
         }
-        // let filterKeysObj = {}
-
-        // const filterKeysArr = [venue, isOpen, isUpcoming, date]
-
-        // filterKeysArr.map((filterKey) => {
-
-        //     if(filterKey){
-
-        //         let filterKeyStr = filterKey.toString()
-
-        //         if(typeof filterKey === 'boolean'){
-        //             console.log('filterKey is boolean: ', filterKey);
-        //             filterKeyStr = Object.keys({filterKey}).pop()
-        //         }
-        //         Object.assign(filterKeysObj, {[filterKeyStr]: filterKey})
-                
-        //     }
-
-        // })
 
         //obj appch cuz js arr is non-associative
         const filterKeysObj = {venue, isOpen, isUpcoming, date}
@@ -151,7 +133,7 @@ const EventFilter = ({setFindingQuery}) => {
         })
 
         
-        console.log('filterKeysObj: ', filterKeysObj);
+        // console.log('filterKeysObj: ', filterKeysObj);
         
         try {
    
@@ -160,12 +142,14 @@ const EventFilter = ({setFindingQuery}) => {
             await filterEvents(filterKeysObj, preferCacheValue).unwrap()
 
             navigate('/dash/events/filter')
+            
             setFindingQuery((prev) => ({
                 ...prev,
                 findingQueryType: findingQueryTypes.FILTER,
                 findingQueryVal: filterKeysObj,
               }));
         } catch (error) {
+            toast.error(error?.data?.message)
             console.log("Events Filter error: ", error);
         }
 

@@ -38,7 +38,7 @@ const DashFooter = () => {
     content = (
 
       <footer className='bg-secondary text-white position-relative bottom-0 w-100  h-auto'>
-        <Container className=' pt-4' >
+        <Container className=' pt-4 text-center' >
           <Row className='py-2'>
             <Col>
                 

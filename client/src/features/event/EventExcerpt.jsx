@@ -4,8 +4,9 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { selectEventById } from './eventsApiSlice';
 import { Button } from 'react-bootstrap'; 
-import {FaShareAlt} from 'react-icons/fa'
+import {FaBook} from 'react-icons/fa'
 import FilterTagsDisplay from './filter/FilterTagsDisplay';
+import useAuth from '../../hooks/useAuth';
 
 
 
@@ -14,8 +15,10 @@ import FilterTagsDisplay from './filter/FilterTagsDisplay';
 
 const EventExcerpt = ({ eventId, filterTags }) => {
 
+
     const event = useSelector(state => (selectEventById(state, eventId)))
     
+    const {role, volunId} = useAuth()
     const navigate = useNavigate()
 
 
@@ -29,7 +32,16 @@ const EventExcerpt = ({ eventId, filterTags }) => {
 
     else{
 
-        const handleViewEvent = () => (navigate(`/dash/events/${event.id}`)) 
+
+        const handleViewEvent = () => {
+            
+            if(!role && !volunId){
+                navigate(`/events/${event.id}`)
+                return
+            }
+
+
+            navigate(`/dash/events/${event.id}`)} 
         content = (
 
             <>
@@ -42,7 +54,7 @@ const EventExcerpt = ({ eventId, filterTags }) => {
                         onClick={handleViewEvent}
                         variant='warning'>
 
-                       <FaShareAlt/>
+                       <FaBook/>
                         Details
                     </Button>
                 </td>

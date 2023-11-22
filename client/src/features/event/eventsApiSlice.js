@@ -5,6 +5,7 @@ import {
   setSearchedEvents,
   setSortedEvents,
 } from "./eventsSlice";
+import { fetchBaseQuery } from "@reduxjs/toolkit/dist/query";
 
 export const eventsAdapter = createEntityAdapter();
 
@@ -120,10 +121,11 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
 
     postSearchedEvents: builder.query({
       query: (searchTerm) => ({
-        // url:'/events/search?q=',
+        
         url: `/events/search?q=${searchTerm}`,
         method: "POST",
       }),
+     
 
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
@@ -219,18 +221,17 @@ const selectGetEventsData = createSelector(
 );
 
 export const {
-    
   selectById: selectEventById,
   selectIds: selectEventsIds,
   selectAll: selectAllEvents,
   selectEntities: selectEventsEntities,
-
 } = eventsAdapter.getSelectors(
   (state) => selectGetEventsData(state) ?? eventsInitialState
 );
 
 export const {
   useGetEventsQuery,
+
   useLazyPostFilteredEventsQuery,
   useLazyPostSortedEventsQuery,
   useLazyPostSearchedEventsQuery,
