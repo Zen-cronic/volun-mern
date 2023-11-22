@@ -15,10 +15,7 @@ const PublicFooter = () => {
             </Button>
           </Col>
 
-          {/* <Col>
-           <p>Hey! {username} | Status : {role}</p>
-      
-        </Col> */}
+        
 
           <Col>
             <p> Copyright &copy; KZH 2023</p>

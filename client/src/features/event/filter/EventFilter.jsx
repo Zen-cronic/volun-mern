@@ -7,6 +7,7 @@ import format from 'date-fns/format';
 import "react-datepicker/dist/react-datepicker.css";
 import findingQueryTypes from '../../../config/findingQueryTypes';
 import { toast } from 'react-toastify';
+import usePublicOrPrivateNavigate from '../../../hooks/usePublicOrPrivateNavigate';
 
 const EventFilter = ({setFindingQuery}) => {
 
@@ -17,9 +18,10 @@ const EventFilter = ({setFindingQuery}) => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [date, setDateFilter] = useState("");
 
+    const navigateFn = usePublicOrPrivateNavigate()
 
     const [filterEvents, {isLoading}] = useLazyPostFilteredEventsQuery()
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
 
     const onVenueFilterChange = (e) => setVenueFilter( e.target.value)
     const onIsOpenFilterChange = (e) => setIsOpenFilter(prev => !prev)
@@ -141,7 +143,8 @@ const EventFilter = ({setFindingQuery}) => {
             const preferCacheValue = false
             await filterEvents(filterKeysObj, preferCacheValue).unwrap()
 
-            navigate('/dash/events/filter')
+            // navigate('/dash/events/filter')
+            navigateFn('/events/filter')
             
             setFindingQuery((prev) => ({
                 ...prev,

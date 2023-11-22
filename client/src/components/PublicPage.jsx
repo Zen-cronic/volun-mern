@@ -19,7 +19,7 @@ const PublicPage = () => {
           <Badge className="me-3" bg="info" pill>
             or
           </Badge>
-          <Button as={Link} variant="secondary" to="/register">
+          <Button as={Link} variant="primary" to="/register">
             Register
           </Button>
         </div>

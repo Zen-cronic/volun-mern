@@ -26,7 +26,7 @@ const PersistLogin = () => {
 
                 try {
                     const {accessToken  } = await refresh().unwrap()
-                    console.log('new AccessTOkne from PersistLogin: ', accessToken);
+                    // console.log('new AccessTOkne from PersistLogin: ', accessToken);
 
                     setTrueSuccess(true)
 

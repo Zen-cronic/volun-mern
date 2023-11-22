@@ -39,15 +39,9 @@ const App = () => {
         <Route index={true} element={<PublicPage />} />
 
         <Route element={<PrefetchEvents />}>
-          {/* browse events as a guest */}
 
-          <Route path="/events" element={ <EventHeader/>} >
-            <Route index={true} element={<PublicEvents />}/>
-            <Route path=":eventId" element={<EventPage />} />
-            <Route path="search" element={<SearchedEventsList />} />
-            <Route path="sort" element={<SortedEventsList />} />
-            <Route path="filter" element={<FilteredEventList />} />
-          </Route>
+          {/* browse events as a guest */}
+          <Route path="/events/*" element={<PublicEvents/>}/>
 
           <Route path="/login" element={<Login />} />
 

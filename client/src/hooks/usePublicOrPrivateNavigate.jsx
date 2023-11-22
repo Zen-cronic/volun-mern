@@ -1,24 +1,21 @@
-import React from 'react'
-import useAuth from './useAuth'
-import { useNavigate } from 'react-router-dom'
+import useAuth from "./useAuth";
+import { useNavigate } from "react-router-dom";
 
-const usePublicOrPrivateNavigate = (pathname) => {
-  
-    const authObj = useAuth()
+const usePublicOrPrivateNavigate = () => {
 
-    const navigate = useNavigate()
+  const authObj = useAuth();
 
-    return () =>{
-        if(!(Object.values(authObj).every(val => val))){
-            navigate(pathname)
-        }
-    
-        else {
-            navigate(`/dash${pathname}`)
-        }
+  const navigate = useNavigate();
 
+  const navigateFn =  (publicPathname) => {
+    if (!Object.values(authObj).every((val) => val)) {
+      navigate(publicPathname);
+    } else {
+      navigate(`/dash${publicPathname}`);
     }
- 
-}
+  };
 
-export default usePublicOrPrivateNavigate
+  return navigateFn
+};
+
+export default usePublicOrPrivateNavigate;

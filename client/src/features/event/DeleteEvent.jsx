@@ -24,7 +24,6 @@ const DeleteEvent = ({ eventId }) => {
 
   const handleDeleteEvent = async () => {
     try {
-    //   const deleteEventResult = await deleteEvent(eventId).unwrap();
       const deleteEventResult = await deleteEvent({eventId}).unwrap();
 
       console.log("deleteEventResult: ", deleteEventResult);

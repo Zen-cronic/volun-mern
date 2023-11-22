@@ -66,7 +66,7 @@ const EventHeader = () => {
 
       <Container className="my-2">
         <LinkContainer to={"/dash/events"}>
-          <Button variant="primary">Back to Events List</Button>
+          <Button variant="warning">Back to Events List</Button>
         </LinkContainer>
       </Container>
 

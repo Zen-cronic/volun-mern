@@ -1,16 +1,14 @@
 import React, { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
-  useGetEventsQuery,
   useLazyPostSearchedEventsQuery,
 } from "../eventsApiSlice";
 import { Button, Form } from "react-bootstrap";
 import findingQueryTypes from "../../../config/findingQueryTypes";
-import useAuth from "../../../hooks/useAuth";
+import usePublicOrPrivateNavigate from "../../../hooks/usePublicOrPrivateNavigate";
 
 const EventSearchBar = ({  setFindingQuery }) => {
 
-  const {role, volunId} = useAuth()
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -19,7 +17,7 @@ const EventSearchBar = ({  setFindingQuery }) => {
   );
 
   const [searchEvent] = useLazyPostSearchedEventsQuery();
-  const navigate = useNavigate();
+  const navigateFn = usePublicOrPrivateNavigate()
 
   const handleSearchSubmit = async (e) => {
     e.preventDefault();
@@ -33,14 +31,9 @@ const EventSearchBar = ({  setFindingQuery }) => {
       const preferCacheValue = false;
       const { data } = await searchEvent(searchQuery, preferCacheValue);
 
-      if(!role && !volunId){
-        navigate("/events/search?q=" + encodedSearchQuery)
-      }
-      else{
-        navigate("/dash/events/search?q=" + encodedSearchQuery);
-
-      }
      
+      navigateFn(`/events/search?q=${encodedSearchQuery}`)
+
       setFindingQuery((prev) => ({
         ...prev,
         findingQueryType: findingQueryTypes.SEARCH,
