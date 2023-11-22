@@ -5,10 +5,11 @@ const usePublicOrPrivateNavigate = () => {
 
   const authObj = useAuth();
 
+  console.log('authObj from customHook: ', authObj);
   const navigate = useNavigate();
 
   const navigateFn =  (publicPathname) => {
-    if (!Object.values(authObj).every((val) => val)) {
+    if (Object.values(authObj).every((val) => !Boolean(val))) {
       navigate(publicPathname);
     } else {
       navigate(`/dash${publicPathname}`);
