@@ -16,8 +16,9 @@ const PublicPage = () => {
           <Button as={Link} variant="primary" to="/login" className=" me-3">
             Sign In
           </Button>
-          <Badge className="me-3" bg="info" pill>
-            or
+          <Badge className="me-3 d-flex align-items-center justify-content-center" bg="info" pill>
+          or
+           
           </Badge>
           <Button as={Link} variant="primary" to="/register">
             Register

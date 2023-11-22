@@ -9,7 +9,8 @@ import SortedEventsList from "../features/event/sort/SortedEventsList";
 import FilteredEventList from "../features/event/filter/FilteredEventList";
 
 const PublicEvents = () => {
-  const authData = useAuth();
+
+//   const authData = useAuth();
   const content = (
     <>
       <EventHeader />
@@ -23,7 +24,7 @@ const PublicEvents = () => {
     </>
   );
 
-  console.log("guest info: ", authData);
+//   console.log("guest info: ", authData);
   return content;
 };
 

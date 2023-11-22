@@ -404,12 +404,12 @@ const EditEventForm = ({ event, eventId }) => {
 
           <Row>
             <Col>Event Dates</Col>
-            <Col xs={1}></Col>
+            {/* <Col xs={1}></Col> */}
 
             <Col>ShiftStart Time</Col>
             <Col>ShiftEnd Time</Col>
             <Col>Shift Posituios</Col>
-            <Col xs={1}></Col>
+            {/* <Col xs={1}></Col> */}
           </Row>
           <Row>
             <br></br>
@@ -434,7 +434,7 @@ const EditEventForm = ({ event, eventId }) => {
 
           <Row>
             <Col>
-              <Button type="button" variant="warning" onClick={handleShowModal}>
+              <Button type="button" variant="success" onClick={handleShowModal}>
                 Edit Event
               </Button>
 
