@@ -25,7 +25,7 @@ const EventShiftTable = ({shifts, eventId}) => {
     ))
     
   return (
-    <Container className='my-2 px-3'>
+    <Container className='my-2 '>
     <Table striped bordered hover >
 
         <thead >

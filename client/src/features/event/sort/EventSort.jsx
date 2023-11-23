@@ -3,8 +3,11 @@ import { useLazyPostSortedEventsQuery } from "../eventsApiSlice";
 import { useNavigate } from "react-router";
 import { Button, Form } from "react-bootstrap";
 import findingQueryTypes from "../../../config/findingQueryTypes";
+import useAuth from "../../../hooks/useAuth";
 
 const EventSort = ({ setFindingQuery }) => {
+
+  const {role, volunId} = useAuth()
   const [sortOption, setSortOption] = useState("");
   const [sortEvents, { isLoading }] = useLazyPostSortedEventsQuery();
   const navigate = useNavigate();
@@ -36,7 +39,14 @@ const EventSort = ({ setFindingQuery }) => {
       const preferCacheValue = true;
       // const {data} = await sortEvents({[sortOption]: true}, preferCacheValue)
       const { data } = await sortEvents(sortOption, preferCacheValue);
-      navigate("/dash/events/sort");
+
+      if(!role && !volunId){
+        navigate("/events/sort")
+      }
+      else{
+        navigate("/dash/events/sort");
+
+      }
 
       setFindingQuery((prev) => ({
         ...prev,

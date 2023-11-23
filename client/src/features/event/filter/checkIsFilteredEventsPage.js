@@ -2,16 +2,9 @@
 
 const checkIsFilteredEventsPage = (pathname) => {
 
+  const filteredEventsPageRegex = [new RegExp(`^/dash/events/filter$`) , new RegExp(`^/events/filter$`)]
 
-  //  const devBaseUrl = import.meta.env.BASE_URL;
-  // const filteredEventsPageRegex = new RegExp(
-  //   `^${devBaseUrl}dash/events/filter$`
-  // );
-  const filteredEventsPageRegex = new RegExp(
-    `^/dash/events/filter$`
-  );
-
-  const isFilteredEventsPage = filteredEventsPageRegex.test(pathname);
+  const isFilteredEventsPage = filteredEventsPageRegex.some(regex => regex.test(pathname)) 
 
   if (isFilteredEventsPage) {
     // console.log("at filtered events page");

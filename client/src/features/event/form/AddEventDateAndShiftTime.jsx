@@ -23,14 +23,14 @@ const AddEventDateAndShiftTime = ({
    
     // const handleShiftStartChange = (e) => 
   return (
-    <Row>
-        <Col >
+    <Row >
+        <Col  xs={12} sm={6} md={4} lg={3}>
             {<DatePickerForm eventDate={eventDate} updateEvent={updateEvent} eventId={eventId}/>}
         </Col>
 
-        <Col xs={1}>
+        {/* <Col  xs={1}>
 
-      </Col>
+      </Col> */}
         <Col>
 
         {/* {timePickerForm} */}

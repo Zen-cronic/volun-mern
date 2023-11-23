@@ -21,7 +21,7 @@ const useFindingQueryDisplayHook = () => {
         );
     
         setShowFindingQuery(displayQuery);
-        //jsut     setShowFindingQuery(displayQuery);
+        
       }, [location]); //not dep on showFindingQuery
     
   return {findingQuery, showFindingQuery, setFindingQuery}

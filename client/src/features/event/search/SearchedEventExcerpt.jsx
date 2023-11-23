@@ -1,11 +1,11 @@
 
-import { useNavigate } from 'react-router-dom';
 import React from "react";
 import { useSelector } from "react-redux";
 import { selectEventById } from '../eventsApiSlice';
 import { Button } from 'react-bootstrap'; 
-import {FaShareAlt} from 'react-icons/fa'
+import {FaBook} from 'react-icons/fa'
 import HighlightSearchResults from './HighlightSearchResults';
+import usePublicOrPrivateNavigate from '../../../hooks/usePublicOrPrivateNavigate';
 
 
 
@@ -15,8 +15,8 @@ import HighlightSearchResults from './HighlightSearchResults';
 const SearchedEventExcerpt = ({ eventId, searchTerm }) => {
 
     const event = useSelector(state => (selectEventById(state, eventId)))
-    
-    const navigate = useNavigate()
+
+    const navigateFn = usePublicOrPrivateNavigate()
 
 
    
@@ -29,7 +29,7 @@ const SearchedEventExcerpt = ({ eventId, searchTerm }) => {
 
     else{
 
-        const handleViewEvent = () => (navigate(`/dash/events/${event.id}`)) 
+        const handleViewEvent = () => (navigateFn(`/events/${event.id}`)) 
 
         if(!searchTerm){
             console.warn("searchTerm is null");
@@ -48,7 +48,7 @@ const SearchedEventExcerpt = ({ eventId, searchTerm }) => {
                         onClick={handleViewEvent}
                         variant='warning'>
 
-                       <FaShareAlt/>
+                       <FaBook/>
                         Details
                     </Button>
                 </td>

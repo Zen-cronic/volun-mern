@@ -11,7 +11,8 @@ const HighlightSearchResults = ({text, highlight}) => {
   
   const textParts = text.split(new RegExp(`(${highlight})`, "gi"));
 
-  console.log(textParts, '  : textParts');
+  // console.log(textParts, '  : textParts');
+  
   const withHighlightedContent = (
     <span>
       {textParts.map((textPart, index) => {

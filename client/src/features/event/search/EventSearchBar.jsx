@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
-  useGetEventsQuery,
   useLazyPostSearchedEventsQuery,
 } from "../eventsApiSlice";
 import { Button, Form } from "react-bootstrap";
 import findingQueryTypes from "../../../config/findingQueryTypes";
+import usePublicOrPrivateNavigate from "../../../hooks/usePublicOrPrivateNavigate";
 
 const EventSearchBar = ({  setFindingQuery }) => {
+
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [searchQuery, setSearchQuery] = useState(
@@ -15,7 +17,7 @@ const EventSearchBar = ({  setFindingQuery }) => {
   );
 
   const [searchEvent] = useLazyPostSearchedEventsQuery();
-  const navigate = useNavigate();
+  const navigateFn = usePublicOrPrivateNavigate()
 
   const handleSearchSubmit = async (e) => {
     e.preventDefault();
@@ -29,18 +31,15 @@ const EventSearchBar = ({  setFindingQuery }) => {
       const preferCacheValue = false;
       const { data } = await searchEvent(searchQuery, preferCacheValue);
 
-      navigate("/dash/events/search?q=" + encodedSearchQuery);
-      // setVal(searchQuery)
-      // setVal({})
+     
+      navigateFn(`/events/search?q=${encodedSearchQuery}`)
 
-      // const findingQuery = findingQueryTypes.SEARCH
       setFindingQuery((prev) => ({
         ...prev,
         findingQueryType: findingQueryTypes.SEARCH,
         findingQueryVal: searchQuery,
       }));
-      // {findingQuery: searchQuery})
-      // setVal()
+    
 
       console.log("Searched events data: ", data);
     } catch (error) {

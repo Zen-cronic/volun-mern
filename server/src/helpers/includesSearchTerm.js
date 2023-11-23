@@ -7,11 +7,11 @@
  * @throws {Error} If searchIndex or searchTerm is not a string
  */
 const includesSearchTerm = (searchIndex, searchTerm) => {
-        if (typeof searchIndex !== "string" || typeof searchTerm !== "string") {
-          throw new Error("Search Index OR search term not a string");
-        }
-      
-        return searchIndex.toLowerCase().includes(searchTerm.toLowerCase());
-      };
-      
-      module.exports = includesSearchTerm;
+  if (typeof searchIndex !== "string" || typeof searchTerm !== "string") {
+    throw new Error("Search Index OR search term not a string");
+  }
+
+  return searchIndex.toLowerCase().includes(searchTerm.toLowerCase());
+};
+
+module.exports = includesSearchTerm;

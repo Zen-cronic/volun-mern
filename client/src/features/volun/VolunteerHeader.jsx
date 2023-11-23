@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet} from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import VolunSearchBar from "./search/VolunSearchBar";
 import VolunSort from "./sort/VolunSort";
 import useAuth from "../../hooks/useAuth";
@@ -12,8 +12,8 @@ import useFindingQueryDisplayHook from "../../hooks/useFindingQueryDisplayHook";
 const VolunteerHeader = () => {
   const { isAdmin, role } = useAuth();
 
-
-  const {findingQuery, showFindingQuery, setFindingQuery} = useFindingQueryDisplayHook()
+  const { findingQuery, showFindingQuery, setFindingQuery } =
+    useFindingQueryDisplayHook();
 
   const findingQueryDisplay = showFindingQuery ? (
     <Stack gap={2} direction="horizontal" className="d-flex flex-wrap">
@@ -51,7 +51,7 @@ const VolunteerHeader = () => {
         <Row className="my-2">
           <Col>
             <LinkContainer to={"/dash/volunteers"}>
-              <Button variant="primary">Back to Volunteers List</Button>
+              <Button variant="warning">Back to Volunteers List</Button>
             </LinkContainer>
           </Col>
         </Row>

@@ -12,16 +12,21 @@ const PublicPage = () => {
         <p className="text-center mb-4">
           This space is for student volunteers at ...
         </p>
-        <div className="d-flex">
+        <div className="d-flex mb-3">
           <Button as={Link} variant="primary" to="/login" className=" me-3">
             Sign In
           </Button>
-          <Badge className="me-3" bg="info" pill>
-            or
+          <Badge className="me-3 d-flex align-items-center justify-content-center" bg="info" pill>
+          or
+           
           </Badge>
-          <Button as={Link} variant="secondary" to="/register">
+          <Button as={Link} variant="primary" to="/register">
             Register
           </Button>
+        </div>
+
+        <div className="d-flex">
+          <Button as={Link} variant="warning" to="/events">Check out events!</Button>
         </div>
       </Card>
     </Container>

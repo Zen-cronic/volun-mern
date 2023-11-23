@@ -12,6 +12,18 @@ label.total_volunteers_label{
   margin: 10px;
 }
 
+body.public_layout {
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  
+}
+
+main.public_layout {
+  flex-grow: 1;
+}
+
 /* 992px expand:lg */
 @media screen and (max-width: 992px) {
   
