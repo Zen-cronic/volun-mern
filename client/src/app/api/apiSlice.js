@@ -22,12 +22,6 @@ const baseQuery = fetchBaseQuery({
 
 const baseQueryWithRefreshAuth = async (args, api, extraOptions) => {
 
-    const publicEndpoints = ['/events/search','/events/sort']
-
-    if (publicEndpoints.includes(args.endpoint) ) {
-
-        return baseQuery(args, api, extraOptions);
-    }
 
     let originalResult = await baseQuery(args, api, extraOptions)
 

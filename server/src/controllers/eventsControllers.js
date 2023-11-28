@@ -21,6 +21,7 @@ const { SORT_OBJECT } = require("../config/sortOptions");
 const elemObjIncludes = require("../helpers/elemObjIncludes");
 const filterArrSortLoose = require("../helpers/filterArrSortLoose");
 const sortUpcomingEventsDates = require("../helpers/sortUpcomingEventsDates");
+const elemObjPropValIncludes = require("../helpers/elemObjPropValIncludes");
 
 
 const createNewEvent = asyncHandler(async (req, res) => {
@@ -377,9 +378,10 @@ const filterEvents = [
         // console.log("filterKeyVal of each eventId: ", filterKeyVal);
 
         if (result.includes(id)) {
-          const isEventIdAlrExists = elemObjIncludes(idsWithTags, id);
+          // const isEventIdAlrExists = elemObjIncludes(idsWithTags, id);
+          const isEventIdAlrExists = elemObjPropValIncludes(idsWithTags, "eventId", id);
 
-          if (isEventIdAlrExists) {
+          if (isEventIdAlrExists !== -1) {
             const bufferArr = idsWithTags.map((event) => {
               if (event.eventId === id) {
                 // event = {...event, filterTags: [...event.filterTags, filterKey]}
@@ -397,7 +399,8 @@ const filterEvents = [
             });
 
             idsWithTags = bufferArr;
-          } else {
+          }
+           else {
             idsWithTags.push({
               eventId: id,
               filterTags: [{ [filterKey]: filterKeyVal }],

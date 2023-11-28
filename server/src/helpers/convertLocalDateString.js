@@ -7,7 +7,7 @@ const convertLocalDateString = (date) => {
   
     if(!(date instanceof Date)){
 
-        return new Error('a Non-Date cannot be convereted to a String - date event filter')
+        throw new Error('a Non-Date cannot be convereted to a String - date event filter')
     }
     const localDate = formatInTimeZone(date, TIME_ZONE.TORONTO.timeZone,   'yyyy-MM-dd HH:mm:ss zzz')
 

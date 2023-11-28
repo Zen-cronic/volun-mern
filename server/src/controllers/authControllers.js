@@ -19,13 +19,6 @@ const login = asyncHandler(async(req, res) => {
     const existingUser = await UserModel.findOne({userId})
 
 
-    // if(!existingUser){
-
-    //     return res.status(400).json({message: "id not registered"})
-
-    // }
-
-
     const isValidPwd = await existingUser.matchPassword(password)
 
     if(!isValidPwd || !existingUser){

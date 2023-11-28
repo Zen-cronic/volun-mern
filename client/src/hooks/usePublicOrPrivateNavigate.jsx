@@ -5,7 +5,7 @@ const usePublicOrPrivateNavigate = () => {
 
   const authObj = useAuth();
 
-  console.log('authObj from customHook: ', authObj);
+  // console.log('authObj from customHook: ', authObj);
   const navigate = useNavigate();
 
   const navigateFn =  (publicPathname) => {

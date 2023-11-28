@@ -5,21 +5,15 @@ const sortUpcomingEventsDates = require("./sortUpcomingEventsDates");
 
 
 //filter by date
-const filterEventsByDate = async(date)=>{
-
-    if(typeof date !== 'string'){
-
-        throw new Error('date must be a string - filterEventsByDate')
-    }
-
+const filterEventsByDate = async(dateStr)=>{
  
 
     const filterDateRegex = /^\d{4}-\d{2}-\d{2}$/
-    const isDateValid = filterDateRegex.test(date)
+    const isDateValid = filterDateRegex.test(dateStr)
 
     if(!isDateValid){
             
-            throw new Error('date must be in format yyyy-MM-dd - filterEventsByDate')
+            throw new Error('date string must be in format yyyy-MM-dd - filterEventsByDate')
     }
 
     const matchingEvents = await Event.find().lean().exec()
@@ -27,7 +21,7 @@ const filterEventsByDate = async(date)=>{
 
             events.filter(event => {
 
-              
+            
                 const convertedDateWithTime =  new Date(date + hourMinFormat())
 
                 const currentlocalDateStr= convertLocalDateString(convertedDateWithTime)
@@ -53,6 +47,8 @@ const filterEventsByDate = async(date)=>{
         .then(events => (
             events.map(event => (
                 event._id.toString()
+                
+                
             ))
         ))
 
@@ -88,20 +84,13 @@ const filterEventsOpen = async(isOpen) => {
         return Promise.resolve([])
     }
 
-  //{ age: { $gt: 50 } }
   const events = await Event.find({openPositions: {$gt: 0}}).lean()
   .then(events => (
       events.map(event => (
           event._id.toString()
       ))
   ))
-  
 
-// if(!events?.length){
-
-//     throw new Error('No open events')
-
-// }
 
 
 
@@ -118,66 +107,6 @@ const filterEventsUpcomingShifts = async(isUpcoming) => {
     }
 
     const allEvents = await Event.find().lean().exec()
-
-    //with recursion
-
-    // const sortedUpcomingEventDatesFx = (event, datesArr, invalidArr =[]) => {
-
-    //     const currentDate =new Date(Date.now())
-
-
-    //     const cmpDatesArray = datesArr.filter(date => (
-
-    //         invalidArr.some(invalidDate => isEqual(invalidDate, date))
-    //         ?
-    //         false
-    //         :
-    //         true
-    //     ))
-
-    //     console.log('cmpDatesArray: ', cmpDatesArray);
-    //     const closestToCurrentDate = closestTo(currentDate, cmpDatesArray)
-
-    //     console.log("clossestToCurrentDate: ", closestToCurrentDate);
-
-    //     //ethier condi alone works
-    //     if(
-    //         closestToCurrentDate ===  undefined 
-    //         ||
-    //         !cmpDatesArray?.length 
-    //         ){
-
-    //         return []
-    //     }
-
-    //     if(isAfter(closestToCurrentDate, currentDate)){
-
-    //         console.log(closestToCurrentDate, " is after ", currentDate);
-                
-    //         return [{eventDate: closestToCurrentDate, eventName: event?.eventName,eventId: event?._id}]
-
-    //     }
-
-
-
-    //     // console.log('reched HERE - b4 next fx call');
-
-
-    //     invalidArr.push(closestToCurrentDate)
-    //     return sortedUpcomingEventDatesFx(event, datesArr, invalidArr)
-
-    // // console.log('reched HERE - after fx called');
-
-    // }
-
-    // const sortedUpcomingEventsDates = allEvents.flatMap(event => {
-
-    //     const result = sortedUpcomingEventDatesFx(event, event.eventDates)
-
-    //     console.log("recursed result: ", result);
-
-    //     return result
-    // } )
 
     const sortedUpcomingEventsDates = sortUpcomingEventsDates(allEvents)
 
@@ -219,7 +148,7 @@ const filteredTagsSort = (arr)=> {
         
    })
 
-   console.log('sortedEntries from filterTagsSort: ');
+//    console.log('sortedEntries from filterTagsSort: ');
 //    sortedArr.map(entry => {
 //        console.log(entry);
 //    })
