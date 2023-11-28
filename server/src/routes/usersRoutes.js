@@ -5,7 +5,6 @@ const { ROLES } = require("../config/roles");
 
 const router = express.Router();
 
-//for DashFooter user info w jwt-decode
 router.route("/:id").get(usersControllers.getUserById);
 
 router
@@ -17,6 +16,7 @@ router
   .get(verifyRole(ROLES.ADMIN), usersControllers.getAllVolunteers)
   .post(usersControllers.createNewVolunteer)
 
+  //update volun info
   .put(verifyRole(ROLES.VOLUNTEER), usersControllers.updateVolunteer)
 
   //sign up for events
@@ -39,7 +39,6 @@ router
 
 router.route("/volunteered").patch(usersControllers.updateVolunteeredShifts);
 
-//ROLE.V
 router
   .route("/check-buttons")
   .post(

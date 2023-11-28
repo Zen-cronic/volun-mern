@@ -15,8 +15,9 @@ const EventList = () => {
     isError,
     error,
   } = useGetEventsQuery("eventsList", {
-    //15min
-    pollingInterval: 900000,
+
+    //15min 90000
+    pollingInterval: 2000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
@@ -44,7 +45,7 @@ const EventList = () => {
       {role === "ADMIN" && isAdmin ? (
         <Container className="my-2">
           <LinkContainer to={"/dash/events/new"}>
-            <Button variant="warning">Add New Event</Button>
+            <Button variant="success">Add New Event</Button>
           </LinkContainer>
         </Container>
       ) : null}

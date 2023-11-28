@@ -18,6 +18,7 @@ const login = asyncHandler(async(req, res) => {
 
     const existingUser = await UserModel.findOne({userId})
 
+
     const isValidPwd = await existingUser.matchPassword(password)
 
     if(!isValidPwd || !existingUser){

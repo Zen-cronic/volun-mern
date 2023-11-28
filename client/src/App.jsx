@@ -35,13 +35,12 @@ import PublicEvents from "./components/PublicEvents";
 const App = () => {
   return (
     <Routes>
-      <Route path="/" element={<Layout /> }>
-        <Route index={true} element={<PublicPage />} />
-
+      <Route path="/" element={<Layout />}>
         <Route element={<PrefetchEvents />}>
+          <Route index={true} element={<PublicPage />} />
 
           {/* browse events as a guest */}
-          <Route path="/events/*" element={<PublicEvents/>}/>
+          <Route path="/events/*" element={<PublicEvents />} />
 
           <Route path="/login" element={<Login />} />
 
