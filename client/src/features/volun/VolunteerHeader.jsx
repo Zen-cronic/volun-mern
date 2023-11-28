@@ -17,7 +17,7 @@ const VolunteerHeader = () => {
 
   const findingQueryDisplay = showFindingQuery ? (
     <Stack gap={2} direction="horizontal" className="d-flex flex-wrap">
-      <Badge pill bg="info">
+      <Badge pill bg="warning">
         {capitalizeFirstLetter(findingQuery.findingQueryType)}
       </Badge>
       results for:
@@ -28,17 +28,20 @@ const VolunteerHeader = () => {
   ) : null;
 
   const adminHeaderContent = (
-    <Container className="my-2">
+    <Container className="my-5">
       <Row>
-        <Col xs={6} lg={3}>
+        <Col xs={6} lg={4}>
           <VolunSearchBar setFindingQuery={setFindingQuery} />
         </Col>
 
-        <Col xs={6} lg={3}>
+        <Col xs={6} lg={4}>
           <VolunSort setFindingQuery={setFindingQuery} />
         </Col>
       </Row>
 
+      <Row>
+        <br></br>
+      </Row>
       <Row>
         <Col>{findingQueryDisplay}</Col>
       </Row>

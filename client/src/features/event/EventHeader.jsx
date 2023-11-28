@@ -6,23 +6,25 @@ import EventSearchBar from "./search/EventSearchBar";
 import { Container, Row, Col, Stack, Badge, Button } from "react-bootstrap";
 import findingQueryTypes from "../../config/findingQueryTypes";
 import capitalizeFirstLetter from "../../helpers/capitalizeFirstLetter";
-import { LinkContainer } from "react-router-bootstrap";
 import useFindingQueryDisplayHook from "../../hooks/useFindingQueryDisplayHook";
+import usePublicOrPrivateNavigate from "../../hooks/usePublicOrPrivateNavigate";
 
 const EventHeader = () => {
-  
   const { findingQuery, showFindingQuery, setFindingQuery } =
     useFindingQueryDisplayHook();
 
+  const navigateFn = usePublicOrPrivateNavigate();
+
   //nu need both showFindingQuery && val.findingQueryType
   const findingQueryDisplay = showFindingQuery ? (
-    <>
-      {capitalizeFirstLetter(findingQuery.findingQueryType)} results for:
-
-      <Stack gap={2} direction="horizontal" className="d-flex flex-wrap">
-
+  
+    <Stack gap={2} direction="horizontal" className="d-flex flex-wrap">
+      <Badge pill bg="warning">
+        {capitalizeFirstLetter(findingQuery.findingQueryType)}
+      </Badge>{" "}
+      results for:
+      
         {findingQuery.findingQueryType === findingQueryTypes.FILTER ? (
-
           Object.entries(findingQuery.findingQueryVal).map(
             ([key, val], index) => (
               <Badge bg="success" key={index}>
@@ -36,11 +38,15 @@ const EventHeader = () => {
           <Badge bg="success">{findingQuery.findingQueryVal}</Badge>
         )}
       </Stack>
-    </>
+  
   ) : null;
 
+  const handleButtonClick = () => {
+    navigateFn("/events");
+  };
+
   const eventHeaderContent = (
-    <Container className="my-2">
+    <Container className="my-5">
       <Row>
         <Col xs={6} lg={4}>
           {<EventSearchBar setFindingQuery={setFindingQuery} />}
@@ -56,6 +62,9 @@ const EventHeader = () => {
       </Row>
 
       <Row>
+        <br></br>
+      </Row>
+      <Row>
         <Col>{findingQueryDisplay}</Col>
       </Row>
     </Container>
@@ -65,9 +74,9 @@ const EventHeader = () => {
       {eventHeaderContent}
 
       <Container className="my-2">
-        <LinkContainer to={"/dash/events"}>
-          <Button variant="warning">Back to Events List</Button>
-        </LinkContainer>
+        <Button variant="warning" onClick={handleButtonClick}>
+          Back to Events List
+        </Button>
       </Container>
 
       <Outlet />

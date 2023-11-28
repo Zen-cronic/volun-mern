@@ -18,9 +18,9 @@ jobs:
               run : npm ci
               working-directory: server
 
-            # - name: Run server tests
-            #   run: npm test
-            #   working-directory: server
+            - name: Run server tests
+              run: npm test
+              working-directory: server
 
             - name : Install client dependencies
               run : npm ci
