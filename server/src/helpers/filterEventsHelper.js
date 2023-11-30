@@ -83,10 +83,10 @@ const filterEventsUpcomingShifts = async (isUpcoming) => {
   );
 
   // console.log('filtereedEventIds: ', filteredEventIds );
-  console.log(
-    "sortedUpcomingEventsDates from filterEventsHelper ",
-    sortedUpcomingEventsDates
-  );
+  // console.log(
+  //   "sortedUpcomingEventsDates from filterEventsHelper ",
+  //   sortedUpcomingEventsDates
+  // );
 
   return filteredEventIds;
 };

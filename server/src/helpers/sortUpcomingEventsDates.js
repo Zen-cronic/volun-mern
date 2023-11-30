@@ -9,20 +9,30 @@ const sortUpcomingEventsDates = (eventsArr) => {
     throw new Error("Must be an array of objects - sortUpcomingEventsDates");
   }
 
-  const sortUpcomingEventsDatesFx = (event, datesArr, invalidArr = []) => {
+  const sortUpcomingEventsDatesRecursive = (
+    event,
+    datesArr,
+    invalidArr = []
+  ) => {
     const currentDate = new Date(Date.now());
 
+    console.log(invalidArr, " : invalidArr");
     // const cmpDatesArray = datesArr.filter(date => invalidArr.includes(date)? false : true)
     const cmpDatesArray = datesArr.filter((date) =>
-      invalidArr.some((invalidDate) => isEqual(invalidDate, date))
+
+      invalidArr.some((invalidDate) => {
+
+        console.log(isEqual(invalidDate, date), " | : ", invalidDate, " ", date); //false
+        return isEqual(invalidDate, date);
+      })
         ? false
         : true
     );
 
-    console.log("cmpDatesArray: ", cmpDatesArray);
+    // console.log("cmpDatesArray: ", cmpDatesArray);
 
     const closestToCurrentDate = closestTo(currentDate, cmpDatesArray);
-    console.log("clossestToCurrentDate: ", closestToCurrentDate);
+    // console.log("clossestToCurrentDate: ", closestToCurrentDate);
 
     //ether condi alone works
     if (closestToCurrentDate === undefined || !cmpDatesArray?.length) {
@@ -30,8 +40,8 @@ const sortUpcomingEventsDates = (eventsArr) => {
     }
 
     if (isAfter(closestToCurrentDate, currentDate)) {
-      console.log(closestToCurrentDate, " is after ", currentDate);
-   
+      // console.log(closestToCurrentDate, " is after ", currentDate);
+
       return [
         {
           eventDate: closestToCurrentDate,
@@ -45,16 +55,15 @@ const sortUpcomingEventsDates = (eventsArr) => {
 
     invalidArr.push(closestToCurrentDate);
 
-    return sortUpcomingEventsDatesFx(event, datesArr, invalidArr);
+    return sortUpcomingEventsDatesRecursive(event, datesArr, invalidArr);
 
     // console.log('reched HERE - after fx called');
   };
 
-
   const sortedUpcomingEventsDates = eventsArr.flatMap((event) => {
-    const result = sortUpcomingEventsDatesFx(event, event.eventDates);
+    const result = sortUpcomingEventsDatesRecursive(event, event.eventDates);
 
-    console.log("result: ", result);
+    // console.log("result: ", result);
 
     return result;
   });
