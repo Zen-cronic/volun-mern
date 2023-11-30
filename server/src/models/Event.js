@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const calculateShiftDuration = require("../helpers/model-helpers/calculateShiftDuration");
 const {
   includedTimeInDate,

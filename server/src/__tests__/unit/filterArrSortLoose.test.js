@@ -1,20 +1,13 @@
+const { nonArrayValues } = require("../../config/testNonValues");
 const filterArrSortLoose = require("../../helpers/filterArrSortLoose");
+
 
 describe("filterArrSortLoose function", () => {
   describe("given the param is NOT an array", () => {
     it("should throw an error", () => {
-      const nonArrayValues = [
-        123,
-        "string",
-        true,
-        null,
-        undefined,
-        {},
-        () => {},
-        new Date(),
-      ];
+   const falseValues = nonArrayValues
 
-      nonArrayValues.forEach((val) => {
+      falseValues.forEach((val) => {
         expect(() => filterArrSortLoose(val)).toThrow(
           new Error("Arr to be filtered but MUST be a 2d arr for loose filter")
         );
