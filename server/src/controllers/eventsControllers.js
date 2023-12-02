@@ -106,6 +106,8 @@ const sortEvents = [
     //only 1 sort option at a time
     const [[sortOption, orderBool]] = Object.entries(req.body);
 
+    
+    console.log(sortOption, orderBool);
     if (sortOption === SORT_OBJECT.SOONEST.sortOption) {
       return next();
     }
@@ -118,7 +120,7 @@ const sortEvents = [
         }))
     );
 
-    res.json({ sortedEvents });
+    return res.json({ sortedEvents });
   }),
 
   //sort by soonest shift date
@@ -132,7 +134,7 @@ const sortEvents = [
       compareAsc(a?.eventDate, b?.eventDate)
     );
 
-    res.json({
+    return res.status(200).json({
       sortedUpcomingEventsDates,
 
       sortedEvents,

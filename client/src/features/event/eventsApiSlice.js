@@ -102,7 +102,8 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         // body: {...sortOption}
         //make it parsable by back
-        body: { [sortOption]: true },
+        // body: { [sortOption]: true },
+        body: { ...sortOption },
       }),
 
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
