@@ -118,7 +118,7 @@ const sortEvents = [
         }))
     );
 
-    res.json({ sortedEvents });
+    return res.json({ sortedEvents });
   }),
 
   //sort by soonest shift date
@@ -132,7 +132,7 @@ const sortEvents = [
       compareAsc(a?.eventDate, b?.eventDate)
     );
 
-    res.json({
+    return res.status(200).json({
       sortedUpcomingEventsDates,
 
       sortedEvents,

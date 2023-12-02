@@ -4,9 +4,9 @@ const corsOptions = {
   origin: (origin, callback) => {
     
     const allowedCondition =
-      process.env.NODE_ENV === "development"
-        ? allowedOrigins.indexOf(origin) !== -1 || !origin
-        : allowedOrigins.indexOf(origin) !== -1;
+      (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test")
+        ? (allowedOrigins.indexOf(origin) !== -1 || !origin)
+        : (allowedOrigins.indexOf(origin) !== -1);
 
     if (allowedCondition) {
       //callback(err, origin (non-fx val))
