@@ -1,18 +1,23 @@
 import React, { useState } from "react";
 import { useLazyPostSortedEventsQuery } from "../eventsApiSlice";
-import { useNavigate } from "react-router";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form} from "react-bootstrap";
 import findingQueryTypes from "../../../config/findingQueryTypes";
 import useAuth from "../../../hooks/useAuth";
+import usePublicOrPrivateNavigate from "../../../hooks/usePublicOrPrivateNavigate";
 
 const EventSort = ({ setFindingQuery }) => {
-
-  const {role, volunId} = useAuth()
   const [sortOption, setSortOption] = useState("");
-  const [sortEvents, { isLoading }] = useLazyPostSortedEventsQuery();
-  const navigate = useNavigate();
+  //true - asc
+  const [ascOrDesc, setAscOrDesc] = useState(true);
 
-  const onSortOptionsChange = (e) => setSortOption(e.target.value);
+  const [sortEvents, { isLoading }] = useLazyPostSortedEventsQuery();
+
+  const navigateFn = usePublicOrPrivateNavigate();
+  const onSortOptionsChange = (e) => {
+    setSortOption(e.target.value);
+
+    e.target.value === "open" ? setAscOrDesc(false) : setAscOrDesc(true);
+  };
 
   const canSort = Boolean(sortOption) && !isLoading;
 
@@ -25,28 +30,24 @@ const EventSort = ({ setFindingQuery }) => {
       <option value={""}></option>
       <option value={"soonest"}>Soonest (Excludes Past events)</option>
       <option value={"event_az"}>Alphabetically</option>
-      <option value={"open"}>Open Positions</option>
-      {/* <option value={'newest'}>External</option> */}
+      <option value={"open"}>Open Positions (descending)</option>
     </Form.Select>
   );
 
   const handleSortSubmit = async () => {
-
-    if(!canSort){
-        return
+    if (!canSort) {
+      return;
     }
+
     try {
-      const preferCacheValue = true;
-      // const {data} = await sortEvents({[sortOption]: true}, preferCacheValue)
-      const { data } = await sortEvents(sortOption, preferCacheValue);
+      const preferCacheValue = false;
 
-      if(!role && !volunId){
-        navigate("/events/sort")
-      }
-      else{
-        navigate("/dash/events/sort");
+      const sortOptionObject = { [sortOption]: ascOrDesc };
+      // console.log("sortOption obj from front: ", sortOptionObject);
 
-      }
+      const { data } = await sortEvents(sortOptionObject, preferCacheValue);
+
+      navigateFn("/events/sort");
 
       setFindingQuery((prev) => ({
         ...prev,
@@ -54,13 +55,13 @@ const EventSort = ({ setFindingQuery }) => {
         findingQueryVal: sortOption,
       }));
 
-      console.log("Sorted events data: ", data);
+      // console.log("Sorted events data: ", data);
     } catch (error) {
       console.log("Sort error: ", error);
     }
   };
   const sortSubmitButton = (
-    <Button onClick={handleSortSubmit}  type="submit">
+    <Button onClick={handleSortSubmit} type="submit">
       Sort {sortOption}
     </Button>
   );

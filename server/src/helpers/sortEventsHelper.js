@@ -36,9 +36,7 @@ const sortEventsHelper = async(sortOption,orderBool) => {
 
 }
 module.exports = {
-    // sortEventsAlphabetically,
-    // sortEventsByOpen,
-    // sortEventsBySoonest,
+ 
 
     sortEventsHelper
 };

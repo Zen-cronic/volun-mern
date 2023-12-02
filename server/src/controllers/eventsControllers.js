@@ -106,6 +106,8 @@ const sortEvents = [
     //only 1 sort option at a time
     const [[sortOption, orderBool]] = Object.entries(req.body);
 
+    
+    console.log(sortOption, orderBool);
     if (sortOption === SORT_OBJECT.SOONEST.sortOption) {
       return next();
     }
