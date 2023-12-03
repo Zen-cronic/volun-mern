@@ -77,10 +77,10 @@ describe("/events route", () => {
 
     // Create an array of event objects
 
-    const createdEvents = await Promise.all(
-      events.map(async (event) => await Event.create(event))
-    );
-    // const createdEvents = await Event.create(events);
+    // const createdEvents = await Promise.all(
+    //   events.map(async (event) => await Event.create(event))
+    // );
+    const createdEvents = await Event.create(events);
     // console.log("createdEvents: ", createdEvents);
   });
 
@@ -157,7 +157,7 @@ describe("/events route", () => {
         expect(status).toBe(200);
         expect(body).toHaveProperty("sortedEvents");
 
-        console.log("body.sortedEvents: ", body.sortedEvents);
+        // console.log("body.sortedEvents: ", body.sortedEvents);
         for (let i = 0; i < body.sortedEvents.length - 1; i++) {
           const leftEventId = body.sortedEvents[i].eventId;
           const rightEventId = body.sortedEvents[i + 1].eventId;
@@ -191,6 +191,8 @@ describe("/events route", () => {
       );
 
       expect(body).toHaveProperty("searchTerm", searchTerm);
+
+      console.log("body searchTerm: ", body);
     // Received value: {"matchingEvents": [{"eventId": "656bad85d4f31b1a54935615"}], "searchTerm": "3"}
 
     };
@@ -207,9 +209,13 @@ describe("/events route", () => {
     });
   });
 
-  describe('/event create event', () => {
+  // describe('/event create event', () => {
     
-    
-  });
+  //   describe('first', () => { 
+  //     it('should ', () => { 
+
+  //      })
+  //    })
+  // });
   
 });

@@ -1,5 +1,5 @@
+const { compareAsc } = require("date-fns");
 const { SORT_OBJECT } = require("../config/sortOptions");
-const Event = require("../models/Event");
 const { getAllEvents } = require("../service/eventsService");
 const sortOrder = require("./sortOrder");
 
@@ -30,6 +30,19 @@ const sortEventsHelper = async (sortOption, orderBool) => {
 
   return allSortedEvents;
 };
+
+
+const sortEventsByEventDate = (sortedEvents) => {
+  //if some event DNH eventDate throw false
+
+  if(sortedEvents.some(event => !Object.hasOwn(event, "eventDate"))){
+    throw new Error("Each event obj must have eventDate property")
+  }
+
+  return [...sortedEvents].sort((a, b) => compareAsc(a.eventDate, b.eventDate));
+};
+
 module.exports = {
   sortEventsHelper,
+  sortEventsByEventDate,
 };

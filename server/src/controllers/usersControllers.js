@@ -1,18 +1,15 @@
 const asyncHandler = require("express-async-handler");
 const requiredInputChecker = require("../helpers/requiredInputChecker");
-const bcrypt = require("bcrypt");
 const Event = require("../models/Event");
 const User = require("../models/User");
 const toLowerNoSpace = require("../helpers/toLowerNoSpace");
 const { ROLES } = require("../config/roles");
-const sortOrder = require("../helpers/sortOrder");
 const {
   isAfter,
   isBefore,
   differenceInHours,
-  differenceInCalendarDays,
 } = require("date-fns");
-const { SORT_OBJECT } = require("../config/sortOptions");
+
 
 const removeElemObjIdArray = require("../helpers/removeElemObjIdArray");
 const sortVolunteersHelper = require("../helpers/sortVolunteersHelper");

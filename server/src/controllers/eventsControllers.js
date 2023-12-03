@@ -1,8 +1,6 @@
 const asyncHandler = require("express-async-handler");
-const Event = require("../models/Event");
-
 const requiredInputChecker = require("../helpers/requiredInputChecker");
-const includesSearchTerm = require("../helpers/includesSearchTerm");
+
 const {
   filterEventsByVenue,
   filterEventsByDate,
@@ -11,18 +9,27 @@ const {
   filterEventsUpcomingShifts,
 } = require("../helpers/filterEventsHelper");
 
-const { sortEventsHelper } = require("../helpers/sortEventsHelper");
-const filterNonDuplicate = require("../helpers/filterNonDuplicate");
-const { compareAsc } = require("date-fns");
+const {
+  sortEventsHelper,
+  sortEventsByEventDate,
+} = require("../helpers/sortEventsHelper");
 const objKeysIncludes = require("../helpers/objKeysIncludes");
 
 const { FILTER_OPTIONS } = require("../config/filterOptions");
 const { SORT_OBJECT } = require("../config/sortOptions");
-const elemObjIncludes = require("../helpers/elemObjIncludes");
 const filterArrSortLoose = require("../helpers/filterArrSortLoose");
 const sortUpcomingEventsDates = require("../helpers/sortUpcomingEventsDates");
 const elemObjPropValIncludes = require("../helpers/elemObjPropValIncludes");
-const { getAllEvents, createNewEvent } = require("../service/eventsService");
+const {
+  getAllEvents,
+  createNewEvent,
+  getEventById,
+  searchEvents,
+  updateEventInfo,
+  deleteEvent,
+  getSignedUpVolunteers,
+} = require("../service/eventsService");
+const { findDuplicateEvent } = require("../helpers/findDuplicateEvent");
 
 const createNewEventHandler = asyncHandler(async (req, res) => {
   const { eventName, eventVenue, eventDates, eventDescription, shifts } =
@@ -40,7 +47,6 @@ const createNewEventHandler = asyncHandler(async (req, res) => {
   res.json({ newEvent });
 });
 
-
 const getAllEventsHandler = asyncHandler(async (req, res) => {
   const events = await getAllEvents();
 
@@ -51,48 +57,32 @@ const getAllEventsHandler = asyncHandler(async (req, res) => {
   res.json({ events });
 });
 
-const getEventById = asyncHandler(async (req, res) => {
+const getEventByIdHandler = asyncHandler(async (req, res) => {
   const { eventId } = req.params;
 
   if (requiredInputChecker(req.body)) {
     return res.status(400).json({ message: "All fields required" });
   }
 
-  const existingEvent = await Event.findById(eventId).lean().exec();
+  const existingEvent = await getEventById(eventId);
 
   if (!existingEvent) {
-    return res.status(400).json({ message: "Event DNE" });
+    return res.status(404).json({ message: "Event Does Not Exist" });
   }
 
   return res.json({ existingEvent });
 });
 
 //search events
-const searchEvents = asyncHandler(async (req, res) => {
+const searchEventsHandler = asyncHandler(async (req, res) => {
   // /search/?q=:query
   const { q } = req.query;
 
-  const allEvents = await Event.find().lean();
+  const allEvents = await getAllEvents();
 
-  // console.log(typeof q);
-  const matchingEvents = allEvents
-    .filter((event) => {
-      try {
-        return (
-          includesSearchTerm(event.eventName, q) ||
-          includesSearchTerm(event.eventDescription, q)
-        );
-      } catch (error) {
-        console.error("an error from searchEvents:", error.message);
-        return false; // Exclude this event from the results
-      }
-    })
+  const matchingEvents = searchEvents(allEvents, q);
 
-    .map((event) => ({
-      eventId: event._id,
-    }));
-
-  res.json({ searchTerm: q, matchingEvents });
+  return res.status(200).json({ searchTerm: q, matchingEvents });
 });
 
 const sortEvents = [
@@ -100,7 +90,7 @@ const sortEvents = [
     //only 1 sort option at a time
     const [[sortOption, orderBool]] = Object.entries(req.body);
 
-    console.log(sortOption, orderBool);
+    // console.log(sortOption, orderBool);
     if (sortOption === SORT_OBJECT.SOONEST.sortOption) {
       return next();
     }
@@ -120,22 +110,19 @@ const sortEvents = [
   asyncHandler(async (req, res) => {
     const allEvents = await getAllEvents();
 
-    //with recursion logic
+    //recursion logic
     const sortedUpcomingEventsDates = sortUpcomingEventsDates(allEvents);
 
-    const sortedEvents = [...sortedUpcomingEventsDates].sort((a, b) =>
-      compareAsc(a?.eventDate, b?.eventDate)
-    );
+    const sortedEvents = sortEventsByEventDate(sortedUpcomingEventsDates);
 
     return res.status(200).json({
       sortedUpcomingEventsDates,
-
       sortedEvents,
     });
   }),
 ];
 
-const updateEventInfo = asyncHandler(async (req, res) => {
+const updateEventInfoHandler = asyncHandler(async (req, res) => {
   const {
     eventId,
     eventName,
@@ -149,110 +136,66 @@ const updateEventInfo = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "All fields required" });
   }
 
-  const existingEvent = await Event.findById(eventId).exec();
+  const existingEvent = await getEventById(eventId);
 
   if (!existingEvent) {
     return res.status(400).json({ message: "Event DNE for PUT event info" });
   }
 
-  const duplicate = await Event.findOne({ eventName }).lean().exec();
+  const duplicate = await findDuplicateEvent();
 
-  if (duplicate && duplicate._id.toString() !== existingEvent.id) {
+  if (duplicate && duplicate._id.toString() !== existingEvent._id.toString()) {
     return res.status(409).json({
       message: "The renamed eventName already exists",
       duplicateEvent: duplicate,
     });
   }
 
-  // algorize this
-  existingEvent.eventName = eventName;
-  existingEvent.eventVenue = eventVenue;
-  existingEvent.eventDates = eventDates;
-  existingEvent.eventDescription = eventDescription;
+  const updatedEvent = await updateEventInfo(existingEvent, req.body);
 
-  const existingAllShifts = existingEvent.shifts;
-
-  shifts.map((returnedShift) => {
-    //shiftId included from front
-    const existingShift = existingAllShifts.find(
-      (shift) => shift._id.toString() === returnedShift?.shiftId
-    );
-
-    // console.log(
-    //   "existingShift found using returnedShfit from front: ",
-    //   existingShift
-    // );
-
-    if (existingShift) {
-      // console.log("retunredShiftObj: ", returnedShift);
-
-      existingShift.shiftStart = new Date(returnedShift.shiftStart);
-      existingShift.shiftEnd = new Date(returnedShift.shiftEnd);
-      existingShift.shiftPositions = parseInt(returnedShift.shiftPositions);
-    } else {
-      existingEvent.shifts.push(returnedShift);
-    }
-  });
-
-  const updatedEvent = await existingEvent.save();
-
-  console.log("udpatedEvent: ", updatedEvent);
-  res.json({ existingEvent });
+  console.log("updatedEvent: ", updatedEvent);
+  return res.status(200).json({ updatedEvent });
 });
 
-const deleteEvent = asyncHandler(async (req, res) => {
+//ltr notify signed up
+const deleteEventHandler = asyncHandler(async (req, res) => {
   const { eventId } = req.body;
 
   if (!eventId) {
     return res.status(400).json({ message: "eventId required for delete" });
   }
 
-  const existingEvent = await Event.findById(eventId).exec();
+  const existingEvent = await getEventById(eventId);
 
   if (!existingEvent) {
     return res.status(400).json({ message: "Event DNE for DELETE event" });
   }
 
-  const deletedEvent = await existingEvent.deleteOne();
+  const deletedEvent = await deleteEvent(eventId);
 
   const message = `Event: '${deletedEvent.eventName}' deleted`;
 
-  res.json({ message });
+  return res.status(200).json({ message });
 });
 
-const getSignedUpVolunteers = asyncHandler(async (req, res) => {
+const getSignedUpVolunteersHandler = asyncHandler(async (req, res) => {
   const { eventId } = req.body;
-  if (requiredInputChecker(req.body)) {
-    return res.status(400).json({ message: "All fields required" });
+  if (!eventId) {
+    return res
+      .status(400)
+      .json({ message: "eventId required for viewing signed up volunteers" });
   }
 
-  const currentEvent = await Event.findById(eventId).lean().exec();
+  const existingEvent = await getEventById(eventId);
 
-  if (!currentEvent) {
+  if (!existingEvent) {
     return res
       .status(400)
       .json({ message: "event DNE to get the signedUP voluns" });
   }
 
-  const shiftVolunteers = currentEvent.shifts.map((shift) => {
-    return { shiftId: shift._id, volunteerIds: shift.signedUpVolunteers };
-  });
-
-  const allVolunIds = currentEvent.shifts
-    .flatMap((shift) => shift.signedUpVolunteers)
-    .map((volunId) => volunId.toString());
-
-  console.log(
-    "all volun ids with flatMap, including duplicates: ",
-    allVolunIds
-  );
-
-  const totalUniqueVolunteers = {
-    uniqueVolunteersIds: filterNonDuplicate(allVolunIds),
-  };
-
-  totalUniqueVolunteers.count =
-    totalUniqueVolunteers.uniqueVolunteersIds.length;
+  const { shiftVolunteers, totalUniqueVolunteers } =
+    await getSignedUpVolunteers(existingEvent.shifts);
 
   res.json({ shiftVolunteers, totalUniqueVolunteers });
 });
@@ -425,13 +368,13 @@ const filterEvents = [
 module.exports = {
   createNewEventHandler,
   getAllEventsHandler,
-  updateEventInfo,
-  deleteEvent,
-  getEventById,
+  updateEventInfoHandler,
+  deleteEventHandler,
+  getEventByIdHandler,
 
-  searchEvents,
-  sortEvents,
+  searchEventsHandler,
+  sortEventsHandler,
   filterEvents,
 
-  getSignedUpVolunteers,
+  getSignedUpVolunteersHandler,
 };

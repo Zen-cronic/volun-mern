@@ -137,7 +137,7 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
 
           dispatch(setSearchedEvents({ matchingEvents }));
         } catch (error) {
-          console.log("Sort events Error: ", error);
+          console.log("Search events Error: ", error);
         }
       },
     }),
