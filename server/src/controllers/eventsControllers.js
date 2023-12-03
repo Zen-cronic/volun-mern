@@ -22,9 +22,9 @@ const elemObjIncludes = require("../helpers/elemObjIncludes");
 const filterArrSortLoose = require("../helpers/filterArrSortLoose");
 const sortUpcomingEventsDates = require("../helpers/sortUpcomingEventsDates");
 const elemObjPropValIncludes = require("../helpers/elemObjPropValIncludes");
+const { getAllEvents, createNewEvent } = require("../service/eventsService");
 
-
-const createNewEvent = asyncHandler(async (req, res) => {
+const createNewEventHandler = asyncHandler(async (req, res) => {
   const { eventName, eventVenue, eventDates, eventDescription, shifts } =
     req.body;
 
@@ -32,28 +32,22 @@ const createNewEvent = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "All fields required" });
   }
 
-  const duplicate = await Event.findOne({ eventName }).lean().exec();
+  const newEvent = await createNewEvent(req.body);
 
-  if (duplicate) {
-    return res.status(400).json({ message: "Alreday added event" });
+  if (!newEvent) {
+    return res.status(409).json({ message: "Event already exists" });
   }
-
-  const newEvent = new Event({ ...req.body });
-
-  //pre-hook middleware
-  await newEvent.save();
-
   res.json({ newEvent });
 });
 
-const getAllEvents = asyncHandler(async (req, res) => {
-  const events = await Event.find().lean();
+
+const getAllEventsHandler = asyncHandler(async (req, res) => {
+  const events = await getAllEvents();
 
   if (!events?.length) {
     return res.status(400).json({ message: "No events exist" });
   }
 
-  //an arry of volunteers obj || {volunteers}
   res.json({ events });
 });
 
@@ -106,7 +100,6 @@ const sortEvents = [
     //only 1 sort option at a time
     const [[sortOption, orderBool]] = Object.entries(req.body);
 
-    
     console.log(sortOption, orderBool);
     if (sortOption === SORT_OBJECT.SOONEST.sortOption) {
       return next();
@@ -125,7 +118,7 @@ const sortEvents = [
 
   //sort by soonest shift date
   asyncHandler(async (req, res) => {
-    const allEvents = await Event.find().lean().exec();
+    const allEvents = await getAllEvents();
 
     //with recursion logic
     const sortedUpcomingEventsDates = sortUpcomingEventsDates(allEvents);
@@ -381,7 +374,11 @@ const filterEvents = [
 
         if (result.includes(id)) {
           // const isEventIdAlrExists = elemObjIncludes(idsWithTags, id);
-          const isEventIdAlrExists = elemObjPropValIncludes(idsWithTags, "eventId", id);
+          const isEventIdAlrExists = elemObjPropValIncludes(
+            idsWithTags,
+            "eventId",
+            id
+          );
 
           if (isEventIdAlrExists !== -1) {
             const bufferArr = idsWithTags.map((event) => {
@@ -401,8 +398,7 @@ const filterEvents = [
             });
 
             idsWithTags = bufferArr;
-          }
-           else {
+          } else {
             idsWithTags.push({
               eventId: id,
               filterTags: [{ [filterKey]: filterKeyVal }],
@@ -427,8 +423,8 @@ const filterEvents = [
 ];
 
 module.exports = {
-  createNewEvent,
-  getAllEvents,
+  createNewEventHandler,
+  getAllEventsHandler,
   updateEventInfo,
   deleteEvent,
   getEventById,
@@ -438,6 +434,4 @@ module.exports = {
   filterEvents,
 
   getSignedUpVolunteers,
-
-  
 };

@@ -37,9 +37,7 @@ describe("/events route", () => {
         ];
 
         Event.find.mockReturnValue({
-          lean: jest.fn().mockReturnValue({
-            exec: jest.fn().mockReturnValue(events),
-          }),
+          lean: jest.fn().mockReturnValue(events)
         });
 
         const sortedEvents = [

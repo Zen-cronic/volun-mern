@@ -9,9 +9,9 @@ const router = express.Router();
 router
   .route("/")
 
-  .get(eventsControllers.getAllEvents)
+  .get(eventsControllers.getAllEventsHandler)
 
-  .post(verifyJWT, verifyRole(ROLES.ADMIN), eventsControllers.createNewEvent)
+  .post(verifyJWT, verifyRole(ROLES.ADMIN), eventsControllers.createNewEventHandler)
   .put(verifyJWT, verifyRole(ROLES.ADMIN), eventsControllers.updateEventInfo)
   .delete(verifyJWT, verifyRole(ROLES.ADMIN), eventsControllers.deleteEvent);
 
