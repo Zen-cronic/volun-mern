@@ -1,3 +1,7 @@
+const { FILTER_OPTIONS } = require("../config/filterOptions");
+const elemObjPropValIncludes = require("../helpers/elemObjPropValIncludes");
+const filterArrSortLoose = require("../helpers/filterArrSortLoose");
+const { filteredTagsSort } = require("../helpers/filterEventsHelper");
 const filterNonDuplicate = require("../helpers/filterNonDuplicate");
 const { findDuplicateEvent } = require("../helpers/findDuplicateEvent");
 const includesSearchTerm = require("../helpers/includesSearchTerm");
@@ -119,8 +123,116 @@ const getSignedUpVolunteers = async (shifts) => {
     count: uniqueVolunteersIds.length,
   };
 
- 
   return { shiftVolunteers, totalUniqueVolunteers };
+};
+
+const filterEvents = (filterObj, resLocals) => {
+ //any of thses could be [] OR undefined
+
+  const filteredVenue = resLocals.filteredVenue;
+  const filteredDate = resLocals.filteredDate;
+  const filteredIsOpen = resLocals.filteredIsOpen;
+  const filteredIsUpcoming = resLocals.filteredIsUpcoming;
+
+  let filteredResultsByKey = {};
+  let idsWithTags = [];
+
+  console.log("value of req.body for filterEvent: ", { ...filterObj });
+
+  Object.keys(filterObj).forEach((filterKey) => {
+    switch (filterKey) {
+      case FILTER_OPTIONS.DATE:
+        filteredResultsByKey = {
+          ...filteredResultsByKey,
+          [filterKey]: filteredDate,
+        };
+        break;
+
+      case FILTER_OPTIONS.IS_OPEN:
+        filteredResultsByKey = {
+          ...filteredResultsByKey,
+          [filterKey]: filteredIsOpen,
+        };
+
+        break;
+
+      case FILTER_OPTIONS.VENUE:
+        // filteredResultsByKey[filterKey] = filteredVenue
+
+        filteredResultsByKey = {
+          ...filteredResultsByKey,
+          [filterKey]: filteredVenue,
+        };
+
+        break;
+
+      case FILTER_OPTIONS.IS_UPCOMING:
+        filteredResultsByKey = {
+          ...filteredResultsByKey,
+          [filterKey]: filteredIsUpcoming,
+        };
+
+      default:
+        break;
+    }
+  });
+
+  const filteredAllIds = filterArrSortLoose(
+    Object.values(filteredResultsByKey)
+  );
+
+  filteredAllIds.forEach((id) => {
+    Object.entries(filteredResultsByKey).forEach(([filterKey, result]) => {
+      const [_, filterKeyVal] = Object.entries(filterObj).find(
+        ([key, _]) => key === filterKey
+      );
+
+      // console.log("filterKeyVal of each eventId: ", filterKeyVal);
+
+      if (result.includes(id)) {
+        // const isEventIdAlrExists = elemObjIncludes(idsWithTags, id);
+        const isEventIdAlrExists = elemObjPropValIncludes(
+          idsWithTags,
+          "eventId",
+          id
+        );
+
+        if (isEventIdAlrExists !== -1) {
+          const bufferArr = idsWithTags.map((event) => {
+            if (event.eventId === id) {
+              // event = {...event, filterTags: [...event.filterTags, filterKey]}
+
+              event = {
+                ...event,
+                filterTags: [
+                  ...event.filterTags,
+                  { [filterKey]: filterKeyVal },
+                ],
+              };
+            }
+
+            return event;
+          });
+
+          idsWithTags = bufferArr;
+        } else {
+          idsWithTags.push({
+            eventId: id,
+            filterTags: [{ [filterKey]: filterKeyVal }],
+          });
+        }
+      }
+    });
+  });
+
+  const sortedIdsWithTags = filteredTagsSort(idsWithTags);
+
+  return {
+    filteredResultsByKey,
+    filteredAllIds,
+    idsWithTags,
+    sortedIdsWithTags,
+  };
 };
 
 module.exports = {
@@ -132,4 +244,6 @@ module.exports = {
 
   getSignedUpVolunteers,
   searchEvents,
+
+  filterEvents,
 };

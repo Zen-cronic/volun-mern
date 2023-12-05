@@ -9,7 +9,7 @@ const {
   searchEventsHandler,
 
   sortEventsHandler,
-  filterEvents,
+  filterEventsHandler,
 
   getSignedUpVolunteersHandler,
 } = require("../controllers/eventsControllers");
@@ -40,6 +40,6 @@ router
 
 router.route("/search").post(searchEventsHandler);
 router.route("/sort").post(sortEventsHandler);
-router.route("/filter").post(filterEvents);
+router.route("/filter").post(filterEventsHandler);
 
 module.exports = router;

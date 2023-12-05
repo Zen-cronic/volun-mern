@@ -28,6 +28,7 @@ const {
   updateEventInfo,
   deleteEvent,
   getSignedUpVolunteers,
+  filterEvents,
 } = require("../service/eventsService");
 const { findDuplicateEvent } = require("../helpers/findDuplicateEvent");
 
@@ -85,42 +86,7 @@ const searchEventsHandler = asyncHandler(async (req, res) => {
   return res.status(200).json({ searchTerm: q, matchingEvents });
 });
 
-const sortEventsHandler = [
-  asyncHandler(async (req, res, next) => {
-    //only 1 sort option at a time
-    const [[sortOption, orderBool]] = Object.entries(req.body);
 
-    // console.log(sortOption, orderBool);
-    if (sortOption === SORT_OBJECT.SOONEST.sortOption) {
-      return next();
-    }
-
-    const sortedEvents = await sortEventsHelper(sortOption, orderBool).then(
-      (events) =>
-        events.map((event) => ({
-          eventId: event._id,
-          eventName: event.eventName,
-        }))
-    );
-
-    return res.json({ sortedEvents });
-  }),
-
-  //sort by soonest shift date
-  asyncHandler(async (req, res) => {
-    const allEvents = await getAllEvents();
-
-    //recursion logic
-    const sortedUpcomingEventsDates = sortUpcomingEventsDates(allEvents);
-
-    const sortedEvents = sortEventsByEventDate(sortedUpcomingEventsDates);
-
-    return res.status(200).json({
-      sortedUpcomingEventsDates,
-      sortedEvents,
-    });
-  }),
-];
 
 const updateEventInfoHandler = asyncHandler(async (req, res) => {
   const {
@@ -200,7 +166,44 @@ const getSignedUpVolunteersHandler = asyncHandler(async (req, res) => {
   res.json({ shiftVolunteers, totalUniqueVolunteers });
 });
 
-const filterEvents = [
+const sortEventsHandler = [
+  asyncHandler(async (req, res, next) => {
+    //only 1 sort option at a time
+    const [[sortOption, orderBool]] = Object.entries(req.body);
+
+    // console.log(sortOption, orderBool);
+    if (sortOption === SORT_OBJECT.SOONEST.sortOption) {
+      return next();
+    }
+
+    const sortedEvents = await sortEventsHelper(sortOption, orderBool).then(
+      (events) =>
+        events.map((event) => ({
+          eventId: event._id,
+          eventName: event.eventName,
+        }))
+    );
+
+    return res.json({ sortedEvents });
+  }),
+
+  //sort by soonest shift date
+  asyncHandler(async (req, res) => {
+    const allEvents = await getAllEvents();
+
+    //recursion logic
+    const sortedUpcomingEventsDates = sortUpcomingEventsDates(allEvents);
+
+    const sortedEvents = sortEventsByEventDate(sortedUpcomingEventsDates);
+
+    return res.status(200).json({
+      sortedUpcomingEventsDates,
+      sortedEvents,
+    });
+  }),
+];
+
+const filterEventsHandler = [
   //venue filter
   asyncHandler(async (req, res, next) => {
     if (!objKeysIncludes(req.body, FILTER_OPTIONS.VENUE)) {
@@ -220,7 +223,7 @@ const filterEvents = [
     }
 
     const { date } = req.body;
-    console.log("filterDate: ", date);
+    // console.log("filterDate: ", date);
     res.locals.filteredDate = await filterEventsByDate(date);
 
     next();
@@ -254,109 +257,15 @@ const filterEvents = [
 
   //sorted filter
   asyncHandler(async (req, res) => {
-    //any of thses could be [] OR undefined
-    const filteredVenue = res.locals.filteredVenue;
-    const filteredDate = res.locals.filteredDate;
-    const filteredIsOpen = res.locals.filteredIsOpen;
-    const filteredIsUpcoming = res.locals.filteredIsUpcoming;
 
-    let filteredResultsByKey = {};
-    let idsWithTags = [];
+    const {
+      filteredResultsByKey,
+      filteredAllIds,
+      idsWithTags,
+      sortedIdsWithTags,
+    } = filterEvents(req.body, res.locals);
 
-    console.log("value of req.body for filterEvent: ", { ...req.body });
-
-    Object.keys(req.body).map((filterKey) => {
-      switch (filterKey) {
-        case FILTER_OPTIONS.DATE:
-          filteredResultsByKey = {
-            ...filteredResultsByKey,
-            [filterKey]: filteredDate,
-          };
-          break;
-
-        case FILTER_OPTIONS.IS_OPEN:
-          filteredResultsByKey = {
-            ...filteredResultsByKey,
-            [filterKey]: filteredIsOpen,
-          };
-
-          break;
-
-        case FILTER_OPTIONS.VENUE:
-          // filteredResultsByKey[filterKey] = filteredVenue
-
-          filteredResultsByKey = {
-            ...filteredResultsByKey,
-            [filterKey]: filteredVenue,
-          };
-
-          break;
-
-        case FILTER_OPTIONS.IS_UPCOMING:
-          filteredResultsByKey = {
-            ...filteredResultsByKey,
-            [filterKey]: filteredIsUpcoming,
-          };
-
-        default:
-          break;
-      }
-    });
-
-    const filteredAllIds = filterArrSortLoose(
-      Object.values(filteredResultsByKey)
-    );
-
-    filteredAllIds.forEach((id) => {
-      Object.entries(filteredResultsByKey).forEach(([filterKey, result]) => {
-        const [_, filterKeyVal] = Object.entries(req.body).find(
-          ([key, _]) => key === filterKey
-        );
-
-        // console.log("filterKeyVal of each eventId: ", filterKeyVal);
-
-        if (result.includes(id)) {
-          // const isEventIdAlrExists = elemObjIncludes(idsWithTags, id);
-          const isEventIdAlrExists = elemObjPropValIncludes(
-            idsWithTags,
-            "eventId",
-            id
-          );
-
-          if (isEventIdAlrExists !== -1) {
-            const bufferArr = idsWithTags.map((event) => {
-              if (event.eventId === id) {
-                // event = {...event, filterTags: [...event.filterTags, filterKey]}
-
-                event = {
-                  ...event,
-                  filterTags: [
-                    ...event.filterTags,
-                    { [filterKey]: filterKeyVal },
-                  ],
-                };
-              }
-
-              return event;
-            });
-
-            idsWithTags = bufferArr;
-          } else {
-            idsWithTags.push({
-              eventId: id,
-              filterTags: [{ [filterKey]: filterKeyVal }],
-            });
-          }
-        }
-      });
-    });
-
-    const sortedIdsWithTags = filteredTagsSort(idsWithTags);
-
-    // console.log('idsWIthTags: ',idsWithTags);
-    // console.log("sortedIdsWithTags: ", sortedIdsWithTags);
-
-    res.status(200).json({
+    return res.status(200).json({
       filteredResultsByKey,
       filteredAllIds,
       idsWithTags,
@@ -374,7 +283,7 @@ module.exports = {
 
   searchEventsHandler,
   sortEventsHandler,
-  filterEvents,
+  filterEventsHandler,
 
   getSignedUpVolunteersHandler,
 };

@@ -5,31 +5,26 @@ import { useSelector } from "react-redux";
 import { selectFilteredEvents } from "../eventsSlice";
 import { Container, Table } from "react-bootstrap";
 import checkIsFilteredEventsPage from "./checkIsFilteredEventsPage";
+import { useLocation } from "react-router-dom";
 
 const FilteredEventList = () => {
   const filteredEvents = useSelector(selectFilteredEvents);
+  const location = useLocation();
 
   console.log("filteredEvents from eventSlice w selector: ", filteredEvents);
 
-  const currentPath = window.location.pathname
-  console.log('currentPath: ', currentPath);
-  
-  if(!checkIsFilteredEventsPage(currentPath)){
+  // console.log('useLocation currentPath: ', location.pathname);
 
-    return null
+  if (!checkIsFilteredEventsPage(location.pathname)) {
+    return null;
   }
-  // checkIsFilteredEventsPage(window.location.href)
 
   const tableBodyContent = filteredEvents.map((event) => {
-   
-    const {eventId, filterTags} = event
+    const { eventId, filterTags } = event;
 
     return (
-
       <tr key={eventId}>
-       
-        <EventExcerpt key={eventId} eventId={eventId} filterTags={filterTags}/>
-        
+        <EventExcerpt key={eventId} eventId={eventId} filterTags={filterTags} />
       </tr>
     );
   });
