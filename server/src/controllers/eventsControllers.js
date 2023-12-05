@@ -85,7 +85,7 @@ const searchEventsHandler = asyncHandler(async (req, res) => {
   return res.status(200).json({ searchTerm: q, matchingEvents });
 });
 
-const sortEvents = [
+const sortEventsHandler = [
   asyncHandler(async (req, res, next) => {
     //only 1 sort option at a time
     const [[sortOption, orderBool]] = Object.entries(req.body);
