@@ -25,7 +25,9 @@ describe("/events/search", () => {
     let options = new chrome.Options()
     options.addArguments(
       'headless',
-      'window-size=1920,1080' 
+      'window-size=1920,1080',
+      'disable-dev-shm-usage',
+  'no-sandbox'
     )
     
     // chromeCapabilities.set("goog:chromeOptions", chromeOptions);
