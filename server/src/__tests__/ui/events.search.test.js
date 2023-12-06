@@ -11,14 +11,17 @@ describe("/events/search", () => {
     jest.setTimeout(30000);
 
     let chromeCapabilities = Capabilities.chrome();
-
+    
     const chromeOptions = {
       args: [
         "--window-size=1920,1080",
         // "--headless"
+        "--disable-dev-shm-usage",
+        "--no-sandbox"
       ],
     };
 
+    
     chromeCapabilities.set("goog:chromeOptions", chromeOptions);
 
     driver = new Builder()
@@ -97,7 +100,7 @@ describe("/events/search", () => {
   });
 
   afterAll(async () => {
-    // await driver.close();
+    await driver.close();
     await Event.deleteMany();
     await mongoose.disconnect();
     await mongoose.connection.close();
