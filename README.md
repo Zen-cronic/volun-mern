@@ -71,8 +71,8 @@ The Volunteer Management System is a robust and versatile web application design
   * Frontend/client hosted on Vercel
   * Backend/server deployed on Heroku server using GitHubActions CI/CD
 
-**Check out other projects on my portfolio website**
-[Portfolio website](https://www.kaungzinhein.me/)
+**Check out other projects on my <a href="https://www.kaungzinhein.me/" target="_blank">Example Link</a>portfolio website**
+
 
 
 _Every hour counts_
