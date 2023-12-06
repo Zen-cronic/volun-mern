@@ -106,6 +106,8 @@ describe("/events/search", () => {
 
     console.log("connect db name for test: ", mongoose.connection.name);
     // console.log('created Events: ', createdEvents);
+    console.log("test allowed origin: ", process.env.TEST_ALLOWED_ORIGIN);
+
   });
 
   afterAll(async () => {
@@ -119,7 +121,6 @@ describe("/events/search", () => {
     const searchTerm = "event";
 
     // console.log("driver: ", driver);
-    console.log("test allowed origin: ", process.env.TEST_ALLOWED_ORIGIN);
     await driver.get(`${process.env.TEST_ALLOWED_ORIGIN}/events`);
     await driver
       .findElement(By.id("search-bar"))
