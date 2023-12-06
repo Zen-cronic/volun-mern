@@ -1,8 +1,9 @@
 require("dotenv").config();
-const { Builder, By, Key, until, Capabilities } = require("selenium-webdriver");
+const { Builder, By, Key, until, Capabilities, Options } = require("selenium-webdriver");
 const mongoose = require("mongoose");
 const Event = require("../../models/Event");
 const connectDB = require("../../config/db");
+const chrome = require('selenium-webdriver/chrome')
 
 describe("/events/search", () => {
   let driver;
@@ -10,23 +11,28 @@ describe("/events/search", () => {
   beforeAll(async () => {
     jest.setTimeout(30000);
 
-    let chromeCapabilities = Capabilities.chrome();
+    // let chromeCapabilities = Capabilities.chrome();
     
-    const chromeOptions = {
-      args: [
-        "--window-size=1920,1080",
-        // "--headless"
-        "--disable-dev-shm-usage",
-        "--no-sandbox"
-      ],
-    };
+    // const chromeOptions = {
+    //   args: [
+    //     "--window-size=1920,1080",
+    //     // "--headless"
+    //     "--disable-dev-shm-usage",
+    //     "--no-sandbox"
+    //   ],
+    // };
 
+    let options = new chrome.Options()
+    options.addArguments(
+      'window-size=1920,1080' 
+    )
     
-    chromeCapabilities.set("goog:chromeOptions", chromeOptions);
+    // chromeCapabilities.set("goog:chromeOptions", chromeOptions);
 
     driver = new Builder()
       .forBrowser("chrome")
-      .withCapabilities(chromeCapabilities)
+      .setChromeOptions(options)
+      // .withCapabilities(chromeCapabilities)
       .build();
 
     const events = [
