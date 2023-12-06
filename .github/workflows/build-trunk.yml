@@ -21,6 +21,9 @@ jobs:
             - name: Run server tests
               run: npm test
               working-directory: server
+              env:
+                NODE_ENV: test
+                TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
 
             - name : Install client dependencies
               run : npm ci

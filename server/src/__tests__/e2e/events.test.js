@@ -7,7 +7,6 @@ const { createServer } = require("../../config/createServer");
 const { getAllEvents } = require("../../service/eventsService");
 const { FILTER_OPTIONS } = require("../../config/filterOptions");
 
-// jest.mock("../../helpers/sortUpcomingEventsDates");
 const app = createServer();
 
 describe("/events route", () => {
