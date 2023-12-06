@@ -7,10 +7,14 @@
 _Every hour counts._ When I first started volunteering at school, there was no efficient way of tracking my volunteer record other than Excel spreadsheets.
 The Volunteer Management System is a robust and versatile web application designed to streamline the process of managing volunteering events for organizations and community initiatives. This project addresses the need for a user-friendly platform that facilitates volunteer recruitment, coordination, and engagement. Every organization can positively impact our communities with the involvement of each volunteer.
 
+### [Try the App!](https://volunteer-mern.vercel.app/)
+
+
 ### Data Flow
 
 ![Data architecture diagram](diagrams/Volunteer-MERN-Architecture-diag.png)
 
+### Sort/Search/Filter Alogrithms!
 
 ### Models:
 
@@ -60,5 +64,15 @@ The Volunteer Management System is a robust and versatile web application design
   1. Sign up for a shift (if applicable)
   2. Cancel a shift (if applicable)
   3. Update your info (e.g., password)
+
+
+### Deployment
+
+  * Frontend/client hosted on Vercel
+  * Backend/server deployed on Heroku server using GitHubActions CI/CD
+
+**Check out other projects on my portfolio website**
+[Portfolio website](https://www.kaungzinhein.me/)
+
 
 _Every hour counts_
