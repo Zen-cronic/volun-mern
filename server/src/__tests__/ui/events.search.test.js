@@ -24,6 +24,7 @@ describe("/events/search", () => {
 
     let options = new chrome.Options()
     options.addArguments(
+      'headless',
       'window-size=1920,1080' 
     )
     
@@ -106,7 +107,7 @@ describe("/events/search", () => {
   });
 
   afterAll(async () => {
-    await driver.close();
+    // await driver.close();
     await Event.deleteMany();
     await mongoose.disconnect();
     await mongoose.connection.close();
