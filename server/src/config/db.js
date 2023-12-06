@@ -1,16 +1,22 @@
-
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
 const connectDB = () => {
 
-    try {
-        mongoose
-        .connect(process.env.MONGODB_URI)
-        .then(()=> {console.log('DB connected')})
+  const dbUri =
+    process.env.NODE_ENV === "test"
+      ? process.env.TEST_MONGODB_URI
+      : process.env.MONGODB_URI
 
-    } catch (error) {
-        console.error(error)
-    }
-}
+    // console.log("dbUri: ", dbUri);
+  try {
 
-module.exports = connectDB
+    mongoose.connect(dbUri).then(() => {
+      console.log("DB connected");
+    //   console.log("DB name: ", mongoose.connection.name);
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+module.exports = connectDB;

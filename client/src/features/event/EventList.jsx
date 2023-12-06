@@ -17,7 +17,8 @@ const EventList = () => {
   } = useGetEventsQuery("eventsList", {
 
     //15min 90000
-    pollingInterval: 2000,
+    // pollingInterval: 2000,
+    pollingInterval: 90000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });

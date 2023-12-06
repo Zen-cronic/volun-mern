@@ -83,7 +83,7 @@ describe("/events route", () => {
     // );
     const createdEvents = await Event.create(events);
     // console.log("createdEvents: ", createdEvents);
-  });
+  }, 10000);
 
   afterAll(async () => {
     await Event.deleteMany();
