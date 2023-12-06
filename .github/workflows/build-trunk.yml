@@ -1,34 +1,34 @@
-
 name: CI trunk
 
-on: 
-    push:
-        branches:
-            - trunk
-
+on:
+  push:
+    branches:
+      - trunk
 
 jobs:
-    build: 
-        runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-        steps: 
-            - uses: actions/checkout@v2
+    container:
+      image: selenium/standalone-chrome:latest
+    steps:
+      - uses: actions/checkout@v2
 
-            - name : Install server dependencies
-              run : npm ci
-              working-directory: server
+      - name: Install server dependencies
+        run: npm ci
+        working-directory: server
 
-            - name: Run server tests
-              run: npm test
-              working-directory: server
-              env:
-                NODE_ENV: test
-                TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+      - name: Run server tests
+        run: npm test
+        working-directory: server
+        env:
+          NODE_ENV: test
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
 
-            - name : Install client dependencies
-              run : npm ci
-              working-directory: client
+      - name: Install client dependencies
+        run: npm ci
+        working-directory: client
 
-            # - name: Run client tests
-            #   run: npm test
-            #   working-directory: client
+      # - name: Run client tests
+      #   run: npm test
+      #   working-directory: client
