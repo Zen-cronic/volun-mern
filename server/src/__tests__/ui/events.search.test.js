@@ -116,6 +116,8 @@ describe("/events/search", () => {
   it("should return search results", async () => {
     const searchTerm = "event";
 
+    // console.log("driver: ", driver);
+    console.log("test allowed origin: ", process.env.TEST_ALLOWED_ORIGIN);
     await driver.get(`${process.env.TEST_ALLOWED_ORIGIN}/events`);
     await driver
       .findElement(By.id("search-bar"))
