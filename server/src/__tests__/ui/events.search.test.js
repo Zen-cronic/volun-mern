@@ -107,7 +107,7 @@ describe("/events/search", () => {
   });
 
   afterAll(async () => {
-    // await driver.close();
+    await driver.close();
     await Event.deleteMany();
     await mongoose.disconnect();
     await mongoose.connection.close();
