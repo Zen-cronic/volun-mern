@@ -14,6 +14,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@latest
+
+      - name: Download and setup ChromeDriver
+        run: | 
+          CHROME_VERSION=$(google-chrome-stable --version | cut -d ' ' -f3) && 
+          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION") &&
+          curl -LO "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip" &&
+          unzip chromedriver_linux64.zip &&
+          sudo mv chromedriver /usr/local/bin/ &&
+          sudo chmod +x /usr/local/bin/chromedriver
+
       - name: Install server dependencies
         run: npm ci
         working-directory: server
