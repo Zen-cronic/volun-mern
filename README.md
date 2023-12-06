@@ -9,7 +9,7 @@ The Volunteer Management System is a robust and versatile web application design
 
 ### Data Flow
 
-![Data architecture diagram](diagrams/Volunteer-MERN-Architecture.png)
+![Data architecture diagram](diagrams/Volunteer-MERN-Architecture-diag.png)
 
 
 ### Models:
