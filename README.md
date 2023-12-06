@@ -1,6 +1,6 @@
 # Volunteer Management App - MERN stack
 
-Simple web app using MERN stack
+MERN app for volunteers and events tracking
 
 Basic Functionalities Depending on Volunteer and Admin Role:
 
@@ -26,7 +26,18 @@ Volunteer:
 
 1. Sign up for a shift (if applicable)
 2. Cancel a shift (if applicable)
-3. Update your own info (e.g., password)
+3. Update your info (e.g., password)
 
+Models: 
++ Event
++ User (both volunteers and administrators)
 
+Types of middleware: 
++ Authentication/Authorization: for certain resources, user need to be logged in to view, and for others, only specific roles can access
++ Custom error handling: when there's an internal server error from the database, etc.
++ Database middleware: for Event model
+  - EventShift schema is a nested array of embedded documents inside Event schema
+  - EventShift schema contains important properties such as volunteer shift times(i.e., shiftStart, shiftEnd, shiftDuration)
+  - Middleware ensures that the correct data structure is being stored every time data gets updated
+    
 []architecture diagram for role based routes, jwt auth
