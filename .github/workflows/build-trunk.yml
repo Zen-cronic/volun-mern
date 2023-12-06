@@ -35,7 +35,7 @@ jobs:
         env:
           NODE_ENV: test
           TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-          TEST_ALLOWED_ORIGIN: ${{secret.TEST_ALLOWED_ORIGIN}}
+          TEST_ALLOWED_ORIGIN: ${{secrets.TEST_ALLOWED_ORIGIN}}
 
       - name: Install client dependencies
         run: npm ci
