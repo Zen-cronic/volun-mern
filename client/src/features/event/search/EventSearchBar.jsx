@@ -47,7 +47,7 @@ const EventSearchBar = ({  setFindingQuery }) => {
     }
   };
   const searchBar = (
-    <Form onSubmit={handleSearchSubmit}>
+    <Form onSubmit={handleSearchSubmit} id="search-bar">
       <Form.Control
         type="text"
         value={searchQuery ?? ""}
