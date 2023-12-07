@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const Event = require("../../models/Event");
 const connectDB = require("../../config/db");
 const chrome = require('selenium-webdriver/chrome')
+require('chromedriver')
 
 describe("/events/search", () => {
   let driver;
