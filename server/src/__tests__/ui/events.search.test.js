@@ -107,6 +107,7 @@ describe("/events/search", () => {
     console.log("connect db name for test: ", mongoose.connection.name);
     // console.log('created Events: ', createdEvents);
     console.log("test allowed origin: ", process.env.TEST_ALLOWED_ORIGIN);
+    console.log("type of test allowedOrigin ",typeof process.env.TEST_ALLOWED_ORIGIN === 'string');
 
   });
 
