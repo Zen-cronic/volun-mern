@@ -29,6 +29,17 @@ jobs:
         run: npm ci
         working-directory: server
 
+      - name: Start server
+        run: |
+          npm start &
+          sleep 10
+        working-directory: server
+        env:
+          NODE_ENV: test
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          TEST_ALLOWED_ORIGIN: ${{secrets.TEST_ALLOWED_ORIGIN}}
+
+          
       - name: Run server tests
         run: npm test
         working-directory: server
