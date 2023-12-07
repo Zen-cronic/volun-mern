@@ -8,4 +8,4 @@ const app = createServer()
 
 const PORT= process.env.PORT || 3700
 
-app.listen(PORT, ()=> console.log(`PORT listening on ${process.env.PORT}`))
+app.listen(PORT, ()=> console.log(`PORT listening on ${PORT}`))
