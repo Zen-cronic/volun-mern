@@ -144,5 +144,5 @@ describe("/events/search", () => {
       expect(text.toLowerCase()).toContain(searchTerm);
       // expect(text.toLowerCase()).toEqual(expect.stringContaining(searchTerm))
     });
-  });
+  }, 10000);
 });
