@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import { useLoginMutation } from './authApiSlice';
 import { useDispatch } from 'react-redux';
 import { setCredentials } from './authSlice';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import usePersist from '../../hooks/usePersist';
 import { Form, Button, } from 'react-bootstrap';
 import AuthFormContainer from './AuthFormContainer';

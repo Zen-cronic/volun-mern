@@ -423,90 +423,7 @@ const searchVolunteers = asyncHandler(async (req, res) => {
   res.json({ searchTerm: q, matchingVolunteers });
 });
 
-//update volunteereedShifts + calculate volunteered hours
-// const updateVolunteeredShifts = asyncHandler(async(req,res)=>{
 
-//     const nowDate = new Date(Date.now())
-
-//     const allEventsWithShifts = await Event.find().select(["_id", "shifts"]).exec()
-//         .then(events =>
-//                 events.map(event => (
-
-//                      {
-//                         eventId: event._id,
-//                         eventShifts: event.shifts.map(shift => shift._id)
-//                      }
-
-//                 )
-//     ))
-
-//     const allVolunteers = await User.find().select({_id: 1, volunteeredShifts: 1, signedUpShifts: 1}).select({password: 0}).exec()
-
-//     // const toRemove = allVolunteers.findIndex()
-//     // allVolunteers.splice(toRemove, 1)
-
-//     for(let i = 0; i< allVolunteers.length; i++){
-
-//         const currentVolun = allVolunteers[i]
-//         const signedUpShifts = currentVolun.signedUpShifts
-
-//         for(let j = 0; j<signedUpShifts.length; j++){
-
-//             const currentSignedUpShift = signedUpShifts[j]
-
-//             for(let k = 0; k<allEventsWithShifts.length; k++){
-
-//                 const currentEvent = allEventsWithShifts[k]
-//                 const currentEventId = currentEvent.eventId
-
-//                 const includedShiftId = currentEvent.eventShifts.find(shift => shift.toString() === currentSignedUpShift.toString())
-
-//                 if(currentVolun.volunteeredShifts.includes(includedShiftId)){
-
-//                     //or break?
-//                     continue
-//                 }
-
-//                 if(includedShiftId){
-//                     console.log(includedShiftId, " included in event ", currentEventId);
-
-//                     const event = await Event.findById(currentEventId)
-//                     const shiftInfo = event.shifts.find(shift => shift._id.toString() === currentSignedUpShift.toString())
-
-//                     // console.log("End time of shift: ", shiftInfo.shiftEnd,  nowDate)
-//                     // console.log( "  local end: ", shiftInfo.localShiftEnd);
-
-//                     if(isBefore(shiftInfo.shiftEnd, nowDate)){
-
-//                         console.log('successfully volunteered in shift - add to volunteeredEvent');
-
-//                         currentVolun.volunteeredShifts.push(includedShiftId)
-
-//                         await currentVolun.save()
-//                     }
-//                     else{
-
-//                         // console.log('only signed up, NOT yet completed ', shiftInfo.shiftEnd, nowDate);
-//                         currentVolun.volunteeredShifts.splice(currentVolun.volunteeredShifts.indexOf(includedShiftId),1)
-//                     }
-
-//                 }
-
-//             }
-//         }
-//     }
-
-//     const extractedPropVolunteers = allVolunteers.map(volun => (objPropExtractor([ 'volunteeredShifts', '_id'], volun.toObject())))
-
-//     // const mongooseExtractedVolunteers = await User.find().select({_id: 1, volunteeredShifts: 1, __v: 1}).select({password: 0}).exec()
-
-//     // extractedPropVolunteers.map(e => console.log(e._id))
-//     // allVolunteers.map(e => console.table(Object.entries(e.toObject())))
-
-//     res.json({allEventsWithShifts, extractedPropVolunteers, allVolunteers})
-// })
-
-//updateVolunteeredShifts aft model change
 const updateVolunteeredShifts = asyncHandler(async (req, res) => {
   const nowDate = new Date(Date.now());
 
@@ -727,17 +644,11 @@ module.exports = {
 
   searchVolunteers,
 
-  // sortVolunteersAlphabetically,
-  // // sortVolunteersByEventsCount,
-
-  // sortVolunteersByHours,
-  // refreshSignedUpEvents,
 
   updateVolunteeredShifts,
 
   getUserById,
 
-  // sortVolunteers  //arr of asyncHanlders
   sortVolunteers,
 
   getUpcomingSignedUpShifts,

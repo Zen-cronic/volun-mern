@@ -17,9 +17,7 @@ const objKeysIncludes = require("../helpers/objKeysIncludes");
 
 const { FILTER_OPTIONS } = require("../config/filterOptions");
 const { SORT_OBJECT } = require("../config/sortOptions");
-const filterArrSortLoose = require("../helpers/filterArrSortLoose");
 const sortUpcomingEventsDates = require("../helpers/sortUpcomingEventsDates");
-const elemObjPropValIncludes = require("../helpers/elemObjPropValIncludes");
 const {
   getAllEvents,
   createNewEvent,

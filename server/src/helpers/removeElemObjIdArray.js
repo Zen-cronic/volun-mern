@@ -1,5 +1,3 @@
-//w filter()
-
 const removeElemObjIdArray = (origArr, checked)=>{
 
     if(typeof checked !== 'string'){

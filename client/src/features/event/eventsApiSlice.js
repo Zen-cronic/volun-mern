@@ -167,10 +167,10 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
 
         const serializedEvent = newEvent;
 
-        console.log(
-          "serializedEvent from postNewEvent slice: ",
-          serializedEvent
-        );
+        // console.log(
+        //   "serializedEvent from postNewEvent slice: ",
+        //   serializedEvent
+        // );
         return eventsAdapter.setOne(eventsInitialState, serializedEvent);
       },
 
