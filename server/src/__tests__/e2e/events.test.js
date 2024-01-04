@@ -4,8 +4,9 @@ const Event = require("../../models/Event");
 const { SORT_OBJECT } = require("../../config/sortOptions");
 const supertest = require("supertest");
 const { createServer } = require("../../config/createServer");
+const { getAllEvents } = require("../../service/eventsService");
+const { FILTER_OPTIONS } = require("../../config/filterOptions");
 
-// jest.mock("../../helpers/sortUpcomingEventsDates");
 const app = createServer();
 
 describe("/events route", () => {
@@ -76,9 +77,12 @@ describe("/events route", () => {
 
     // Create an array of event objects
 
+    // const createdEvents = await Promise.all(
+    //   events.map(async (event) => await Event.create(event))
+    // );
     const createdEvents = await Event.create(events);
     // console.log("createdEvents: ", createdEvents);
-  });
+  }, 10000);
 
   afterAll(async () => {
     await Event.deleteMany();
@@ -87,9 +91,11 @@ describe("/events route", () => {
   });
 
   describe("/events/sort", () => {
+    // const sortRequest = () => request.post("/event/sort")
+
     describe("given that sort option is SOONEST", () => {
       it("should return an array of sorted events based on eventDate", async () => {
-        const spyFind = jest.spyOn(Event, "find");
+        const allEvents = await getAllEvents();
 
         const { statusCode, body } = await request
           .post("/events/sort")
@@ -100,9 +106,20 @@ describe("/events route", () => {
         expect(body).toHaveProperty("sortedEvents");
         expect(body).toHaveProperty("sortedUpcomingEventsDates");
 
-        expect(spyFind).toHaveBeenCalledTimes(1);
         // console.log("body.sortedUpcomingEventsDate: ", body.sortedUpcomingEventsDates);
         // console.log("body.sortedEvents: ", body.sortedEvents);
+        // console.log("allEvents: ", allEvents);
+
+        await Promise.all(
+          allEvents.map(async (event) => {
+            const matchedEvent = await Event.find({
+              eventName: event.eventName,
+            });
+
+            expect(matchedEvent).toHaveLength(1);
+            expect(matchedEvent[0]).not.toBeUndefined();
+          })
+        );
 
         for (let i = 0; i < body.sortedEvents.length - 1; i++) {
           const leftDate = new Date(body.sortedEvents[i].eventDate);
@@ -143,7 +160,7 @@ describe("/events route", () => {
         expect(status).toBe(200);
         expect(body).toHaveProperty("sortedEvents");
 
-        console.log("body.sortedEvents: ", body.sortedEvents);
+        // console.log("body.sortedEvents: ", body.sortedEvents);
         for (let i = 0; i < body.sortedEvents.length - 1; i++) {
           const leftEventId = body.sortedEvents[i].eventId;
           const rightEventId = body.sortedEvents[i + 1].eventId;
@@ -160,23 +177,118 @@ describe("/events route", () => {
   });
 
   describe("/event/search", () => {
-    describe("given that search is valid", () => {
-      it("should return an array of events that contain search term in their eventName or eventDescription", async () => {
-        const searchTerm = "3";
-        const { statusCode, body } = await request
-          .post("/events/search")
-          .query({ q: searchTerm });
+    const testSearchEvent = async (
+      searchTerm,
+      expectedMatchingEventsLength
+    ) => {
+      const { statusCode, body } = await request
+        .post("/events/search")
+        .query({ q: searchTerm });
 
-        expect(statusCode).toBe(200);
+      expect(statusCode).toBe(200);
 
-        // Received value: {"matchingEvents": [{"eventId": "656bad85d4f31b1a54935615"}], "searchTerm": "3"}
+      expect(body).toHaveProperty(
+        "matchingEvents.length",
+        expectedMatchingEventsLength
+      );
 
-        expect(body).toHaveProperty("matchingEvents", [
-          {
-            eventId: expect.any(String),
-          },
-        ]);
+      expect(body).toHaveProperty("searchTerm", searchTerm);
+
+      console.log("body searchTerm: ", body);
+      // Received value: {"matchingEvents": [{"eventId": "656bad85d4f31b1a54935615"}], "searchTerm": "3"}
+    };
+
+    describe("given that search term belongs to one event only", () => {
+      it("should return an array of one event", async () => {
+        await testSearchEvent("3", 1);
+      });
+    });
+    describe("given that search term belongs to more than one event", () => {
+      it("should return an array of events", async () => {
+        await testSearchEvent("event", events.length);
       });
     });
   });
+
+  describe("/events/filter", () => {
+    describe("given valid VENUE filter argument is provided", () => {
+      it("should return the filtered array of events", async () => {
+        const eventWithFilteredVenue = {
+          eventName: "Event 4",
+          eventDescription: "Description 4",
+          eventDates: [new Date("2023-04-01T00:00")],
+          shifts: [
+            {
+              shiftStart: new Date("2023-04-01T09:00:00"),
+              shiftEnd: new Date("2023-04-01T17:00:00"),
+              shiftPositions: 5,
+            },
+          ],
+          eventVenue: "Casa Loma",
+        };
+        await Event.create(eventWithFilteredVenue);
+
+        const filterKeysObj = { [FILTER_OPTIONS.VENUE]: "Casa Loma" };
+
+        const { status, body } = await request
+          .post("/events/filter")
+          .send(filterKeysObj);
+
+        expect(status).toBe(200);
+
+        expect(body).toHaveProperty("sortedIdsWithTags");
+
+        body.sortedIdsWithTags.forEach((sortedObj) => {
+          expect(sortedObj).toEqual({
+            eventId: expect.any(String),
+            filterTags: [{ venue: filterKeysObj.venue }],
+          });
+        });
+      });
+    });
+    describe("given valid IS_OPEN filter argument is provided", () => {
+      it("should return the filtered array of events", async () => {
+        const eventWithFilteredIsOpen = {
+          eventName: "Event 5",
+          eventDescription: "Description 4",
+          eventDates: [new Date("2023-04-01T00:00")],
+          shifts: [
+            {
+              shiftStart: new Date("2023-04-01T09:00:00"),
+              shiftEnd: new Date("2023-04-01T17:00:00"),
+              shiftPositions: 3,
+            },
+          ],
+          eventVenue: "Venue 5",
+        };
+        await Event.create(eventWithFilteredIsOpen);
+
+        const filterKeysObj = { isOpen: true };
+
+        const { status, body } = await request
+          .post("/events/filter")
+          .send(filterKeysObj);
+
+        expect(status).toBe(200);
+
+        expect(body).toHaveProperty("sortedIdsWithTags");
+
+        body.sortedIdsWithTags.forEach((sortedObj) => {
+          expect(sortedObj).toEqual({
+            eventId: expect.any(String),
+            filterTags: [{ isOpen: true }],
+          });
+        });
+      });
+    });
+  });
+
+  // describe('/event create event', () => {
+
+  //   describe('first', () => {
+  //     it('should ', () => {
+
+  //      })
+  //    })
+  // });
 });

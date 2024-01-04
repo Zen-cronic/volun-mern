@@ -1,6 +1,5 @@
 import React, { useState} from 'react'
 import { useLazyPostFilteredEventsQuery } from '../eventsApiSlice';
-import { useNavigate } from 'react-router';
 import { Button, Form, } from 'react-bootstrap';
 import DatePicker from "react-datepicker";
 import format from 'date-fns/format';

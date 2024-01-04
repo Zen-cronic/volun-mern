@@ -18,6 +18,7 @@ const PersistLogin = () => {
     const [refresh, {isSuccess, isLoading, isError, error, isUninitialized}] = useRefreshMutation()
 
     useEffect(() => {
+        //how about test
         if(effectRan.current === true || process.env.NODE_ENV !== 'development'){
 
             const verifyRefreshRoute = async () => {

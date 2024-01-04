@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Outlet } from 'react-router'
+import { Outlet } from 'react-router-dom'
 import { store } from '../../app/store';
 import { eventsApiSlice } from '../event/eventsApiSlice';
 

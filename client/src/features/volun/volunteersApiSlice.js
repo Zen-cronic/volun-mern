@@ -1,7 +1,6 @@
 import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 import { apiSlice } from "../../app/api/apiSlice";
 import { setSearchedVolunteers, setSortedVolunteers } from "./volunteersSlice";
-import { logOut } from "../auth/authSlice";
 
 export const volunteersAdapter = createEntityAdapter();
 

@@ -137,7 +137,7 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
 
           dispatch(setSearchedEvents({ matchingEvents }));
         } catch (error) {
-          console.log("Sort events Error: ", error);
+          console.log("Search events Error: ", error);
         }
       },
     }),
@@ -167,10 +167,10 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
 
         const serializedEvent = newEvent;
 
-        console.log(
-          "serializedEvent from postNewEvent slice: ",
-          serializedEvent
-        );
+        // console.log(
+        //   "serializedEvent from postNewEvent slice: ",
+        //   serializedEvent
+        // );
         return eventsAdapter.setOne(eventsInitialState, serializedEvent);
       },
 

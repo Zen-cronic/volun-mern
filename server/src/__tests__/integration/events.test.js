@@ -37,9 +37,7 @@ describe("/events route", () => {
         ];
 
         Event.find.mockReturnValue({
-          lean: jest.fn().mockReturnValue({
-            exec: jest.fn().mockReturnValue(events),
-          }),
+          lean: jest.fn().mockReturnValue(events)
         });
 
         const sortedEvents = [
@@ -58,14 +56,13 @@ describe("/events route", () => {
         sortUpcomingEventsDates.mockReturnValue(sortedEvents);
 
         const reqObj = { [SORT_OBJECT.SOONEST.sortOption]: true };
-        console.log(reqObj);
+        // console.log(reqObj);
         const { statusCode, body } = await supertest(app)
           .post("/events/sort")
           .send({ [SORT_OBJECT.SOONEST.sortOption]: true });
 
-        console.log("body: ", body);
+        // console.log("body: ", body);
         expect(statusCode).toBe(200);
-
         expect(Event.find).toHaveBeenCalledTimes(1);
         expect(sortUpcomingEventsDates).toHaveBeenCalledWith(events);
 

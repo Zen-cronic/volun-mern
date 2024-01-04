@@ -1,31 +1,57 @@
-
 name: CI trunk
 
-on: 
-    push:
-        branches:
-            - trunk
-
+on:
+  push:
+    branches:
+      - trunk
 
 jobs:
-    build: 
-        runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-        steps: 
-            - uses: actions/checkout@v2
+  
+    steps:
+      - uses: actions/checkout@v2
 
-            - name : Install server dependencies
-              run : npm ci
-              working-directory: server
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@latest
 
-            - name: Run server tests
-              run: npm test
-              working-directory: server
+      - name: Download and setup ChromeDriver
+        run: | 
+          CHROME_VERSION=$(google-chrome-stable --version | cut -d ' ' -f3) && 
+          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION") &&
+          curl -LO "https://chromedriver.storage.googleapis.com/100.0.4896.60/chromedriver_linux64.zip" &&
+          unzip chromedriver_linux64.zip &&
+          sudo mv chromedriver /usr/local/bin/ &&
+          sudo chmod +x /usr/local/bin/chromedriver
 
-            - name : Install client dependencies
-              run : npm ci
-              working-directory: client
+      - name: Install server dependencies
+        run: npm ci
+        working-directory: server
 
-            # - name: Run client tests
-            #   run: npm test
-            #   working-directory: client
+      - name: Start server
+        run: |
+          npm start &
+          sleep 10
+        working-directory: server
+        env:
+          NODE_ENV: test
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          TEST_ALLOWED_ORIGIN: ${{secrets.TEST_ALLOWED_ORIGIN}}
+
+          
+      - name: Run server tests
+        run: npm test
+        working-directory: server
+        env:
+          NODE_ENV: test
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          TEST_ALLOWED_ORIGIN: ${{secrets.TEST_ALLOWED_ORIGIN}}
+
+      - name: Install client dependencies
+        run: npm ci
+        working-directory: client
+
+      # - name: Run client tests
+      #   run: npm test
+      #   working-directory: client

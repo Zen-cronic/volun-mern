@@ -5,6 +5,7 @@ const sortUpcomingEventsDates = (eventsArr) => {
     throw new Error("Must be an array - sortUpcomingEventsDates");
   }
 
+  //map set array still valid
   if (eventsArr.some((event) => !(event instanceof Object))) {
     throw new Error("Must be an array of objects - sortUpcomingEventsDates");
   }
@@ -16,7 +17,7 @@ const sortUpcomingEventsDates = (eventsArr) => {
   ) => {
     const currentDate = new Date(Date.now());
 
-    console.log(invalidArr, " : invalidArr");
+    // console.log(invalidArr, " : invalidArr");
     // const cmpDatesArray = datesArr.filter(date => invalidArr.includes(date)? false : true)
     const cmpDatesArray = datesArr.filter((date) =>
 
