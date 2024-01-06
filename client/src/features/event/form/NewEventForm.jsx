@@ -294,12 +294,12 @@ const NewEventForm = () => {
           <br></br>
 
           <Row>
-            <Col>Event Dates</Col>
+            <Col>Event Date</Col>
             <Col xs={1}></Col>
 
-            <Col>ShiftStart Time</Col>
-            <Col>ShiftEnd Time</Col>
-            <Col>Shift Posituios</Col>
+            <Col>Shift Start Time</Col>
+            <Col>Shift End Time</Col>
+            <Col>Shift Positions</Col>
             <Col xs={1}></Col>
           </Row>
           <Row>
@@ -311,7 +311,7 @@ const NewEventForm = () => {
             <Col>
               <Button
                 type="button"
-                variant="warning"
+                variant="success"
                 onClick={addEventDateAndShift}
               >
                 Add Event And Shift

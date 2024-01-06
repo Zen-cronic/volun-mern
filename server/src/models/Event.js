@@ -65,6 +65,10 @@ const EventSchema = new mongoose.Schema(
       //y?
       default: undefined,
     },
+    eventVenue: {
+      type: String,
+      required: true,
+    },
 
     localEventDates: {
       type: [String],
@@ -85,8 +89,6 @@ const EventSchema = new mongoose.Schema(
     openPositions: {
       type: Number,
     },
-
-    eventVenue: { type: String, required: true },
   },
   {
     timestamps: true,
