@@ -51,8 +51,8 @@ const AddEventDateAndShiftTime = ({
       <Col xs={1}>
          <Button
           onClick={e => removeEventAndShift(eventDate)} 
-          variant='outline-dark'
-        >Delete Event/Shift</Button>
+          variant='outline-danger'
+        >Delete</Button>
 
       </Col>
     </Row>

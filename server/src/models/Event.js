@@ -65,6 +65,10 @@ const EventSchema = new mongoose.Schema(
       //y?
       default: undefined,
     },
+    eventVenue: {
+      type: String,
+      required: true,
+    },
 
     localEventDates: {
       type: [String],
@@ -85,8 +89,6 @@ const EventSchema = new mongoose.Schema(
     openPositions: {
       type: Number,
     },
-
-    eventVenue: { type: String, required: true },
   },
   {
     timestamps: true,
@@ -146,27 +148,29 @@ EventShiftSchema.pre("save", function (next) {
 
 //[] check if can be 0 on update from EditEventSchema
 //pre for shiftPositions
+
 EventShiftSchema.pre("save", function (next) {
   //if NOt isNew - allow 0 to save (signing up)
   // AND
   //if IS modified - allow 0 to save (signing up)
 
-  //condition for signing up: 1) !isNew 2) shifts isModified
+  //condition for signing up: 1) !isNew && 2) shifts isModified
 
-  if (!this.$parent().isNew && this.$parent().isModified("shifts")) {
-    console.log(
-      "parent doc is NOT new, therefore 3.5) not called - shiftPosi > 0"
+  if (
+    !this.$parent().isNew &&
+    this.$parent().isModified("shifts") &&
+    this.shiftPositions < 0
+  ) {
+    throw new Error(
+      "shiftPositions must be greater than or equal to 0 upon sign up"
     );
-    return next();
   }
 
   //if isNew - shiftPosi must > 0
-  //if modified - shiftPosi must > 0
+  //if modified - shiftPosi must >= 0 (aft sign up)
 
-  if (this.shiftPositions <= 0) {
-    throw new Error(
-      "shiftPositions must be greater than 0 upon creation And reSave from signing up"
-    );
+  if (this.$parent().isNew && this.shiftPositions <= 0) {
+    throw new Error("shiftPositions must be greater than 0 upon creation");
   }
 
   console.log("3.5) shiftPositions pre called");
@@ -283,6 +287,5 @@ EventSchema.pre("save", function (next) {
 
   next();
 });
-
 
 module.exports = mongoose.model("events", EventSchema);
