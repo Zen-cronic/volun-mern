@@ -127,7 +127,7 @@ const getSignedUpVolunteers = async (shifts) => {
 };
 
 const filterEvents = (filterObj, resLocals) => {
- //any of thses could be [] OR undefined
+  //any of thses could be [] OR undefined
 
   const filteredVenue = resLocals.filteredVenue;
   const filteredDate = resLocals.filteredDate;
@@ -137,7 +137,7 @@ const filterEvents = (filterObj, resLocals) => {
   let filteredResultsByKey = {};
   let idsWithTags = [];
 
-  console.log("value of req.body for filterEvent: ", { ...filterObj });
+  // console.log("value of req.body for filterEvent: ", { ...filterObj });
 
   Object.keys(filterObj).forEach((filterKey) => {
     switch (filterKey) {
@@ -181,6 +181,7 @@ const filterEvents = (filterObj, resLocals) => {
     Object.values(filteredResultsByKey)
   );
 
+  //provide filterTags
   filteredAllIds.forEach((id) => {
     Object.entries(filteredResultsByKey).forEach(([filterKey, result]) => {
       const [_, filterKeyVal] = Object.entries(filterObj).find(
@@ -197,6 +198,7 @@ const filterEvents = (filterObj, resLocals) => {
           id
         );
 
+        //if alr exists
         if (isEventIdAlrExists !== -1) {
           const bufferArr = idsWithTags.map((event) => {
             if (event.eventId === id) {
